@@ -1,0 +1,33 @@
+{
+
+    "manifest_version": 2,
+
+    "name": "CompLinks Rewards Everywhere",
+    "description": "Show offers to registered user",
+    "version": "1.2",
+
+    "icons": {
+        "16": "img/icon16.png",
+        "19": "img/icon19.png",
+        "48": "img/icon48.png",
+        "128": "img/icon128.png"
+    },
+    "options_page": "options.html",
+    "content_scripts": [{
+        "matches": ["https://*./*", "*://*./*"],
+        "js": ["/lib/jquery.js", "js/content.js"],
+        "css": ["content.css"]
+    }],
+    "background": {
+      "scripts": ["js/eventpage.js"]
+    },
+    "browser_action": {
+        "default_icon": "img/icon128.png",
+        "default_popup": "popup.html"
+    },
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "https://ajax.googleapis.com/"
+    ]
+}

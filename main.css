@@ -1,0 +1,33 @@
+body {
+	width:410px; 
+	height:height:100%;
+	margin-top:2px;
+}
+.loading-icon{
+	text-align: center;
+}
+.fb-tab-actions {
+	margin-top: 15px;
+	min-height: 270px;
+}
+.navbar-inverse .navbar-brand {
+	color: white;
+}
+.navbar-inverse .navbar-header {
+	background: #4e5158
+}
+.container{
+	margin-top: 20px;
+	margin-bottom: 0px;
+}
+.fbuttons{
+	margin-bottom: 10px;
+}
+.fpanels{
+	margin-top: 20px;
+}
+
+.show-offers {
+    margin-bottom: 20px;
+    text-align: center;
+}

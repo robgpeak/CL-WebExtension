@@ -1,0 +1,56 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="lib/bootstrap.min.css">
+		<link rel="stylesheet" href="main.css">
+		<script src="/lib/jquery.js"></script>
+		<script src="/lib/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">CompLinks Rewards Everywhere</a>
+				</div>
+			</div>
+		</nav>
+		<div class="container-fluid" >
+			<div class="tab-content fb-tab-actions fpanels">
+				<div class="alert alert-success" id="success-alert" hidden>
+					<button type="button" class="close" data-dismiss="alert">x</button>
+					<strong>Success! </strong>
+					Settings saved successfully!
+				</div>
+				<div class="alert alert-danger" id="error-alert" hidden>
+					<button type="button" class="close" data-dismiss="alert">x</button>
+					<strong>Error! </strong>
+					Please enter valid email
+				</div>
+				<div class="alert alert-danger" id="no-email-alert" hidden>
+					<strong>Error! </strong>
+					No email address found, Please add Email in settings
+				</div>
+				<div role="tabpanel" class="tab-pane active" id="account">
+					<div class="loading-icon">
+						<img src="img/loading.svg" alt="Please wait...">
+					</div>
+					<div class="show-offers">
+					</div>
+					<div class="timeline-events">
+					</div>
+				</div>
+			</div>
+			<div class="row fbuttons">
+				<hr/>
+				<div class="col-xs-4">
+				</div>
+				<div class="col-xs-4">
+					<button class="btn btn-primary btn-sm btn-block" id="settings">Settings</button>
+				</div>
+				<div class="col-xs-4">
+					<button class="btn btn-danger btn-sm btn-block" id="cancel">Close</button>
+				</div>
+			</div>
+		</div>
+		<script src="/js/popup.js"></script>
+	</body>
+</html>
