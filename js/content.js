@@ -68,6 +68,22 @@ var handleSuccess = function(data) {
 };
 
 /**
+ * show popup after getting data from API
+ */
+var handleGoogleSuccess = function(data, element) {
+    //Dont show popup to user if user has already  
+    //activated or dismissed the offer earlier
+
+    //check response for disallowed domain
+    if(data.isAdvertiser) {
+        $(element).css({'color': 'red'});    
+    }
+    console.log(element);
+    console.log(data);
+
+};
+
+/**
  * handle if error occurs in API call
  */
 var handleError = function(data) {
@@ -88,7 +104,17 @@ var getEmailAddress = function() {
     }, function(response) {
         if (response && response.userEmailAddress) {
             console.log(response);
-            makeRequest(response.userEmailAddress, callbacks);
+            if(window.location.host.includes('google.com')) { //if on google search page
+                callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
+                $('.g h3.r > a').each(function() { //make icon for each valid result 
+                    var domain = $(this).attr('href');
+                    console.log(domain);
+
+                    makeRequest(response.userEmailAddress, callbacks, domain, this); 
+                })
+            } else {
+                makeRequest(response.userEmailAddress, callbacks);        
+            }
         }
     });
 };
@@ -96,8 +122,17 @@ var getEmailAddress = function() {
 /**
  * Send POST request to get
  */
-var makeRequest = function(email, callbacks) {
-    var currentDomain = window.location.host.replace('www.', '')
+var makeRequest = function(email, callbacks, domain, element) {
+    if(domain!==null) {
+        var a = domain.replace('www.', '').replace('http://.', '').replace('https://', '');
+        console.log(a);
+        currentDomain = a.substring(0, a.indexOf('.com') + 4);
+        console.log(currentDomain);
+
+    } else {
+        var currentDomain = window.location.host.replace('www.', '');    
+    }
+
     var apiUrl = "https://shop.complinks.co/api/checkDomain";
 
     $.post(apiUrl, {
@@ -105,10 +140,10 @@ var makeRequest = function(email, callbacks) {
             "userEmail": email
         })
         .done(function(data) {
-            callbacks.success(data);
+            callbacks.success(data, element);
         })
         .fail(function(data) {
-            callbacks.error(data);
+            callbacks.error(data, element);
         });
 }
 
