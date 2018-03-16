@@ -55,15 +55,17 @@ var bindActivateLaterEvent = function() {
 var handleSuccess = function(data) {
     //Dont show popup to user if user has already  
     //activated or dismissed the offer earlier
-    var show = sessionStorage.getItem('ebatesCloneShowPopup');
-    if (show == 'show') {
-        return true;
-    } else {
-        $('body').prepend(buildPopup(data));
-        $(".complinks_popup").show("slow", function() {
-            bindActivateEvent(data);
-            bindActivateLaterEvent();
-        });
+    if(data.isAdvertiser && data.extensionEnabled) {
+        var show = sessionStorage.getItem('ebatesCloneShowPopup');
+        if (show == 'show') {
+            return true;
+        } else {
+            $('body').prepend(buildPopup(data));
+            $(".complinks_popup").show("slow", function() {
+                bindActivateEvent(data);
+                bindActivateLaterEvent();
+            });
+        }
     }
 };
 
@@ -123,7 +125,8 @@ var getEmailAddress = function() {
  * Send POST request to get
  */
 var makeRequest = function(email, callbacks, domain, element) {
-    if(domain!==null) {
+    if(domain!==null && typeof domain !== 'undefined') {
+        console.log(domain);
         var a = domain.replace('www.', '').replace('http://.', '').replace('https://', '');
         console.log(a);
         currentDomain = a.substring(0, a.indexOf('.com') + 4);
