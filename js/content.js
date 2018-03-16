@@ -75,7 +75,7 @@ var handleGoogleSuccess = function(data, element) {
     //activated or dismissed the offer earlier
 
     //check response for disallowed domain
-    if(data.isAdvertiser) {
+    if(data.isAdvertiser && data.extensionEnabled) {
         $(element).css({'color': 'red'});    
     }
     console.log(element);
