@@ -31,3 +31,23 @@ body {
     margin-bottom: 20px;
     text-align: center;
 }
+
+.bg-red {
+	background: #F2590B;
+	border-color: #F2590B;
+}
+
+.bg-red:hover {
+	background-color: #B34208;
+    border-color: #B34208;
+}
+
+.save {
+	background: #1BB1EE;
+	border-color: #1BB1EE;
+}
+
+.save:hover {
+	background-color: #00528E;
+    border-color: #00528E;
+}

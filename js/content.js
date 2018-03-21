@@ -80,8 +80,8 @@ var handleGoogleSuccess = function(data, element) {
     if(data.isAdvertiser && data.extensionEnabled) {
         $(element).css({'color': 'red'});    
     }
-    console.log(element);
-    console.log(data);
+    // console.log(element);
+    // console.log(data);
 
 };
 
@@ -110,7 +110,7 @@ var getEmailAddress = function() {
                 callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
                 $('.g h3.r > a').each(function() { //make icon for each valid result 
                     var domain = $(this).attr('href');
-                    console.log(domain);
+                    // console.log(domain);
 
                     makeRequest(response.userEmailAddress, callbacks, domain, this); 
                 })
@@ -126,9 +126,9 @@ var getEmailAddress = function() {
  */
 var makeRequest = function(email, callbacks, domain, element) {
     if(domain!==null && typeof domain !== 'undefined') {
-        console.log(domain);
+        // console.log(domain);
         var a = domain.replace('www.', '').replace('http://.', '').replace('https://', '');
-        console.log(a);
+        // console.log(a);
         currentDomain = a.substring(0, a.indexOf('.com') + 4);
         console.log(currentDomain);
 
@@ -136,11 +136,10 @@ var makeRequest = function(email, callbacks, domain, element) {
         var currentDomain = window.location.host.replace('www.', '');    
     }
 
-    var apiUrl = "https://shop.complinks.co/api/checkDomain";
+    var apiUrl = "https://shop.complinks.co/api/v1/checkDomain";
 
     $.post(apiUrl, {
-            "domainName": currentDomain,
-            "userEmail": email
+            "domainName": currentDomain
         })
         .done(function(data) {
             callbacks.success(data, element);

@@ -13,6 +13,11 @@
 					<div class="panel panel-primary">
 						<div class="panel-heading">Settings</div>
 						<div class="panel-body">
+							<div class="alert alert-success" id="already-logged-in-alert" hidden>
+								<button type="button" class="close" data-dismiss="alert">x</button>
+								<strong>Success! </strong>
+								Already Logged In as
+							</div>							
 							<div class="alert alert-success" id="success-alert" hidden>
 								<button type="button" class="close" data-dismiss="alert">x</button>
 								<strong>Success! </strong>
@@ -23,18 +28,26 @@
 								<strong>Error! </strong>
 								Please enter valid email
 							</div>
+							<div class="alert alert-danger" id="auth-alert" hidden>
+								<button type="button" class="close" data-dismiss="alert">x</button>
+								<strong>Error! </strong>
+								Not valid login
+							</div>
 							<form class="form-horizontal">
 								<div class="form-group">
 									<label for="user-email-address" class="col-sm-3 control-label">Email Address</label>
 									<div class="col-sm-8">
 										<input type="text" class="form-control" id="user-email-address" placeholder="">
 										<p class="help-block">Please enter your email address</p>
+										<input type="password" class="form-control" id="user-password" placeholder="">
+										<p class="help-block">Please enter your password</p>
 									</div>
 								</div>
 								<div class="form-group">
 									<div class="col-sm-offset-2 col-sm-10 pull-right">
-										<button class="btn btn-default" id="save">Save</button>
-									</div>
+										<button class="btn btn-default save" id="save">Save</button>
+										<button class="btn btn-default bg-red" id="logout">Logout</button>
+									</div>									
 								</div>
 							</form>
 						</div>

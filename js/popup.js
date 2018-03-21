@@ -82,7 +82,7 @@ var showOffer = function(data) {
  */
 var getOffers = function() {
     var currentDomain = '';
-    var apiUrl = "https://shop.complinks.co/api/checkDomain";
+    var apiUrl = "https://shop.complinks.co/api/v1/checkDomain";
     var email = localStorage.getItem('userEmailAddress');
     chrome.tabs.query({
         active: true,
@@ -93,8 +93,7 @@ var getOffers = function() {
         }
         currentDomain = extractHostname(tabs[0].url);
         $.post(apiUrl, {
-                "domainName": currentDomain,
-                "userEmail": email
+                "domainName": currentDomain
             })
             .done(function(data) {
                 showOffer(data);
@@ -155,11 +154,17 @@ var getEvents = function() {
     if (!emailAddress)
         return true;
     $(".loading-icon").show();
-    var apiUrl = "https://shop.complinks.co/api/getNews";
+    var apiUrl = "https://shop.complinks.co/api/v1/getNews";
     $.post(apiUrl, {
             userEmail: emailAddress,
         })
         .done(function(data) {
+            // workaround until api doesn't always return 200
+            if(data['status'] === 'unauthorized') {
+                $(".loading-icon").hide();
+                $('.timeline-events').html(getNewsErrorHtml());    
+                return false;
+            }
             console.log("Events loaded ", data);
             $(".loading-icon").hide();
             if (data) {
