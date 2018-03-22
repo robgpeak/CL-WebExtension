@@ -43,50 +43,7 @@ function saveOptions(e) {
     .done(function(data) {
         // workaround until api doesn't always return 200
         console.log(data);
-        if(data['status'] === 'unauthorized') { //if not logged in, log in
-            $.ajax("https://shop.complinks.co/api/v1/authenticate", {
-                type: "POST",
-                data: {
-                "email": $('#user-email-address').val(),
-                "password": $('#user-password').val()
-                },
-                statusCode: {
-                  200: function (response) {
-                    console.log(response);
-                    if(response['success']) {
-                        email = $("#user-email-address").val();   
-                        saveEmail(email);
-                    } else { //auth unsuccessful
-                        // $("#auth-alert").alert();
-                        // if bad email address alert that, else say bad user/pass
-                        if (!validateEmail('user-email-address', true)) {
-                            // $("#error-alert").alert();
-                            $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
-                                $("#error-alert").slideUp(500);
-                            });
-                            return false;
-                        } else {
-                            $("#auth-alert").fadeTo(2000, 500).slideUp(500, function() {
-                                $("#auth-alert").slideUp(500);
-                            });    
-                        }
-                    }
-                  }//,
-                  // 404: function (response) {
-                  //   $("#auth-alert").alert();
-                  //   if (!validateEmail('user-email-address')) {
-                  //       // $("#error-alert").alert();
-                  //       // $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
-                  //       //     $("#error-alert").slideUp(500);
-                  //       // });
-                  //       return false;
-                  //   }                    
-                  //   return false;
-                  // }
-                }
-            });
-            return false;
-        } else if (data) { //if logged in, save email and say all good
+        if (data) { //if logged in, save email and say all good
             console.log(data);   
             email = $("#user-email-address").val();
             // saveEmail(email); 
@@ -98,8 +55,48 @@ function saveOptions(e) {
         }
     })
     .fail(function() { //something went really wrong
-        // $(".loading-icon").hide();
-        // $('.timeline-events').html(getNewsErrorHtml());
+        $.ajax("https://shop.complinks.co/api/v1/authenticate", {
+            type: "POST",
+            data: {
+            "email": $('#user-email-address').val(),
+            "password": $('#user-password').val()
+            },
+            statusCode: {
+              200: function (response) {
+                console.log(response);
+                if(response['success']) {
+                    email = $("#user-email-address").val();   
+                    saveEmail(email);
+                } else { //auth unsuccessful
+                    // $("#auth-alert").alert();
+                    // if bad email address alert that, else say bad user/pass
+                    if (!validateEmail('user-email-address', true)) {
+                        // $("#error-alert").alert();
+                        $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+                            $("#error-alert").slideUp(500);
+                        });
+                        return false;
+                    } else {
+                        $("#auth-alert").fadeTo(2000, 500).slideUp(500, function() {
+                            $("#auth-alert").slideUp(500);
+                        });    
+                    }
+                }
+              }//,
+              // 404: function (response) {
+              //   $("#auth-alert").alert();
+              //   if (!validateEmail('user-email-address')) {
+              //       // $("#error-alert").alert();
+              //       // $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+              //       //     $("#error-alert").slideUp(500);
+              //       // });
+              //       return false;
+              //   }                    
+              //   return false;
+              // }
+            }
+        });
+        return false;
     });
 }
 
