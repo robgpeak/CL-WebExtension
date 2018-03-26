@@ -12,5 +12,12 @@ chrome.runtime.onMessage.addListener(
             sendResponse({
                 userEmailAddress: email
             });
+        } else if (request.type === "get-domain-cookie") {
+            // chrome.cookies.get({"url" :"apis.google.com","name" : "QTZ"}, function(cookie) {
+                sendResponse({
+                    cookie: document.cookie
+                });
+            // });
         }
+        return true;
     });

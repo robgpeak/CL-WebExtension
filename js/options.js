@@ -35,68 +35,52 @@ var saveEmail = function(email) {
  */
 function saveOptions(e) {
     e.preventDefault();
-    // check if already logged in 
-    var apiUrl = "https://shop.complinks.co/api/v1/getNews";
-    $.post(apiUrl, {
-        userEmail: $('#user-email-address').val(),
-    })
-    .done(function(data) {
-        // workaround until api doesn't always return 200
-        console.log(data);
-        if (data) { //if logged in, save email and say all good
-            console.log(data);   
-            email = $("#user-email-address").val();
-            // saveEmail(email); 
-            $('#already-logged-in-alert').append('<strong>'+email+'</strong>');
-            $("#already-logged-in-alert").alert();
-            $("#already-logged-in-alert").fadeTo(2000, 500).slideUp(500, function() {
-                $("already-logged-in-alert").slideUp(500);
-            });    
-        }
-    })
-    .fail(function() { //something went really wrong
-        $.ajax("https://shop.complinks.co/api/v1/authenticate", {
-            type: "POST",
-            data: {
-            "email": $('#user-email-address').val(),
-            "password": $('#user-password').val()
-            },
-            statusCode: {
-              200: function (response) {
-                console.log(response);
-                if(response['success']) {
-                    email = $("#user-email-address").val();   
-                    saveEmail(email);
-                } else { //auth unsuccessful
-                    // $("#auth-alert").alert();
-                    // if bad email address alert that, else say bad user/pass
-                    if (!validateEmail('user-email-address', true)) {
-                        // $("#error-alert").alert();
-                        $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#error-alert").slideUp(500);
-                        });
-                        return false;
-                    } else {
-                        $("#auth-alert").fadeTo(2000, 500).slideUp(500, function() {
-                            $("#auth-alert").slideUp(500);
-                        });    
-                    }
+    $.ajax("https://shop.complinks.co/api/v1/authenticate", {
+        type: "POST",
+        data: {
+        "email": $('#user-email-address').val(),
+        "password": $('#user-password').val()
+        },
+        statusCode: {
+          200: function (response) {
+            console.log(response);
+            if(response['success']) {
+                $("#auth-alert").hide();
+                $("#error-alert").hide();
+                $("#logout").show();
+                email = $("#user-email-address").val();   
+                saveEmail(email);
+            } else { //auth unsuccessful
+                // $("#auth-alert").alert();
+                // if bad email address alert that, else say bad user/pass
+                if (!validateEmail('user-email-address', true)) {
+                    // $("#error-alert").alert();
+                    $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#error-alert").slideUp(500);
+                    });
+                    return false;
+                } else {
+                    $("#auth-alert").fadeTo(2000, 500).slideUp(500, function() {
+                        $("#auth-alert").slideUp(500);
+                    });    
                 }
-              }//,
-              // 404: function (response) {
-              //   $("#auth-alert").alert();
-              //   if (!validateEmail('user-email-address')) {
-              //       // $("#error-alert").alert();
-              //       // $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
-              //       //     $("#error-alert").slideUp(500);
-              //       // });
-              //       return false;
-              //   }                    
-              //   return false;
-              // }
             }
-        });
-        return false;
+          },
+          400: function (response) {
+            $("#error-alert").show();
+            console.log("auth empty");
+            
+
+            if (!validateEmail('user-email-address')) {
+                // $("#error-alert").alert();
+                // $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+                //     $("#error-alert").slideUp(500);
+                // });
+                return false;
+            }                    
+            return false;
+          }
+        }
     });
 }
 
@@ -110,6 +94,8 @@ function logout(e) {
                 $('#user-email-address').val("");
                 clearPassword();
                 localStorage.setItem('userEmailAddress', '');
+                $("#logout").hide();
+                $("#already-logged-in-alert").hide();
           },
           404: function (response) {}
         }
@@ -122,15 +108,32 @@ function clearPassword() {
 }
 
 function restore_options() {
-    var emailAddress = localStorage.getItem('userEmailAddress');
-    $('#user-email-address').val(emailAddress);
-    // show password placeholder
-    console.log(emailAddress);
-    if(emailAddress !== '' && emailAddress !== null && typeof emailAddress !== 'undefined')
-        $('#user-password').attr('value','••••••••');
+    var apiUrl = "https://shop.complinks.co/api/v1/getNews";
+    $.post(apiUrl, {})
+    .done(function(data) {
+        if(data['status'] === 'unauthorized') {
+            $("#auth-alert").show();
+            $("#logout").hide();
+        } else {
+            $("#already-logged-in-alert").show();
+            $("#auth-alert").hide();
+            var emailAddress = localStorage.getItem('userEmailAddress');
+            $('#user-email-address').val(emailAddress);
+            if(emailAddress !== '' && emailAddress !== null && typeof emailAddress !== 'undefined')
+              $('#user-password').attr('value','••••••••');
+        }
+    })
+    .fail(function(data) { 
+        //
+    });
+    
 }
 document.addEventListener('DOMContentLoaded', restore_options);
-document.getElementById('user-email-address').addEventListener('focusin', clearPassword);
+setInterval(function() {
+    restore_options
+}, 10000);
+
+// document.getElementById('user-email-address').addEventListener('focusin', clearPassword);
 document.getElementById('user-password').addEventListener('focusin', clearPassword);
 document.getElementById('save').addEventListener('click',
     saveOptions);

@@ -1,14 +1,16 @@
+// !function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);
+
 var emailAddress = null;
 
-setTimeout(function() {
-    chrome.browserAction.setIcon({
-        path: {
-            16:    '../img/alt-icon16.png',
-            32:    '../img/alt-icon32.png',
-            128:   '../img/alt-icon128.png'            
-        }
-    });
-}, 5000);
+// setTimeout(function() {
+//     chrome.browserAction.setIcon({
+//         path: {
+//             16:    '../img/alt-icon16.png',
+//             32:    '../img/alt-icon32.png',
+//             128:   '../img/alt-icon128.png'            
+//         }
+//     });
+// }, 5000);
 
 /**
  * check if user has provide the email address 
@@ -20,7 +22,8 @@ var emailExists = function() {
         emailAddress = email;
         return true;
     }
-    $('#no-email-alert').show();
+    //don't need to have email saved to be logged in
+    // $('#no-email-alert').show();
     return false;
 };
 
@@ -97,6 +100,7 @@ var getOffers = function() {
             })
             .done(function(data) {
                 showOffer(data);
+                console.log(data);
             })
             .fail(function(data) {
                 callbacks.error(data);
@@ -151,8 +155,8 @@ var getNewsErrorHtml = function() {
  * Get timeline of user activities
  */
 var getEvents = function() {
-    if (!emailAddress)
-        return true;
+    // if (!emailAddress)
+        // return true;
     $(".loading-icon").show();
     var apiUrl = "https://shop.complinks.co/api/v1/getNews";
     $.post(apiUrl, {
@@ -165,11 +169,11 @@ var getEvents = function() {
                 $('.timeline-events').html(getNewsErrorHtml());    
                 return false;
             }
-            console.log("Events loaded ", data);
+            // console.log("Events loaded ", data);
             $(".loading-icon").hide();
             if (data) {
                 var eventHtml = buildTimelineHtml(data);
-                console.log("eventHtml", eventHtml);
+                // console.log("eventHtml", eventHtml);
                 $('.timeline-events').html(eventHtml);
             }
         })

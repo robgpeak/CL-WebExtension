@@ -4,7 +4,7 @@
  */
 var buildPopup = function(data) {
     var html = '';
-    if (data.isAdvertiser) {
+    if (data.isAdvertiser && data.extensionEnabled) {
 		html += '<div class="complinks_popup">';
 		html += '<div class="complinks_partner_logo">';
 		html += '<img class="complinks_logo" src="https://shop.complinks.co/Images/extension/logo.png" />';
@@ -149,7 +149,20 @@ var makeRequest = function(email, callbacks, domain, element) {
         });
 }
 
+function getDomainCookie() {
+    console.log(document.cookie);
+    // chrome.runtime.sendMessage({
+    //     type: "get-domain-cookie"
+    // }, function(response) {
+    //     console.log(response);
+    // });
+
+
+}
+
 $(function() {
+
+    getDomainCookie();
     getEmailAddress();
     //makeRequest(callbacks);
     chrome.runtime.onMessage.addListener(
