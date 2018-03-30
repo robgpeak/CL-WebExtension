@@ -2,20 +2,23 @@
  * Create html to show popup on bottom of page
  * Please see its css in content.css file
  */
-var buildPopup = function(data) {
+var buildPopup = function(data, userDataResponse) {
+    console.log(data);
+    console.log(userDataResponse);
+    // var partnerStyle = JSON.parse(userDataResponse.partnerStyle);
     var html = '';
     if (data.isAdvertiser && data.extensionEnabled) {
-		html += '<div class="complinks_popup">';
-		html += '<div class="complinks_partner_logo">';
-		html += '<img class="complinks_logo" src="https://shop.complinks.co/Images/extension/logo.png" />';
-		html += '</div>';
-		html += '<div class="complinks_main_content">';
-		html += '<button class="complinks_activate_button">Click here to earn ' + data.reward + '</button>';
-		html += '<p class="complinks_dismiss_container">';
-		html += '<a href="#" class="complinks_dismiss_button">No thanks, maybe next time</a>';
-		html += '</p>';
-		html += '</div>';
-		html += '</div>';
+        html += '<div class="complinks_popup">';
+        html += '<div class="complinks_partner_logo">';
+        html += '<img class="complinks_logo" src="'+userDataResponse.partnerLogo+'" />';
+        html += '</div>';
+        html += '<div class="complinks_main_content">';
+        html += '<button class="complinks_activate_button">Click here to earn ' + data.reward + '</button>';
+        html += '<p class="complinks_dismiss_container">';
+        html += '<a href="#" class="complinks_dismiss_button">No thanks, maybe next time</a>';
+        html += '</p>';
+        html += '</div>';
+        html += '</div>';
     }
     return html;
 };
@@ -52,15 +55,16 @@ var bindActivateLaterEvent = function() {
 /**
  * show popup after getting data from API
  */
-var handleSuccess = function(data) {
+var handleSuccess = function(data, userDataResponse) {
     //Dont show popup to user if user has already  
     //activated or dismissed the offer earlier
+    // console.log(userDataResponse);
     if(data.isAdvertiser && data.extensionEnabled) {
         var show = sessionStorage.getItem('ebatesCloneShowPopup');
         if (show == 'show') {
             return true;
         } else {
-            $('body').prepend(buildPopup(data));
+            $('body').prepend(buildPopup(data, userDataResponse));
             $(".complinks_popup").show("slow", function() {
                 bindActivateEvent(data);
                 bindActivateLaterEvent();
@@ -88,7 +92,7 @@ var handleGoogleSuccess = function(data, element) {
 /**
  * handle if error occurs in API call
  */
-var handleError = function(data) {
+var handleError = function(data, userDataResponse) {
     console.log("API call failed", data);
 };
 
@@ -104,19 +108,21 @@ var getEmailAddress = function() {
     chrome.runtime.sendMessage({
         type: "get-user-email"
     }, function(response) {
-        if (response && response.userEmailAddress) {
-            console.log(response);
+        if (response && response.email) {
+            subdomain = response.partnerSubdomain;
             if(window.location.host.includes('google.com')) { //if on google search page
                 callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
                 $('.g h3.r > a').each(function() { //make icon for each valid result 
                     var domain = $(this).attr('href');
-                    // console.log(domain);
-
-                    makeRequest(response.userEmailAddress, callbacks, domain, this); 
+                    makeRequest(response, callbacks, domain, this); 
                 })
-            } else {
-                makeRequest(response.userEmailAddress, callbacks);        
+            } else { //proceed as normal
+                subdomain = response.partnerSubdomain;
+                console.log(subdomain);
+                makeRequest(response, callbacks);        
             }
+        } else { //logged out, ask for email, look for cookie?
+            console.log(response);
         }
     });
 };
@@ -124,47 +130,42 @@ var getEmailAddress = function() {
 /**
  * Send POST request to get
  */
-var makeRequest = function(email, callbacks, domain, element) {
+var makeRequest = function(userDataResponse, callbacks, domain, element) {
     if(domain!==null && typeof domain !== 'undefined') {
-        // console.log(domain);
         var a = domain.replace('www.', '').replace('http://.', '').replace('https://', '');
-        // console.log(a);
         currentDomain = a.substring(0, a.indexOf('.com') + 4);
         console.log(currentDomain);
-
     } else {
         var currentDomain = window.location.host.replace('www.', '');    
     }
-
-    var apiUrl = "https://shop.complinks.co/api/v1/checkDomain";
-
+    var apiUrl = "https://"+subdomain+".complinks.co/api/v1/checkDomain";
     $.post(apiUrl, {
             "domainName": currentDomain
         })
         .done(function(data) {
-            callbacks.success(data, element);
+            console.log(data);
+            callbacks.success(data, userDataResponse);
         })
         .fail(function(data) {
-            callbacks.error(data, element);
+            console.log(data);
+            callbacks.error(data, userDataResponse);
         });
 }
 
 function getDomainCookie() {
-    console.log(document.cookie);
+    // console.log(document.cookie);
     // chrome.runtime.sendMessage({
     //     type: "get-domain-cookie"
     // }, function(response) {
     //     console.log(response);
     // });
-
-
 }
 
+var subdomain;
 $(function() {
-
     getDomainCookie();
     getEmailAddress();
-    //makeRequest(callbacks);
+    // makeRequest(callbacks);
     chrome.runtime.onMessage.addListener(
         function(request, sender, sendResponse) {
             if (request.type == 'create-activate-tab') {

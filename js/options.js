@@ -35,11 +35,12 @@ var saveEmail = function(email) {
  */
 function saveOptions(e) {
     e.preventDefault();
-    $.ajax("https://shop.complinks.co/api/v1/authenticate", {
+    var apiUrl = "https://shop.complinks.co/api/v1/authenticate";
+    $.ajax(apiUrl, {
         type: "POST",
         data: {
-        "email": $('#user-email-address').val(),
-        "password": $('#user-password').val()
+            "email": $('#user-email-address').val(),
+            "password": $('#user-password').val()
         },
         statusCode: {
           200: function (response) {

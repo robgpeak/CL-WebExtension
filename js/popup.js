@@ -23,8 +23,23 @@ var emailExists = function() {
         return true;
     }
     //don't need to have email saved to be logged in
-    // $('#no-email-alert').show();
-    return false;
+
+    var apiUrl = "https://"+loggedIn[0]+".complinks.co/api/v1/getUserDetail";
+
+    $.post(apiUrl, {})
+    .done(function(data) {
+        console.log(data);
+        return true;//save email from userDetail call
+    })
+    .fail(function(data) {
+        $('#no-email-alert').show();
+        $('.image-2').attr('src','images/icon128.png');
+        $('.navbar-brand-co').html('Complinks Rewards Everywhere');
+        // put default data in popup
+        return false;        
+    });
+
+
 };
 
 /**
@@ -85,7 +100,7 @@ var showOffer = function(data) {
  */
 var getOffers = function() {
     var currentDomain = '';
-    var apiUrl = "https://shop.complinks.co/api/v1/checkDomain";
+    var apiUrl = "https://"+loggedIn[0]+".complinks.co/api/v1/checkDomain";
     var email = localStorage.getItem('userEmailAddress');
     chrome.tabs.query({
         active: true,
@@ -100,7 +115,11 @@ var getOffers = function() {
             })
             .done(function(data) {
                 showOffer(data);
-                console.log(data);
+                // console.log(data.availablePointBal);
+                $('.avail-points').html(data.availablePointBal+' Points');
+                localStorage.setItem('availablePoints', data.availablePointBal);
+
+                // console.log(data);
             })
             .fail(function(data) {
                 callbacks.error(data);
@@ -157,8 +176,9 @@ var getNewsErrorHtml = function() {
 var getEvents = function() {
     // if (!emailAddress)
         // return true;
+    // console.log(loggedIn);
     $(".loading-icon").show();
-    var apiUrl = "https://shop.complinks.co/api/v1/getNews";
+    var apiUrl = "https://"+loggedIn[0]+".complinks.co/api/v1/getNews";
     $.post(apiUrl, {
             userEmail: emailAddress,
         })
@@ -183,9 +203,43 @@ var getEvents = function() {
         });
 };
 
-$(function() {
-    bindEvents();
-    toggleEmailField();
-    getEvents();
-    getOffers();
+var initSubdomain = function() {
+    var domains = ['shop','xclub'];
+    var loggedIn = [];
+    domains.forEach(function(domain) {
+        var apiUrl = "https://"+domain+".complinks.co/api/v1/getUserDetail";
+  
+        $.post(apiUrl, {})
+        .done(function(data) {
+            if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
+                loggedIn.push(data.partnerSubdomain);
+                userDetail.push(data);
+            }
+
+        });
+    });
+    return loggedIn;
+}
+
+var buildTheme = function() {
+    console.log(userDetail[0]);
+    $('.image-2').attr('src',userDetail[0].partnerIcon); //change class in webflow
+    //else { Complinks Rewards Everywhere}   images/icon128.png
+    $('.navbar-brand-co').html(userDetail[0].partnerName);
+
+}
+
+
+var loggedIn;
+var userDetail = [];
+$(document).ready(function() {
+    loggedIn = initSubdomain();
+    setTimeout(function() {
+        console.log(loggedIn);
+        bindEvents();
+        toggleEmailField();
+        buildTheme();
+        getEvents();
+        getOffers();
+    }, 300);
 });

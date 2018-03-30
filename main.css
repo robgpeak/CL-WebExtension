@@ -1,7 +1,33 @@
+.image-2 {
+	padding: 15px 0px 0px 5px !important;
+}
+.well.well-sm {
+	overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#no-email-alert {
+	margin-top: 10px;
+}
+
+
+span.glyphicon.glyphicon-usd {
+    padding: 10px;
+}
+
 body {
 	width:410px; 
 	height:height:100%;
 	/*margin-top:2px;*/
+}
+.btn-primary {
+	background-color: #2CC750;
+	border-color: #2CC750;
+}
+.btn-primary:hover {
+    background-color: #1A992F;
+    border-color: #1A992F;
 }
 .loading-icon{
 	text-align: center;
@@ -28,6 +54,7 @@ body {
 }
 
 .show-offers {
+	margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
 }
