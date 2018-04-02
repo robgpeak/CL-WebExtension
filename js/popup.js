@@ -265,7 +265,7 @@ colors.fullWhite = 'rgba(255, 255, 255, 1)';
 colors.darkWhite = 'rgba(255, 255, 255, 0.87)';
 colors.lightWhite = 'rgba(255, 255, 255, 0.54)';
 
-console.log(colors);
+
 
 var emailAddress = null;
 
@@ -344,9 +344,17 @@ var showOffer = function(data) {
     if (!data.isAdvertiser || data.reward == '') {
         return;
     }
+
+    var lsph = localStorage.getItem('primaryHex');
+    var lsah = localStorage.getItem('accentHex');
+    
+    
+    $('.activate-btn').css({'background-color':lsah});
+    $('.activate-btn').css({'border-color':lsah});
+
     var html = '<div class="row">';
     html += '<div class="col-xs-12">';
-    html += '<buttons class="btn btn-primary activate-btn">Activate ' + data.reward + '</buttons>';
+    html += '<buttons class="btn btn-primary activate-btn" style="background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
     html += '</div></div>';
     $('.show-offers').html(html);
     $('.activate-btn').click(function() {
@@ -414,8 +422,11 @@ var bindEvents = function() {
  */
 var buildTimelineHtml = function(events) {
     var html = '';
+    var lsph = localStorage.getItem('primaryHex');
+    var lsah = localStorage.getItem('accentHex');
+
     if (events.length < 1) {
-        html += '<div class="well well-sm">Nothing to show</div>';
+        html += '<div class="well well-sm" style="background-color: '+lsph+';">Nothing to show</div>';
         return html;
     }
     $.each(events, function(index, value) {
@@ -460,8 +471,9 @@ var getEvents = function() {
             $(".loading-icon").hide();
             if (data) {
                 var eventHtml = buildTimelineHtml(data);
-                // console.log("eventHtml", eventHtml);
                 $('.timeline-events').html(eventHtml);
+                var lsph = localStorage.getItem('primaryHex');
+                $('.well-sm').css({'background-color':lsph});
             }
         })
         .fail(function() {
@@ -496,7 +508,10 @@ var buildTheme = function() {
     var primaryHex = primaryName.concat(partnerStyle.primary.main);
     var accentName = partnerStyle.accent.name.replace('-','').toLowerCase();
     var accentHex = accentName.concat(partnerStyle.accent.main);
-    
+
+    localStorage.setItem('primaryHex', colors[primaryHex]);
+    localStorage.setItem('accentHex', colors[accentHex]);
+
     $('.navbar-header-co').css({'background-color':colors[primaryHex]});
 
     setTimeout(function() {
@@ -509,7 +524,7 @@ var buildTheme = function() {
         },function (){
            $(this).animate({'opacity':'1'}, 100);
         });
-    },200)
+    },500)
     
 
     console.log(colors[primaryHex]);
@@ -524,6 +539,7 @@ var buildTheme = function() {
 var loggedIn;
 var userDetail = [];
 $(document).ready(function() {
+    $('.navbar-header-co').click();
     loggedIn = initSubdomain();
     setTimeout(function() {
         console.log(loggedIn);
