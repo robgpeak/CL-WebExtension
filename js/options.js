@@ -87,6 +87,7 @@ function saveOptions(e) {
 
 function logout(e) {
     e.preventDefault();
+    // find current subdomain before logging out to use correct subdomain
     $.ajax("https://shop.complinks.co/api/v1/logout", {
         type: "GET",
         data: {},
@@ -109,24 +110,23 @@ function clearPassword() {
 }
 
 function restore_options() {
-    var apiUrl = "https://shop.complinks.co/api/v1/getNews";
-    $.post(apiUrl, {})
-    .done(function(data) {
-        if(data['status'] === 'unauthorized') {
-            $("#auth-alert").show();
-            $("#logout").hide();
-        } else {
-            $("#already-logged-in-alert").show();
-            $("#auth-alert").hide();
-            var emailAddress = localStorage.getItem('userEmailAddress');
-            $('#user-email-address').val(emailAddress);
-            if(emailAddress !== '' && emailAddress !== null && typeof emailAddress !== 'undefined')
-              $('#user-password').attr('value','••••••••');
-        }
-    })
-    .fail(function(data) { 
-        //
-    });
+    // var apiUrl = "https://shop.complinks.co/api/v1/getNews";
+    // $.post(apiUrl, {})
+    // .done(function(data) {
+    //     if(data['status'] === 'unauthorized') {
+    //         $("#auth-alert").show();
+    //         $("#logout").hide();
+    //     } else {
+    //         $("#already-logged-in-alert").show();
+    //         $("#auth-alert").hide();
+    //         var emailAddress = localStorage.getItem('userEmailAddress');
+    //         $('#user-email-address').val(emailAddress);
+    //         if(emailAddress !== '' && emailAddress !== null && typeof emailAddress !== 'undefined')
+    //           $('#user-password').attr('value','••••••••');
+    //     }
+    // })
+    // .fail(function(data) { 
+    // });
     
 }
 document.addEventListener('DOMContentLoaded', restore_options);

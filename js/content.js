@@ -3,17 +3,27 @@
  * Please see its css in content.css file
  */
 var buildPopup = function(data, userDataResponse) {
-    console.log(data);
-    console.log(userDataResponse);
-    // var partnerStyle = JSON.parse(userDataResponse.partnerStyle);
+    // console.log(data);
+    console.log(userDataResponse.partnerStyle);
+    var partnerStyle = JSON.parse(userDataResponse.partnerStyle);
+
+    var primaryName = partnerStyle.primary.name.replace('-','').toLowerCase();
+
+    var primaryHex = primaryName.concat(partnerStyle.primary.main);
+    console.log(eval(primaryHex));
+    var accentName = partnerStyle.accent.name.replace('-','').toLowerCase();
+    var accentHex = accentName.concat(partnerStyle.accent.main);
+    console.log(accentHex);
+
+    console.log(eval(accentHex));
     var html = '';
     if (data.isAdvertiser && data.extensionEnabled) {
         html += '<div class="complinks_popup">';
-        html += '<div class="complinks_partner_logo">';
+        html += '<div class="complinks_partner_logo" style="background-color: '+eval(primaryHex)+'; border-color: '+eval(primaryHex)+';">';
         html += '<img class="complinks_logo" src="'+userDataResponse.partnerLogo+'" />';
         html += '</div>';
-        html += '<div class="complinks_main_content">';
-        html += '<button class="complinks_activate_button">Click here to earn ' + data.reward + '</button>';
+        html += '<div class="complinks_main_content" style="border-color: '+eval(primaryHex)+';">';
+        html += '<button class="complinks_activate_button" style="background-color: '+eval(accentHex)+';" >Click here to earn ' + data.reward + '</button>';
         html += '<p class="complinks_dismiss_container">';
         html += '<a href="#" class="complinks_dismiss_button">No thanks, maybe next time</a>';
         html += '</p>';
