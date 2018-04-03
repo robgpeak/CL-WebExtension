@@ -3,18 +3,12 @@
  * Please see its css in content.css file
  */
 var buildPopup = function(data, userDataResponse) {
-    // console.log(data);
-    console.log(userDataResponse.partnerStyle);
     var partnerStyle = JSON.parse(userDataResponse.partnerStyle);
-
     var primaryName = partnerStyle.primary.name.replace('-','').toLowerCase();
-
     var primaryHex = primaryName.concat(partnerStyle.primary.main);
-
     var accentName = partnerStyle.accent.name.replace('-','').toLowerCase();
     var accentHex = accentName.concat(partnerStyle.accent.main);
 
-    console.log(eval(accentHex));
     var html = '';
     if (data.isAdvertiser && data.extensionEnabled) {
         html += '<div class="complinks_popup">';
@@ -68,12 +62,53 @@ var handleSuccess = function(data, userDataResponse) {
     //Dont show popup to user if user has already  
     //activated or dismissed the offer earlier
     // console.log(userDataResponse);
+    // set activated cookie and timestamp, don't show if passed 1 hour
+
+    var date = new Date;
+    var time = date.getTime();
+    var oldStamp = Number(sessionStorage.getItem('cl_activated_stamp'));
+    var diff = Math.abs(time - new Date(oldStamp)); //1 hr = 3600000
+
+    sessionStorage.setItem('cl_activated_stamp', time);
+
     if(data.isAdvertiser && data.extensionEnabled) {
         var show = sessionStorage.getItem('ebatesCloneShowPopup');
-        if (show == 'show') { //check activated and disappear immediately
+        var activated = sessionStorage.getItem('ebatesCloneShowPopupActivated');
+        if (show == 'show' && activated !== 'show') { //1st time activated, make green
+            if(diff < 3600000) { //show activated
+                $('body').prepend(buildPopup(data, userDataResponse));
+                $(".complinks_popup").show("slow", function() {
+                    bindActivateEvent(data);
+                    bindActivateLaterEvent();
+                });    
+                $('.complinks_activate_button').html(data.reward+" Activated!");
+                $(".complinks_activate_button").css({
+                    'background-color': 'green'
+                });       
+                $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
+                    $(".complinks_popup").slideUp(2000);
+                });     
+                sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');                   
+            } else { // timeout, activate again
+                console.log('complinks timeout');
+                $('body').prepend(buildPopup(data, userDataResponse));
+                $(".complinks_popup").show("slow", function() {
+                    bindActivateEvent(data);
+                    bindActivateLaterEvent();
+                });    
+            }
             // show activated flag and check
             // return true;
-        } else {
+        } else if(show == "show" && activated == "show") { 
+            if(diff > 3600000) { //build again
+                console.log('complinks timeout');
+                $('body').prepend(buildPopup(data, userDataResponse));
+                $(".complinks_popup").show("slow", function() {
+                    bindActivateEvent(data);
+                    bindActivateLaterEvent();
+                });  
+            }
+        } else  {
             $('body').prepend(buildPopup(data, userDataResponse));
             $(".complinks_popup").show("slow", function() {
                 bindActivateEvent(data);
@@ -186,7 +221,10 @@ $(function() {
                 sendResponse({
                     type: "activated"
                 });
-
+            } else if (request.type == 'activated?') {
+                sendResponse({
+                    type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
+                })
             }
         });
 });

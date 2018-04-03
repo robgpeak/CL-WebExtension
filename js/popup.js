@@ -88,15 +88,39 @@ var showOffer = function(data) {
     var lsph = localStorage.getItem('primaryHex');
     var lsah = localStorage.getItem('accentHex');
     
-    
-    $('.activate-btn').css({'background-color':lsah});
-    $('.activate-btn').css({'border-color':lsah});
+
+
 
     var html = '<div class="row">';
     html += '<div class="col-xs-12">';
     html += '<buttons class="btn btn-primary activate-btn" style="background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
     html += '</div></div>';
-    $('.show-offers').html(html);
+
+
+    
+
+
+    chrome.tabs.query({
+        active: true,
+        currentWindow: true
+    }, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+            type: "activated?"
+        }, function(response) {
+            console.log(response);
+            if(response.type=="show") {
+                html = "";
+                html = '<div class="row">';
+                html += '<div class="col-xs-12">';
+                html += '<buttons class="btn btn-primary activate-btn" style="background-color:green; border-color: green;">' + data.reward + ' Activated!</buttons>';
+                html += '</div></div>';
+            }
+            $('.show-offers').html(html);
+        });
+    });
+
+    
+
     $('.activate-btn').click(function() {
         chrome.tabs.query({
             active: true,
@@ -133,6 +157,23 @@ var getOffers = function() {
                     showOffer(data);
                     $('.avail-points').html(data.availablePointBal+' Points');
                     localStorage.setItem('availablePoints', data.availablePointBal);
+                    
+                    chrome.tabs.query({
+                        active: true,
+                        currentWindow: true
+                    }, function(tabs) {
+                        chrome.tabs.sendMessage(tabs[0].id, {
+                            type: "activated?"
+                        }, function(response) {
+                            console.log(response);
+                            if(response.type=="show") {
+                                $('.activate-btn').css({
+                                    'background-color': 'green !important',
+                                    'border-color': 'green !important'
+                                });       
+                            }
+                        });
+                    });            
                 })
                 .fail(function(data) {
                     callbacks.error(data);
@@ -260,17 +301,29 @@ var buildTheme = function() {
 
         $('.navbar-header-co').css({'background-color':colors[primaryHex]});
 
-        setTimeout(function() {
-            $('.well-sm').css({'background-color':colors[primaryHex]});
-            $('.activate-btn').css({'background-color':colors[accentHex]});
-            $('.activate-btn').css({'border-color':colors[accentHex]});
-
-            $(".activate-btn").hover(function () {
-               $(this).animate({'opacity':'0.7'}, 100);
-            },function (){
-               $(this).animate({'opacity':'1'}, 100);
+        $('.well-sm').css({'background-color':colors[primaryHex]});
+        
+        chrome.tabs.query({
+            active: true,
+            currentWindow: true
+        }, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+                type: "activated?"
+            }, function(response) {
+                console.log(response.type != "show");
+                if(response.type !== "show") {
+                    $('.activate-btn').css({'background-color':colors[accentHex]});
+                    $('.activate-btn').css({'border-color':colors[accentHex]});      
+                }
             });
-        },500);
+        });  
+
+
+        $(".activate-btn").hover(function () {
+           $(this).animate({'opacity':'0.7'}, 100);
+        },function (){
+           $(this).animate({'opacity':'1'}, 100);
+        });
         
         // console.log(colors[primaryHex]);
         $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
@@ -284,24 +337,30 @@ var buildTheme = function() {
 var loggedIn;
 var userDetail = [];
 var recentSubdomain;
+
+
 $(document).ready(function() {
     $('.navbar-header-co').click();
     loggedIn = initSubdomain();
     setTimeout(function() {
-        var latestLogin = Math.max.apply(Math,userDetail.map(function(u){
-            var ainxs = u.lastLogin.indexOf("(");
-            var ainxe = u.lastLogin.indexOf(")");
-            var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
-            suba = Number(suba);            
-            return suba;
-        }));
-        
-        recentSubdomain = userDetail.find(function(u) {
-           console.log(typeof u.lastLogin);
-           return u.lastLogin.includes(latestLogin); 
-        });
+        try {
+            var latestLogin = Math.max.apply(Math,userDetail.map(function(u){
+                var ainxs = u.lastLogin.indexOf("(");
+                var ainxe = u.lastLogin.indexOf(")");
+                var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
+                suba = Number(suba);            
+                return suba;
+            }));
+            
+            recentSubdomain = userDetail.find(function(u) {
+               console.log(typeof u.lastLogin);
+               return u.lastLogin.includes(latestLogin); 
+            });
 
-        console.log(recentSubdomain);
+            console.log(recentSubdomain);
+        } catch(ex) {
+
+        }
         bindEvents();
         toggleEmailField();
         getEvents();

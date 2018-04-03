@@ -21,6 +21,10 @@ body {
 	height:height:100%;
 	/*margin-top:2px;*/
 }
+.activate-btn {
+	border-radius: 0px !important;
+	box-shadow: 0 0 25px 3px #999;
+}
 .btn-primary {
 	background-color: #2CC750;
 	border-color: #2CC750;
