@@ -10,10 +10,9 @@ var buildPopup = function(data, userDataResponse) {
     var primaryName = partnerStyle.primary.name.replace('-','').toLowerCase();
 
     var primaryHex = primaryName.concat(partnerStyle.primary.main);
-    console.log(eval(primaryHex));
+
     var accentName = partnerStyle.accent.name.replace('-','').toLowerCase();
     var accentHex = accentName.concat(partnerStyle.accent.main);
-    console.log(accentHex);
 
     console.log(eval(accentHex));
     var html = '';
@@ -25,7 +24,7 @@ var buildPopup = function(data, userDataResponse) {
         html += '<div class="complinks_main_content" style="border-color: '+eval(primaryHex)+';">';
         html += '<button class="complinks_activate_button" style="background-color: '+eval(accentHex)+';" >Click here to earn ' + data.reward + '</button>';
         html += '<p class="complinks_dismiss_container">';
-        html += '<a href="#" class="complinks_dismiss_button">No thanks, maybe next time</a>';
+        html += '<a href="#" class="complinks_dismiss_button">x</a>';
         html += '</p>';
         html += '</div>';
         html += '</div>';
@@ -71,8 +70,9 @@ var handleSuccess = function(data, userDataResponse) {
     // console.log(userDataResponse);
     if(data.isAdvertiser && data.extensionEnabled) {
         var show = sessionStorage.getItem('ebatesCloneShowPopup');
-        if (show == 'show') {
-            return true;
+        if (show == 'show') { //check activated and disappear immediately
+            // show activated flag and check
+            // return true;
         } else {
             $('body').prepend(buildPopup(data, userDataResponse));
             $(".complinks_popup").show("slow", function() {

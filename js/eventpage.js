@@ -9,25 +9,44 @@ chrome.runtime.onMessage.addListener(
             "from the extension");
         if (request.type == "get-user-email"){
         	var email = localStorage.getItem('userEmailAddress');
-
-            //ajax to getUserDetail
             var domains = ['shop','xclub'];
             var loggedIn = [];
+            var userDetail = [];
             domains.forEach(function(domain) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST','https://'+domain+'.complinks.co/api/v1/getUserDetail');
 
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4 && JSON.parse(xhr.response).status !== 'unauthorized' ) {
-                        console.log(JSON.parse(xhr.response).partnerSubdomain);
-                        sessionStorage.setItem('subdomain', JSON.parse(xhr.response).partnerSubdomain);
-                        sendResponse(JSON.parse(xhr.response))
+                        // console.log(JSON.parse(xhr.response).partnerSubdomain);
+                        // sessionStorage.setItem('subdomain', JSON.parse(xhr.response).partnerSubdomain);
+                        console.log(JSON.parse(xhr.response));
+                        loggedIn.push(JSON.parse(xhr.response).partnerSubdomain);
+                        userDetail.push(JSON.parse(xhr.response));
+                        
                     } else {
                         // sendResponse({error: 'loggedOut'});
                     }
                 }            
                 xhr.send();
             });
+            setTimeout(function() {
+                var latestLogin = Math.max.apply(Math,userDetail.map(function(u){
+                    var ainxs = u.lastLogin.indexOf("(");
+                    var ainxe = u.lastLogin.indexOf(")");
+                    var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
+                    suba = Number(suba);            
+                    return suba;    
+                }));
+                console.log(latestLogin);
+                recentSubdomain = userDetail.find(function(u) {
+                   return u.lastLogin.includes(latestLogin); 
+                });
+                console.log(recentSubdomain);
+
+                sendResponse(recentSubdomain);
+            }, 700);
+            
         } else if (request.type === "get-domain-cookie") {
             // chrome.cookies.get({"url" :"apis.google.com","name" : "QTZ"}, function(cookie) {
                 sendResponse({

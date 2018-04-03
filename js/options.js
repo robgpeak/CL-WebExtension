@@ -23,11 +23,16 @@ var validateEmail = function(id, errorOnly = false) {
 var saveEmail = function(email) {
     localStorage.setItem('userEmailAddress', email);
     emailAddress = email;
-    $("#success-alert").alert();
-    $("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
-        $("#success-alert").slideUp(500);
-    });
-    return true;
+    try {
+        $("#success-alert").append("to <strong>"+recentSubdomain.partnerName+"</strong>")
+        $("#success-alert").alert();
+        $("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
+            $("#success-alert").slideUp(500);
+        });
+        return true;
+    } catch (ex) {
+
+    }
 }
 
 /**
@@ -35,74 +40,103 @@ var saveEmail = function(email) {
  */
 function saveOptions(e) {
     e.preventDefault();
-    var apiUrl = "https://shop.complinks.co/api/v1/authenticate";
-    $.ajax(apiUrl, {
-        type: "POST",
-        data: {
-            "email": $('#user-email-address').val(),
-            "password": $('#user-password').val()
-        },
-        statusCode: {
-          200: function (response) {
-            console.log(response);
-            if(response['success']) {
-                $("#auth-alert").hide();
-                $("#error-alert").hide();
-                $("#logout").show();
-                email = $("#user-email-address").val();   
-                saveEmail(email);
-            } else { //auth unsuccessful
-                // $("#auth-alert").alert();
-                // if bad email address alert that, else say bad user/pass
-                if (!validateEmail('user-email-address', true)) {
-                    // $("#error-alert").alert();
-                    $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#error-alert").slideUp(500);
-                    });
-                    return false;
-                } else {
-                    $("#auth-alert").fadeTo(2000, 500).slideUp(500, function() {
-                        $("#auth-alert").slideUp(500);
-                    });    
-                }
-            }
-          },
-          400: function (response) {
-            $("#error-alert").show();
-            console.log("auth empty");
-            
+    domains.forEach(function(domain) {
+        try {
+            var apiUrl = "https://"+domain+".complinks.co/api/v1/authenticate";
+            $.ajax(apiUrl, {
+                type: "POST",
+                data: {
+                    "email": $('#user-email-address').val(),
+                    "password": $('#user-password').val()
+                },
+                statusCode: {
+                  200: function (response) {
+                    if(response['success']) {
+                        console.log(domain);
+                        var apiUrl = "https://"+domain+".complinks.co/api/v1/getUserDetail";
+                        $.post(apiUrl, {})
+                        .done(function(data) {
+                            email = $("#user-email-address").val();   
+                            saveEmail(email);
+                            recentSubdomain = data;
+                            console.log(data);
+                            if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
+                                $("#success-alert").append("to <strong>"+recentSubdomain.partnerName+"</strong>")
+                                $("#success-alert").alert();
+                                $("#success-alert").fadeTo(2000, 500).slideUp(500, function() {
+                                    $("#success-alert").slideUp(500);
+                                });                                
+                                $("#logout").show();
+                                $("#auth-alert").hide();
+                                $("#error-alert").hide();
+                                loggedIn.push(data.partnerSubdomain);
+                                setTimeout(function() {
+                                    // location.reload();
+                                }, 500);
+                            } else {
+                                $("#logout").hide();
+                            }
+                        });
 
-            if (!validateEmail('user-email-address')) {
-                // $("#error-alert").alert();
-                // $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
-                //     $("#error-alert").slideUp(500);
-                // });
-                return false;
-            }                    
-            return false;
-          }
+                        return true;
+                    } else { //auth unsuccessful
+                        // $("#auth-alert").alert();
+                        // if bad email address alert that, else say bad user/pass
+                        if (!validateEmail('user-email-address', true)) {
+                            // $("#error-alert").alert();
+                            $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+                                $("#error-alert").slideUp(500);
+                            });
+                            return false;
+                        } else {
+                            $("#auth-alert").fadeTo(2000, 500).slideUp(500, function() {
+                                $("#auth-alert").slideUp(500);
+                            });    
+                        }
+                    }
+                  },
+                  400: function (response) {
+                    // $("#error-alert").show();             
+                    // if (!validateEmail('user-email-address')) {
+                        // $("#error-alert").alert();
+                        // $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+                        //     $("#error-alert").slideUp(500);
+                        // });
+                        // return false;
+                    // }                    
+                    // return false;
+                  }
+                }
+            });
+        } catch (ex) {
+
         }
     });
+
 }
 
 function logout(e) {
     e.preventDefault();
     // find current subdomain before logging out to use correct subdomain
-    $.ajax("https://shop.complinks.co/api/v1/logout", {
-        type: "GET",
-        data: {},
-        statusCode: {
-          200: function (response) {
-                $('#user-email-address').val("");
-                clearPassword();
-                localStorage.setItem('userEmailAddress', '');
-                $("#logout").hide();
-                $("#already-logged-in-alert").hide();
-          },
-          404: function (response) {}
-        }
+    loggedIn.forEach(function(login) {
+        $.ajax("https://"+login+".complinks.co/api/v1/logout", {
+            type: "GET",
+            data: {},
+            statusCode: {
+              200: function (response) {
+                    $('#user-email-address').val("");
+                    clearPassword();
+                    localStorage.setItem('userEmailAddress', '');
+                    $("#logout").hide();
+                    $("#already-logged-in-alert").hide();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 500);
+              },
+              404: function (response) {}
+            }
+        });
     });
-
 }
 
 function clearPassword() {
@@ -110,33 +144,74 @@ function clearPassword() {
 }
 
 function restore_options() {
-    // var apiUrl = "https://shop.complinks.co/api/v1/getNews";
-    // $.post(apiUrl, {})
-    // .done(function(data) {
-    //     if(data['status'] === 'unauthorized') {
-    //         $("#auth-alert").show();
-    //         $("#logout").hide();
-    //     } else {
-    //         $("#already-logged-in-alert").show();
-    //         $("#auth-alert").hide();
-    //         var emailAddress = localStorage.getItem('userEmailAddress');
-    //         $('#user-email-address').val(emailAddress);
-    //         if(emailAddress !== '' && emailAddress !== null && typeof emailAddress !== 'undefined')
-    //           $('#user-password').attr('value','••••••••');
-    //     }
-    // })
-    // .fail(function(data) { 
-    // });
-    
+    console.log(loggedIn);
+    loggedIn.forEach(function(login) {
+        console.log(login);
+        var apiUrl = "https://"+login+".complinks.co/api/v1/getUserDetail";
+        $.post(apiUrl, {})
+        .done(function(data) {
+            if(data['status'] === 'unauthorized') {
+                $("#auth-alert").show();
+                $("#logout").hide();
+            } else {
+                console.log(data);
+                $("#already-logged-in-alert").append("to <strong>"+data.partnerName+"</strong>")
+                $("#already-logged-in-alert").show();
+                $("#auth-alert").hide();
+                var emailAddress = localStorage.getItem('userEmailAddress');
+                $('#user-email-address').val(emailAddress);
+                if(emailAddress !== '' && emailAddress !== null && typeof emailAddress !== 'undefined')
+                  $('#user-password').attr('value','••••••••');
+            }
+        })
+        .fail(function(data) { 
+            $("#auth-alert").show();
+            $("#logout").hide();
+        });   
+    })
 }
-document.addEventListener('DOMContentLoaded', restore_options);
-setInterval(function() {
-    restore_options
-}, 10000);
+$("#logout").hide();
+var domains = ['shop','xclub'];
+var loggedIn = [];
+var userDetail = [];
+var recentSubdomain;
+domains.forEach(function(domain) {
+    var apiUrl = "https://"+domain+".complinks.co/api/v1/getUserDetail";
+    $.post(apiUrl, {})
+    .done(function(data) {
+        if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
+            $("#logout").show();
+            userDetail.push(data);
+            loggedIn.push(data.partnerSubdomain);
+        } else {
+        }
+    });
+});
 
+setTimeout(function() {
+    try {
+        var latestLogin = Math.max.apply(Math,userDetail.map(function(u){
+            var ainxs = u.lastLogin.indexOf("(");
+            var ainxe = u.lastLogin.indexOf(")");
+            var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
+            suba = Number(suba);            
+            return suba;
+        }));
+        console.log(userDetail);
+        console.log(latestLogin);
+        recentSubdomain = userDetail.find(function(u) {
+           return u.lastLogin.includes(latestLogin); 
+        });
+
+        var tmp = [];
+        tmp.push(recentSubdomain.partnerSubdomain);
+        loggedIn = tmp;
+        restore_options();
+    } catch (ex) {
+
+    }
+}, 1000);
 // document.getElementById('user-email-address').addEventListener('focusin', clearPassword);
 document.getElementById('user-password').addEventListener('focusin', clearPassword);
-document.getElementById('save').addEventListener('click',
-    saveOptions);
-document.getElementById('logout').addEventListener('click',
-    logout);
+document.getElementById('save').addEventListener('click', saveOptions);
+document.getElementById('logout').addEventListener('click', logout);
