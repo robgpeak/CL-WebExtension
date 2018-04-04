@@ -84,21 +84,41 @@ var showOffer = function(data) {
     if (!data.isAdvertiser || data.reward == '') {
         return;
     }
-
     var lsph = localStorage.getItem('primaryHex');
     var lsah = localStorage.getItem('accentHex');
-    
-
-
 
     var html = '<div class="row">';
     html += '<div class="col-xs-12">';
     html += '<buttons class="btn btn-primary activate-btn" style="background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
     html += '</div></div>';
 
-
-    
-
+    $(document).on('click','.activate-btn',function() {
+        console.log('activate-btn clicked');
+        chrome.tabs.query({
+            active: true,
+            currentWindow: true
+        }, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+                type: "create-activate-tab",
+                url: data.clickUrl
+            }, function(response) {
+                console.log(response);
+                chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                }, function(tabs) {
+                    if(response.type=="activated") {
+                        var html = "";
+                        html = '<div class="row">';
+                        html += '<div class="col-xs-12">';
+                        html += '<buttons class="btn btn-primary activate-btn" style="background-color:green; border-color: green;">' + data.reward + ' Activated!</buttons>';
+                        html += '</div></div>';
+                        $('.show-offers').html(html);
+                    }
+                });
+            });
+        });
+    });
 
     chrome.tabs.query({
         active: true,
@@ -107,7 +127,6 @@ var showOffer = function(data) {
         chrome.tabs.sendMessage(tabs[0].id, {
             type: "activated?"
         }, function(response) {
-            console.log(response);
             if(response.type=="show") {
                 html = "";
                 html = '<div class="row">';
@@ -116,20 +135,6 @@ var showOffer = function(data) {
                 html += '</div></div>';
             }
             $('.show-offers').html(html);
-        });
-    });
-
-    
-
-    $('.activate-btn').click(function() {
-        chrome.tabs.query({
-            active: true,
-            currentWindow: true
-        }, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {
-                type: "create-activate-tab",
-                url: data.clickUrl
-            }, function(response) {});
         });
     });
 };
@@ -165,7 +170,6 @@ var getOffers = function() {
                         chrome.tabs.sendMessage(tabs[0].id, {
                             type: "activated?"
                         }, function(response) {
-                            console.log(response);
                             if(response.type=="show") {
                                 $('.activate-btn').css({
                                     'background-color': 'green !important',
@@ -310,8 +314,8 @@ var buildTheme = function() {
             chrome.tabs.sendMessage(tabs[0].id, {
                 type: "activated?"
             }, function(response) {
-                console.log(response.type != "show");
-                if(response.type !== "show") {
+                console.log(response);
+                if(response.type !== "show" && response.type !== null) {
                     $('.activate-btn').css({'background-color':colors[accentHex]});
                     $('.activate-btn').css({'border-color':colors[accentHex]});      
                 }

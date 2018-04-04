@@ -19,11 +19,11 @@ span.glyphicon.glyphicon-usd {
 body {
 	width:410px; 
 	height:height:100%;
-	/*margin-top:2px;*/
+	font-family: Roboto,"Helvetica Neue", Arial, sans-serif;
 }
 .activate-btn {
 	border-radius: 0px !important;
-	box-shadow: 0 0 25px 3px #999;
+	box-shadow: -1px 3px 1px -10px rgba(0,0,0,0.5), -1px 3px 4px -1px rgba(0,0,0,0.5);
 }
 .btn-primary {
 	background-color: #2CC750;

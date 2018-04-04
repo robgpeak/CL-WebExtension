@@ -18,7 +18,7 @@ var buildPopup = function(data, userDataResponse) {
         html += '<div class="complinks_main_content" style="border-color: '+eval(primaryHex)+';">';
         html += '<button class="complinks_activate_button" style="background-color: '+eval(accentHex)+';" >Click here to earn ' + data.reward + '</button>';
         html += '<p class="complinks_dismiss_container">';
-        html += '<a href="#" class="complinks_dismiss_button">x</a>';
+        html += '<a href="#" class="complinks_dismiss_button">×</a>';
         html += '</p>';
         html += '</div>';
         html += '</div>';
@@ -26,6 +26,10 @@ var buildPopup = function(data, userDataResponse) {
     return html;
 };
 
+$(document).on('click','.complinks_dismiss_button',function(e) {
+    sessionStorage.setItem('ebatesCloneShowPopup', 'show'); 
+    sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show'); 
+})
 /**
  * Handle activate button click
  */
@@ -74,22 +78,32 @@ var handleSuccess = function(data, userDataResponse) {
     if(data.isAdvertiser && data.extensionEnabled) {
         var show = sessionStorage.getItem('ebatesCloneShowPopup');
         var activated = sessionStorage.getItem('ebatesCloneShowPopupActivated');
-        if (show == 'show' && activated !== 'show') { //1st time activated, make green
-            if(diff < 3600000) { //show activated
-                $('body').prepend(buildPopup(data, userDataResponse));
-                $(".complinks_popup").show("slow", function() {
-                    bindActivateEvent(data);
-                    bindActivateLaterEvent();
-                });    
-                $('.complinks_activate_button').html(data.reward+" Activated!");
-                $(".complinks_activate_button").css({
-                    'background-color': 'green'
-                });       
-                $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
-                    $(".complinks_popup").slideUp(2000);
-                });     
-                sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');                   
+        var dismissed = sessionStorage.getItem('ebatesCloneShowPopupDismissed', 'show'); 
+
+        if (show == 'show' && activated !== 'show') { //1st time activated and not dismissed, make green
+            if(diff < 3600000) { //show activated if not x'ed
+                if(dismissed !== 'show') {
+                    console.log('1');
+                    $('body').prepend(buildPopup(data, userDataResponse));
+                    $(".complinks_popup").show("slow", function() {
+                        bindActivateEvent(data);
+                        bindActivateLaterEvent();
+                    });    
+                    $('.complinks_activate_button').html(data.reward+" Activated!");
+                    $(".complinks_activate_button").css({
+                        'background-color': 'green'
+                    });       
+                    $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
+                        $(".complinks_popup").slideUp(2000);
+                    }); 
+                    if(dismissed !== 'show') {    
+                        sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');
+                    }
+                } else {
+                    console.log('less than 1 hr and x\'ed out');
+                }
             } else { // timeout, activate again
+                console.log('2');
                 console.log('complinks timeout');
                 $('body').prepend(buildPopup(data, userDataResponse));
                 $(".complinks_popup").show("slow", function() {
@@ -101,6 +115,7 @@ var handleSuccess = function(data, userDataResponse) {
             // return true;
         } else if(show == "show" && activated == "show") { 
             if(diff > 3600000) { //build again
+                console.log('3');
                 console.log('complinks timeout');
                 $('body').prepend(buildPopup(data, userDataResponse));
                 $(".complinks_popup").show("slow", function() {
@@ -108,7 +123,10 @@ var handleSuccess = function(data, userDataResponse) {
                     bindActivateLaterEvent();
                 });  
             }
-        } else  {
+        } else if(dismissed === "show") {
+            console.log('4');
+        } else {
+            console.log('5');
             $('body').prepend(buildPopup(data, userDataResponse));
             $(".complinks_popup").show("slow", function() {
                 bindActivateEvent(data);
@@ -214,6 +232,7 @@ $(function() {
     chrome.runtime.onMessage.addListener(
         function(request, sender, sendResponse) {
             if (request.type == 'create-activate-tab') {
+                console.log(request);
                 sessionStorage.setItem('ebatesCloneShowPopup', 'show');
                 if (request && request.url) {
                     window.location.href = request.url;
