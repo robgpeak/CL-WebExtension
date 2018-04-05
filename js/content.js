@@ -38,6 +38,9 @@ var bindActivateEvent = function(data) {
         // we will use this session variable to 
         // check either to show the popup on page refresh
         // or not
+        $(".complinks_activate_button").css({
+            'background-color': 'green'
+        });         
         sessionStorage.setItem('ebatesCloneShowPopup', 'show');
         if (data && data.clickUrl) {
             window.location.href = data.clickUrl;
