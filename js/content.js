@@ -142,13 +142,16 @@ var handleSuccess = function(data, userDataResponse) {
 /**
  * show popup after getting data from API
  */
-var handleGoogleSuccess = function(data, element) {
+var handleGoogleSuccess = function(data, userData, element) {
     //Dont show popup to user if user has already  
     //activated or dismissed the offer earlier
 
     //check response for disallowed domain
     if(data.isAdvertiser && data.extensionEnabled) {
-        $(element).css({'color': 'red'});    
+        console.log(data);
+        console.log(userData);
+        $(element).before("<div style=\"margin-bottom: -30px;\"><img class=\"searchResultDeal\" style=\"width: 200px; display: inline-block; margin-bottom:-5px;\" src=\""+userData.searchResultLogoUrl+"\"></img>"+"<a class=\"btn btn-primary activate-btn\" href=\""+data.clickUrl+"\"style=\"margin-bottom: 35px !important; margin-left: 15px; padding: 10px 15px; background-color:#FF3D02; border-color: #FF3D02; border-radius: 0px !important; border-width: 2px; color: #ffffff; display: inline-block; margin-bottom: 0; font-weight: normal; text-align: center; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; border: 1px solid transparent; white-space: nowrap; padding: 10px 15px; font-size: 15px; line-height: 1.42857143;\">Earn " + data.reward + "</a></div>");
+        //send message to background -> activate cookies after redirect.
     }
     // console.log(element);
     // console.log(data);
@@ -209,11 +212,11 @@ var makeRequest = function(userDataResponse, callbacks, domain, element) {
             "domainName": currentDomain
         })
         .done(function(data) {
-            console.log(data);
-            callbacks.success(data, userDataResponse);
+            // console.log(data);
+            callbacks.success(data, userDataResponse, element);
         })
         .fail(function(data) {
-            console.log(data);
+            // console.log(data);
             callbacks.error(data, userDataResponse);
         });
 }
