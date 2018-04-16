@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener(
         console.log(sender.tab ?
             "from a content script:" + sender.tab.url :
             "from the extension");
-        if (request.type == "get-user-email"){
+        if (request.type == "get-user-email") {
         	var email = localStorage.getItem('userEmailAddress');
             var domains = ['shop','xclub'];
             var loggedIn = [];
@@ -53,6 +53,19 @@ chrome.runtime.onMessage.addListener(
                     cookie: document.cookie
                 });
             // });
+        } else if (request.type === "set-activated-from-google") {
+            setTimeout(function() {
+                chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                }, function(tabs) {
+                    chrome.tabs.sendMessage(tabs[0].id, {
+                        type: "set-activated-from-bg"
+                    }, function(response) {
+                        
+                    });
+                });                
+            }, 3000);
         }
         return true;
     });

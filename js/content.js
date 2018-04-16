@@ -81,7 +81,7 @@ var handleSuccess = function(data, userDataResponse) {
     if(data.isAdvertiser && data.extensionEnabled) {
         var show = sessionStorage.getItem('ebatesCloneShowPopup');
         var activated = sessionStorage.getItem('ebatesCloneShowPopupActivated');
-        var dismissed = sessionStorage.getItem('ebatesCloneShowPopupDismissed', 'show'); 
+        var dismissed = sessionStorage.getItem('ebatesCloneShowPopupDismissed'); 
 
         if (show == 'show' && activated !== 'show') { //1st time activated and not dismissed, make green
             if(diff < 3600000) { //show activated if not x'ed
@@ -150,13 +150,21 @@ var handleGoogleSuccess = function(data, userData, element) {
     if(data.isAdvertiser && data.extensionEnabled) {
         console.log(data);
         console.log(userData);
-        $(element).before("<div style=\"margin-bottom: 0px;\"><img class=\"searchResultDeal\" style=\"height: 25px; display: inline-block; margin-bottom:-5px;\" src=\""+userData.searchResultLogoUrl+"\"></img>"+"<a class=\"btn btn-primary activate-btn\" href=\""+data.clickUrl+"\"style=\"margin-bottom: 5px !important; margin-left: 15px; padding: 10px 15px; background-color:#FF3D02; border-color: #FF3D02; border-radius: 0px !important; border-width: 2px; color: #ffffff; display: inline-block; margin-bottom: 0; font-weight: normal; text-align: center; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap; padding: 10px 15px; font-size: 12px; line-height: 1;\">Activate " + data.reward + "</a></div>");
-        //send message to background -> activate cookies after redirect.
+        $(element).before("<div style=\"margin-bottom: 0px;\"><img class=\"searchResultDeal\" style=\"height: 25px; display: inline-block; margin-bottom:-5px;\" src=\""+userData.searchResultLogoUrl+"\"></img>"+"<a class=\"btn btn-primary activate-btn google-activate\" href=\""+data.clickUrl+"\"style=\"margin-bottom: 5px !important; margin-left: 15px; padding: 10px 15px; background-color:#FF3D02; border-color: #FF3D02; border-radius: 0px !important; border-width: 2px; color: #ffffff; display: inline-block; margin-bottom: 0; font-weight: normal; text-align: center; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap; padding: 10px 15px; font-size: 12px; line-height: 1;\">Activate " + data.reward + "</a></div>");
+        //send message to background -> activate cookies after redirect.  
     }
     // console.log(element);
     // console.log(data);
 
 };
+
+$(document).on('click', function() {
+    chrome.runtime.sendMessage({
+        type: "set-activated-from-google"
+    }, function(response) {
+        //catch elsewhere
+    });          
+});
 
 /**
  * handle if error occurs in API call
@@ -250,6 +258,21 @@ $(function() {
                 sendResponse({
                     type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
                 })
+            } else if (request.type == 'set-activated-from-bg') {
+                var date = new Date;                
+                var time = date.getTime();           
+                sessionStorage.setItem('cl_activated_stamp', time); 
+                setTimeout(function() {
+                    $('.complinks_activate_button').html("Activated!");    
+                    $(".complinks_activate_button").css({
+                        'background-color': 'green'
+                    });       
+                    $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
+                        $(".complinks_popup").slideUp(2000);
+                    }); 
+                    sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
+                    sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
+                }, 1000);
             }
         });
 });
