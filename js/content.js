@@ -158,13 +158,13 @@ var handleGoogleSuccess = function(data, userData, element) {
 
 };
 
-$(document).on('click', function() {
-    chrome.runtime.sendMessage({
-        type: "set-activated-from-google"
-    }, function(response) {
-        //catch elsewhere
-    });          
-});
+// $(document).on('click', function() {
+//     chrome.runtime.sendMessage({
+//         type: "set-activated-from-google"
+//     }, function(response) {
+//         //catch elsewhere
+//     });          
+// });
 
 /**
  * handle if error occurs in API call
@@ -259,20 +259,20 @@ $(function() {
                     type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
                 })
             } else if (request.type == 'set-activated-from-bg') {
-                var date = new Date;                
-                var time = date.getTime();           
-                sessionStorage.setItem('cl_activated_stamp', time); 
-                setTimeout(function() {
-                    $('.complinks_activate_button').html("Activated!");    
-                    $(".complinks_activate_button").css({
-                        'background-color': 'green'
-                    });       
-                    $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
-                        $(".complinks_popup").slideUp(2000);
-                    }); 
-                    sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
-                    sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
-                }, 1000);
+                // var date = new Date;                
+                // var time = date.getTime();           
+                // sessionStorage.setItem('cl_activated_stamp', time); 
+                // setTimeout(function() {
+                //     $('.complinks_activate_button').html("Activated!");    
+                //     $(".complinks_activate_button").css({
+                //         'background-color': 'green'
+                //     });       
+                //     $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
+                //         $(".complinks_popup").slideUp(2000);
+                //     }); 
+                //     sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
+                //     sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
+                // }, 1000);
             }
         });
 });

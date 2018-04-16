@@ -54,18 +54,18 @@ chrome.runtime.onMessage.addListener(
                 });
             // });
         } else if (request.type === "set-activated-from-google") {
-            setTimeout(function() {
-                chrome.tabs.query({
-                    active: true,
-                    currentWindow: true
-                }, function(tabs) {
-                    chrome.tabs.sendMessage(tabs[0].id, {
-                        type: "set-activated-from-bg"
-                    }, function(response) {
+            // setTimeout(function() {
+            //     chrome.tabs.query({
+            //         active: true,
+            //         currentWindow: true
+            //     }, function(tabs) {
+            //         chrome.tabs.sendMessage(tabs[0].id, {
+            //             type: "set-activated-from-bg"
+            //         }, function(response) {
                         
-                    });
-                });                
-            }, 3000);
+            //         });
+            //     });                
+            // }, 3000);
         }
         return true;
     });
