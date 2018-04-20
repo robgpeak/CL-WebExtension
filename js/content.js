@@ -143,20 +143,9 @@ var handleSuccess = function(data, userDataResponse) {
  * show popup after getting data from API
  */
 var handleGoogleSuccess = function(data, userData, element) {
-    //Dont show popup to user if user has already  
-    //activated or dismissed the offer earlier
-
-    //check response for disallowed domain
     if(data.isAdvertiser && data.extensionEnabled) {
-        console.log(data);
-        console.log(element);
-        console.log(userData);
         $(element).before("<div style=\"margin-bottom: 0px;\"><img class=\"searchResultDeal\" style=\"height: 25px; display: inline-block; margin-bottom:-5px;\" src=\""+userData.searchResultLogoUrl+"\"></img>"+"<a class=\"btn btn-primary activate-btn google-activate\" href=\""+$(element).attr('href')+"\"style=\"margin-bottom: 5px !important; margin-left: 15px; padding: 10px 15px; background-color:#FF3D02; border-color: #FF3D02; border-radius: 0px !important; border-width: 2px; color: #ffffff; display: inline-block; margin-bottom: 0; font-weight: normal; text-align: center; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap; padding: 10px 15px; font-size: 12px; line-height: 1;\">Activate " + data.reward + "</a></div>");
-        //send message to background -> activate cookies after redirect.  
     }
-    // console.log(element);
-    // console.log(data);
-
 };
 
 // $(document).on('click', function() {
@@ -190,10 +179,11 @@ var getEmailAddress = function() {
             subdomain = response.partnerSubdomain;
             if(window.location.host.includes('google.com')) { //if on google search page
                 callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
-                $('.g h3.r > a:not(table a)').each(function() { //make icon for each valid result 
-                    var domain = $(this).attr('href');
-                    makeRequest(response, callbacks, domain, this); 
-                })
+                var res = $('.g h3.r > a:not(table a)').toArray().map(function(el) {
+                    return $(el).attr('href');
+                });
+                var elems = $('.g h3.r > a:not(table a)');
+                makeGoogleRequest(response, callbacks, res, elems); 
             } else { //proceed as normal
                 subdomain = response.partnerSubdomain;
                 console.log(subdomain);
@@ -204,6 +194,35 @@ var getEmailAddress = function() {
         }
     });
 };
+
+
+/**
+ * Send POST request to get
+ */
+var makeGoogleRequest = function(userDataResponse, callbacks, res, elems) {
+    var apiUrl = "https://"+subdomain+".complinks.co/api/v1/checkDomain";
+    var res2 = res.map(function(item) {
+        var a = item.replace('www.', '').replace('http://.', '').replace('https://', '');
+        return a.substring(0, a.indexOf('.com') + 4);
+    });
+    $.post({
+        url: apiUrl,
+        type: "POST",
+        data: JSON.stringify({"domainName":res2}),
+        contentType:"application/json",
+        dataType:"json"
+    })
+    .done(function(data) {
+        console.log(data);
+        Object.keys(data).forEach(function(key, index) {
+            callbacks.success(data[index], userDataResponse, elems[index]);
+        });
+    })
+    .fail(function(data) {
+        console.log(data);
+        callbacks.error(data, userDataResponse);
+    });
+}
 
 /**
  * Send POST request to get
@@ -216,18 +235,23 @@ var makeRequest = function(userDataResponse, callbacks, domain, element) {
     } else {
         var currentDomain = window.location.host.replace('www.', '');    
     }
+    var arr = [currentDomain];
     var apiUrl = "https://"+subdomain+".complinks.co/api/v1/checkDomain";
-    $.post(apiUrl, {
-            "domainName": currentDomain
-        })
-        .done(function(data) {
-            // console.log(data);
-            callbacks.success(data, userDataResponse, element);
-        })
-        .fail(function(data) {
-            // console.log(data);
-            callbacks.error(data, userDataResponse);
-        });
+    $.post({
+        url: apiUrl,
+        type: "POST",
+        data: JSON.stringify({"domainName":arr}),
+        contentType:"application/json",
+        dataType:"json"
+    })
+    .done(function(data) {
+        console.log(data[0]);
+        callbacks.success(data[0], userDataResponse, element);
+    })
+    .fail(function(data) {
+        console.log(data[0]);
+        callbacks.error(data[0], userDataResponse);
+    });
 }
 
 function getDomainCookie() {

@@ -154,15 +154,15 @@ var getOffers = function() {
             if (!tabs || !tabs[0] || !tabs[0].url) {
                 return;
             }
+            var arr = [];
             currentDomain = extractHostname(tabs[0].url);
+            arr.push(currentDomain);
             $.post(apiUrl, {
-                    "domainName": currentDomain
+                    "domainName": JSON.stringify(arr)
                 })
                 .done(function(data) {
-                    showOffer(data);
-                    $('.avail-points').html(data.availablePointBal+' Points');
-                    localStorage.setItem('availablePoints', data.availablePointBal);
-                    
+                    console.log(data[0]);
+                    showOffer(data[0]);                    
                     chrome.tabs.query({
                         active: true,
                         currentWindow: true
@@ -180,7 +180,7 @@ var getOffers = function() {
                     });            
                 })
                 .fail(function(data) {
-                    callbacks.error(data);
+                    callbacks.error(data[0]);
                 });
         });
     } catch (ex) {
@@ -328,7 +328,8 @@ var buildTheme = function() {
         },function (){
            $(this).animate({'opacity':'1'}, 100);
         });
-        
+        $('.avail-points').html(recentSubdomain.availablePoints+' Points');
+        localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
         // console.log(colors[primaryHex]);
         $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
         //else { Complinks Rewards Everywhere}   images/icon128.png
