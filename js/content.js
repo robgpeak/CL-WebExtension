@@ -43,7 +43,18 @@ var bindActivateEvent = function(data) {
         });         
         sessionStorage.setItem('ebatesCloneShowPopup', 'show');
         if (data && data.clickUrl) {
-            window.location.href = data.clickUrl;
+            $.ajax({
+                type: "GET",
+                url: data.clickUrl,
+                headers: {
+                    'X-Extension': 'true'
+                },
+                success: function (response) {
+                    setTimeout(function() {
+                        window.location.reload();
+                    },500);
+                }
+            });
         }
     });
 };
