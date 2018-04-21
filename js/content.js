@@ -16,13 +16,14 @@ var buildPopup = function(data, userDataResponse) {
         html += '<img class="complinks_logo" src="'+userDataResponse.partnerLogo+'" />';
         html += '</div>';
         html += '<div class="complinks_main_content" style="border-color: '+eval(primaryHex)+';">';
-        html += '<button class="complinks_activate_button" style="background-color: '+eval(accentHex)+';" >Click here to earn ' + data.reward + '</button>';
+        html += '<buttons class="complinks_activate_button" style="background-color: '+eval(accentHex)+';" >Click here to earn ' + data.reward + '</buttons>';
         html += '<p class="complinks_dismiss_container">';
         html += '<a href="#" class="complinks_dismiss_button">×</a>';
         html += '</p>';
         html += '</div>';
         html += '</div>';
     }
+
     return html;
 };
 
@@ -188,18 +189,14 @@ var getEmailAddress = function() {
     }, function(response) {
         if (response && response.email) {
             subdomain = response.partnerSubdomain;
-            if(window.location.host.includes('google.com')) { //if on google search page
-                callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
-                var res = $('.g h3.r > a:not(table a)').toArray().map(function(el) {
-                    return $(el).attr('href');
-                });
-                var elems = $('.g h3.r > a:not(table a)');
-                makeGoogleRequest(response, callbacks, res, elems); 
-            } else { //proceed as normal
-                subdomain = response.partnerSubdomain;
-                console.log(subdomain);
-                makeRequest(response, callbacks);        
-            }
+            //message to bg to save localstorage
+            makeRequest(response, callbacks);   
+            chrome.runtime.sendMessage({
+                type: "save-user-data",
+                data: response
+            }, function(response) {
+                
+            });                 
         } else { //logged out, ask for email, look for cookie?
             console.log(response);
         }
@@ -211,11 +208,14 @@ var getEmailAddress = function() {
  * Send POST request to get
  */
 var makeGoogleRequest = function(userDataResponse, callbacks, res, elems) {
-    var apiUrl = "https://"+subdomain+".complinks.co/api/v1/checkDomain";
+    var apiUrl = "https://"+userDataResponse.partnerSubdomain+".complinks.co/api/v1/checkDomain";
+    console.log(res);
     var res2 = res.map(function(item) {
-        var a = item.replace('www.', '').replace('http://.', '').replace('https://', '');
+
+        var a = item.toString().replace('www.', '').replace('en.', '').replace('http://', '').replace('https://', '');
         return a.substring(0, a.indexOf('.com') + 4);
     });
+    console.log({"domainName":res2});
     $.post({
         url: apiUrl,
         type: "POST",
@@ -231,7 +231,9 @@ var makeGoogleRequest = function(userDataResponse, callbacks, res, elems) {
     })
     .fail(function(data) {
         console.log(data);
-        callbacks.error(data, userDataResponse);
+        Object.keys(data).forEach(function(key, index) {
+            callbacks.error(data[index], userDataResponse);
+        });
     });
 }
 
@@ -240,9 +242,8 @@ var makeGoogleRequest = function(userDataResponse, callbacks, res, elems) {
  */
 var makeRequest = function(userDataResponse, callbacks, domain, element) {
     if(domain!==null && typeof domain !== 'undefined') {
-        var a = domain.replace('www.', '').replace('http://.', '').replace('https://', '');
+        var a = domain.replace('www.', '').replace('en.', '').replace('http://', '').replace('https://', '');
         currentDomain = a.substring(0, a.indexOf('.com') + 4);
-        console.log(currentDomain);
     } else {
         var currentDomain = window.location.host.replace('www.', '');    
     }
@@ -276,39 +277,54 @@ function getDomainCookie() {
 
 var subdomain;
 $(function() {
-    getDomainCookie();
-    getEmailAddress();
-    // makeRequest(callbacks);
-    chrome.runtime.onMessage.addListener(
-        function(request, sender, sendResponse) {
-            if (request.type == 'create-activate-tab') {
-                console.log(request);
-                sessionStorage.setItem('ebatesCloneShowPopup', 'show');
-                if (request && request.url) {
-                    window.location.href = request.url;
-                }
-                sendResponse({
-                    type: "activated"
-                });
-            } else if (request.type == 'activated?') {
-                sendResponse({
-                    type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
-                })
-            } else if (request.type == 'set-activated-from-bg') {
-                // var date = new Date;                
-                // var time = date.getTime();           
-                // sessionStorage.setItem('cl_activated_stamp', time); 
-                // setTimeout(function() {
-                //     $('.complinks_activate_button').html("Activated!");    
-                //     $(".complinks_activate_button").css({
-                //         'background-color': 'green'
-                //     });       
-                //     $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
-                //         $(".complinks_popup").slideUp(2000);
-                //     }); 
-                //     sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
-                //     sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
-                // }, 1000);
-            }
+    if(window.location.host.includes('google.com')) {
+        callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
+        var elems = $('.g h3.r > a:not(table a)');
+        var res = elems.toArray().map(function(el) {
+            return $(el).attr('href');
         });
+        // get userDataResponse from localStorage
+        chrome.runtime.sendMessage({
+            type: "get-user-data"
+        }, function(response) {
+            console.log(JSON.parse(response.userData));
+            makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);             
+        });
+    } else {
+        getDomainCookie();
+        getEmailAddress();
+        // makeRequest(callbacks);
+        chrome.runtime.onMessage.addListener(
+            function(request, sender, sendResponse) {
+                if (request.type == 'create-activate-tab') {
+                    console.log(request);
+                    sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+                    if (request && request.url) {
+                        window.location.href = request.url;
+                    }
+                    sendResponse({
+                        type: "activated"
+                    });
+                } else if (request.type == 'activated?') {
+                    sendResponse({
+                        type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
+                    });
+                } else if (request.type == 'set-activated-from-bg') {
+                    // var date = new Date;                
+                    // var time = date.getTime();           
+                    // sessionStorage.setItem('cl_activated_stamp', time); 
+                    // setTimeout(function() {
+                    //     $('.complinks_activate_button').html("Activated!");    
+                    //     $(".complinks_activate_button").css({
+                    //         'background-color': 'green'
+                    //     });       
+                    //     $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
+                    //         $(".complinks_popup").slideUp(2000);
+                    //     }); 
+                    //     sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
+                    //     sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
+                    // }, 1000);
+                }
+            });
+    }
 });

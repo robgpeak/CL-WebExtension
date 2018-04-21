@@ -66,6 +66,21 @@ chrome.runtime.onMessage.addListener(
             //         });
             //     });                
             // }, 3000);
+        } else if(request.type === "save-user-data") {
+            console.log('save user data called');
+            console.log(JSON.stringify(request.data));
+            var store = {};
+            store['userData'] = JSON.stringify(request.data);
+            chrome.storage.local.set(store);
+        } else if(request.type === "get-user-data") {
+            console.log('get user data called');
+            chrome.storage.local.get('userData', function(item) {
+                console.log(item);
+                sendResponse({
+                    userData: item.userData
+                });                
+            });
+
         }
         return true;
     });
