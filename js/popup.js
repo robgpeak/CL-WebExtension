@@ -157,31 +157,37 @@ var getOffers = function() {
             var arr = [];
             currentDomain = extractHostname(tabs[0].url);
             arr.push(currentDomain);
-            $.post(apiUrl, {
-                    "domainName": JSON.stringify(arr)
-                })
-                .done(function(data) {
-                    console.log(data[0]);
-                    showOffer(data[0]);                    
-                    chrome.tabs.query({
-                        active: true,
-                        currentWindow: true
-                    }, function(tabs) {
-                        chrome.tabs.sendMessage(tabs[0].id, {
-                            type: "activated?"
-                        }, function(response) {
-                            if(response.type=="show") {
-                                $('.activate-btn').css({
-                                    'background-color': 'green !important',
-                                    'border-color': 'green !important'
-                                });       
-                            }
-                        });
-                    });            
-                })
-                .fail(function(data) {
-                    callbacks.error(data[0]);
-                });
+            
+            $.post({
+                url: apiUrl,
+                type: "POST",
+                data: JSON.stringify({"domainName":arr}),
+                contentType:"application/json",
+                dataType:"json"
+            })
+            .done(function(data) {
+                console.log(data[0]);
+                showOffer(data[0]);                    
+                chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                }, function(tabs) {
+                    chrome.tabs.sendMessage(tabs[0].id, {
+                        type: "activated?"
+                    }, function(response) {
+                        console.log(response);
+                        if(response.type=="show") {
+                            $('.activate-btn').css({
+                                'background-color': 'green !important',
+                                'border-color': 'green !important'
+                            });       
+                        }
+                    });
+                });            
+            })
+            .fail(function(data) {
+                callbacks.error(data[0]);
+            });
         });
     } catch (ex) {
         // callbacks.error({status: "unauthorized"});

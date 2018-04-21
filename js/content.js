@@ -17,9 +17,9 @@ var buildPopup = function(data, userDataResponse) {
         html += '</div>';
         html += '<div class="complinks_main_content" style="border-color: '+eval(primaryHex)+';">';
         html += '<buttons class="complinks_activate_button" style="background-color: '+eval(accentHex)+';" >Click here to earn ' + data.reward + '</buttons>';
-        html += '<p class="complinks_dismiss_container">';
+        html += '<span class="complinks_dismiss_container">';
         html += '<a href="#" class="complinks_dismiss_button">×</a>';
-        html += '</p>';
+        html += '</span>';
         html += '</div>';
         html += '</div>';
     }
@@ -44,18 +44,7 @@ var bindActivateEvent = function(data) {
         });         
         sessionStorage.setItem('ebatesCloneShowPopup', 'show');
         if (data && data.clickUrl) {
-            $.ajax({
-                type: "GET",
-                url: data.clickUrl,
-                headers: {
-                    'X-Extension': 'true'
-                },
-                success: function (response) {
-                    setTimeout(function() {
-                        window.location.reload();
-                    },500);
-                }
-            });
+            window.location.href = data.clickUrl;
         }
     });
 };
@@ -82,7 +71,6 @@ var handleSuccess = function(data, userDataResponse) {
     //activated or dismissed the offer earlier
     // console.log(userDataResponse);
     // set activated cookie and timestamp, don't show if passed 1 hour
-
     var date = new Date;
     var time = date.getTime();
     var oldStamp = Number(sessionStorage.getItem('cl_activated_stamp'));
@@ -209,10 +197,8 @@ var getEmailAddress = function() {
  */
 var makeGoogleRequest = function(userDataResponse, callbacks, res, elems) {
     var apiUrl = "https://"+userDataResponse.partnerSubdomain+".complinks.co/api/v1/checkDomain";
-    console.log(res);
     var res2 = res.map(function(item) {
-
-        var a = item.toString().replace('www.', '').replace('en.', '').replace('http://', '').replace('https://', '');
+        var a = item.replace('www.', '').replace('en.', '').replace('http://', '').replace('https://', '');
         return a.substring(0, a.indexOf('.com') + 4);
     });
     console.log({"domainName":res2});
@@ -226,7 +212,10 @@ var makeGoogleRequest = function(userDataResponse, callbacks, res, elems) {
     .done(function(data) {
         console.log(data);
         Object.keys(data).forEach(function(key, index) {
-            callbacks.success(data[index], userDataResponse, elems[index]);
+            // callbacks.success(data[index], userDataResponse, elems[index]);
+            if(data[index].isAdvertiser && data[index].extensionEnabled) {
+                $(elems[index]).before("<div style=\"margin-bottom: 0px;\"><img class=\"searchResultDeal\" style=\"height: 25px; display: inline-block; margin-bottom:-5px;\" src=\""+userDataResponse.searchResultLogoUrl+"\"></img>"+"<a class=\"btn btn-primary activate-btn google-activate\" href=\""+elems[index].getAttribute('href')+"\"style=\"margin-bottom: 5px !important; margin-left: 15px; padding: 10px 15px; background-color:#FF3D02; border-color: #FF3D02; border-radius: 0px !important; border-width: 2px; color: #ffffff; display: inline-block; margin-bottom: 0; font-weight: normal; text-align: center; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap; padding: 10px 15px; font-size: 12px; line-height: 1;\">Activate " + data[index].reward + "</a></div>");
+            }
         });
     })
     .fail(function(data) {
@@ -248,6 +237,7 @@ var makeRequest = function(userDataResponse, callbacks, domain, element) {
         var currentDomain = window.location.host.replace('www.', '');    
     }
     var arr = [currentDomain];
+    console.log(JSON.stringify({"domainName":arr}));
     var apiUrl = "https://"+subdomain+".complinks.co/api/v1/checkDomain";
     $.post({
         url: apiUrl,
@@ -266,32 +256,26 @@ var makeRequest = function(userDataResponse, callbacks, domain, element) {
     });
 }
 
-function getDomainCookie() {
-    // console.log(document.cookie);
-    // chrome.runtime.sendMessage({
-    //     type: "get-domain-cookie"
-    // }, function(response) {
-    //     console.log(response);
-    // });
-}
-
 var subdomain;
 $(function() {
-    if(window.location.host.includes('google.com')) {
-        callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
-        var elems = $('.g h3.r > a:not(table a)');
-        var res = elems.toArray().map(function(el) {
-            return $(el).attr('href');
+    callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
+    var elems = document.querySelectorAll('.g h3.r > a');
+    console.log(typeof elems.length);
+    if(elems.length > 0) {
+        console.log('1');
+        var res = Array.from(elems).map(function(el) {
+            console.log(el);
+            return el.getAttribute('href');
         });
-        // get userDataResponse from localStorage
         chrome.runtime.sendMessage({
             type: "get-user-data"
         }, function(response) {
             console.log(JSON.parse(response.userData));
             makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);             
         });
-    } else {
-        getDomainCookie();
+    } else if(!window.location.host.includes('google.com')) {
+        console.log('2');
+        callbacks['success'] = handleSuccess;
         getEmailAddress();
         // makeRequest(callbacks);
         chrome.runtime.onMessage.addListener(
