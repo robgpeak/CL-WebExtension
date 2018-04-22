@@ -13,15 +13,13 @@ var buildPopup = function(data, userDataResponse) {
     if (data.isAdvertiser && data.extensionEnabled) {
         html += '<div class="complinks_popup">';
         html += '<div class="complinks_partner_logo" style="background-color: '+eval(primaryHex)+'; border-color: '+eval(primaryHex)+';">';
-        html += '<img class="complinks_logo" src="'+userDataResponse.partnerLogo+'" />';
-        html += '</div>';
-        if(window.location.host.includes('target.com')) {
-            html += '<div class="complinks_main_content" style="height: 128px !important; border-color: '+eval(primaryHex)+';">';
-        } else if(window.location.host.includes('berries.com')) {
-            html += '<div class="complinks_main_content" style="height: 127px !important; border-color: '+eval(primaryHex)+';">';
+        if(window.location.host.includes('berries.com')) {
+            html += '<img style="height: 80px !important;" class="complinks_logo" src="'+userDataResponse.partnerLogo+'" />';
         } else {
-            html += '<div class="complinks_main_content" style="border-color: '+eval(primaryHex)+';">';
+            html += '<img class="complinks_logo" src="'+userDataResponse.partnerLogo+'" />';    
         }
+        html += '</div>';
+        html += '<div class="complinks_main_content" style="border-color: '+eval(primaryHex)+';">';
         if(window.location.host.includes('godaddy.com')) {
             html += '<buttons class="complinks_activate_button" style="font-size: 11px; padding-top: 16px; background-color: '+eval(accentHex)+';" >Click here to earn ' + data.reward + '</buttons>';
         } else {
