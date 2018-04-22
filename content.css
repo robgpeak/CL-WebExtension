@@ -1,52 +1,66 @@
 .complinks_popup {
+    box-sizing: border-box;
+    line-height:16px !important;
     border: 1px solid transparent;
-	position:fixed;
+	position:absolute;
+    float:right;
 	right:0;
 	top:20px;
 	height:130px;
 	width:600px;
-    z-index: 2001;
+    z-index: 99999;
     font-family: Lato;
 }
 
 .complinks_partner_logo {
+    position:absolute;
+    z-index:999998;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 	background-color:black;
 	float:left;
 	padding:10px;
-	width:250px;
-	height:100%;
+	width:auto;
+	height:auto;
 	border:2px solid black;
 }
 
 .complinks_logo {
-	width:200px;
+    margin-bottom: 19px;
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+	width:180px;
     padding-top: 30px; 
-    margin-left: 15px;    
+    margin-left: 15px; 
+    margin-right: 30px;    
 }
 
 .complinks_main_content {
+    z-index:999999;
+    margin-right: 26px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 	background-color: white;
 	border:2px solid black;
 	padding:10px;
-	float:left;
+	float:right;
 	width:332px;
-	height:100%;
+	height:auto;
 }
 
 .complinks_activate_button {
     font-family: Roboto,"Helvetica Neue", Arial, sans-serif;
-    min-width: 90%;
+    margin-left: 30px !important;
+    /*float:right;*/
     box-shadow: -1px 3px 1px -10px rgba(0,0,0,0.5), -1px 3px 4px -1px rgba(0,0,0,0.5);
     border: 1px solid transparent;
     border-radius: 0px;
     margin-top: 30px !important;
 	display:inline-block;
 	background-color:teal;
-	margin:0 auto;
+	/*margin:0 auto;*/
+    margin-bottom: 30px !important;    
 	border:none;
 	color:white;
 	padding:15px 32px;
@@ -55,18 +69,22 @@
 	font-size:12px;
 	margin-left:10px;
 	cursor:pointer;
+    font-weight: 400 !important;
     -webkit-font-smoothing: auto;
     line-height:1 !important;
 }
 
 .complinks_dismiss_container {
-    right: 27px;
+    right: 40px;
     top: 7px;
     position: absolute;
     text-transform: uppercase;
 }
 
 .complinks_dismiss_button {
+    color: #000;
+    font-weight: 700;
+    text-decoration: none;    
 	font-size: 12pt;
 }
 

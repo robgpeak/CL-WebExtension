@@ -15,8 +15,18 @@ var buildPopup = function(data, userDataResponse) {
         html += '<div class="complinks_partner_logo" style="background-color: '+eval(primaryHex)+'; border-color: '+eval(primaryHex)+';">';
         html += '<img class="complinks_logo" src="'+userDataResponse.partnerLogo+'" />';
         html += '</div>';
-        html += '<div class="complinks_main_content" style="border-color: '+eval(primaryHex)+';">';
-        html += '<buttons class="complinks_activate_button" style="background-color: '+eval(accentHex)+';" >Click here to earn ' + data.reward + '</buttons>';
+        if(window.location.host.includes('target.com')) {
+            html += '<div class="complinks_main_content" style="height: 128px !important; border-color: '+eval(primaryHex)+';">';
+        } else if(window.location.host.includes('berries.com')) {
+            html += '<div class="complinks_main_content" style="height: 127px !important; border-color: '+eval(primaryHex)+';">';
+        } else {
+            html += '<div class="complinks_main_content" style="border-color: '+eval(primaryHex)+';">';
+        }
+        if(window.location.host.includes('godaddy.com')) {
+            html += '<buttons class="complinks_activate_button" style="font-size: 11px; padding-top: 16px; background-color: '+eval(accentHex)+';" >Click here to earn ' + data.reward + '</buttons>';
+        } else {
+            html += '<buttons class="complinks_activate_button" style="background-color: '+eval(accentHex)+';" >Click here to earn ' + data.reward + '</buttons>';
+        }
         html += '<span class="complinks_dismiss_container">';
         html += '<a href="#" class="complinks_dismiss_button">×</a>';
         html += '</span>';
@@ -259,7 +269,7 @@ var makeRequest = function(userDataResponse, callbacks, domain, element) {
 var subdomain;
 $(function() {
     callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
-    var elems = document.querySelectorAll('.g h3.r > a');
+    var elems = document.querySelectorAll('.g h3.r > a:not(.l)');
     console.log(typeof elems.length);
     if(elems.length > 0) {
         console.log('1');
