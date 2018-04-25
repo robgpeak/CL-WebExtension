@@ -7,7 +7,7 @@
 	right:0;
 	top:20px;
 	height:130px;
-	width:559px;
+	width:640px;
     z-index: 99999;
     font-family: Lato;
 }
@@ -20,20 +20,17 @@
 	background-color:black;
 	float:left;
 	padding:10px;
-	width:auto;
+	width: 40%;
 	height:98px !important;
 	border:2px solid black;
     box-sizing: content-box;
 }
 
 .complinks_logo {
-    margin-bottom: 19px;
+    /*margin:11% auto;*/
+    padding: 9% 0px;
     display: inline-block;
     max-width: 100%;
-    height: 49px;
-    padding-top: 30px; 
-    margin-left: 15px; 
-    margin-right: 30px;    
 }
 
 .complinks_main_content {
@@ -46,29 +43,25 @@
 	border:2px solid black;
 	padding:10px;
 	float:right;
-	width:auto;
+	width:49%;
 	height:98px !important;
 }
 
 .complinks_activate_button {
     font-family: Roboto,"Helvetica Neue", Arial, sans-serif;
-    margin-left: 30px !important;
+    margin: 10% 5% !important;
     /*float:right;*/
     box-shadow: -1px 3px 1px -10px rgba(0,0,0,0.5), -1px 3px 4px -1px rgba(0,0,0,0.5);
     border: 1px solid transparent;
     border-radius: 0px;
-    margin-top: 30px !important;
 	display:inline-block;
 	background-color:teal;
-	/*margin:0 auto;*/
-    margin-bottom: 30px !important;    
 	border:none;
 	color:white;
 	padding:15px 32px;
 	text-align:center;
 	text-decoration:none;
 	font-size:11px;
-	margin-left:10px;
 	cursor:pointer;
     font-weight: 400 !important;
     -webkit-font-smoothing: auto;
