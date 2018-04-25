@@ -1,5 +1,5 @@
 body {
-  font-family: Lato, sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
   color: #333;
   font-size: 15px;
   line-height: 20px;
@@ -84,7 +84,7 @@ body {
   padding-top: 15px;
   padding-right: 70px;
   float: right;
-  font-family: Lato, sans-serif;
+  font-family: 'Josefin Sans', sans-serif;
   font-size: 40px;
   font-style: normal;
   font-weight: 200;
@@ -208,7 +208,7 @@ body {
   .username-inscript {
     padding-top: 15px;
     padding-right: 75px;
-    font-family: Lato, sans-serif;
+    font-family: 'Josefin Sans', sans-serif;
     font-size: 40px;
     text-align: center;
   }
@@ -222,7 +222,7 @@ body {
     width: 410px;
     height: 479px;
     border: 1px none #000;
-    font-family: Lato, sans-serif;
+    font-family: 'Josefin Sans', sans-serif;
     font-size: 15px;
   }
   .navbar-co {
@@ -294,7 +294,7 @@ body {
   .username-inscript {
     padding-top: 15px;
     padding-right: 75px;
-    font-family: Lato, sans-serif;
+    font-family: 'Josefin Sans', sans-serif;
     font-size: 40px;
     text-align: center;
   }
@@ -320,7 +320,7 @@ body {
     background-color: #0288d1;
   }
   .navbar-brand-co {
-    padding-top: 16.5px;
+    padding-top: 19.5px;
     padding-left: 10px;
     font-size: 20px;
   }
@@ -349,7 +349,7 @@ body {
   }
   .username-inscript {
     padding-top: 0px;
-    font-family: Lato, sans-serif;
+    font-family: 'Josefin Sans', sans-serif;
     font-size: 40px;
     font-style: italic;
     font-weight: 200;

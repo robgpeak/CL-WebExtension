@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "CompLinks Rewards Everywhere",
     "description": "Show offers to registered user",
-    "version": "1.3.12",
+    "version": "1.3.13",
     "icons": {
         "16": "img/icon16.png",
         "19": "img/icon19.png",
