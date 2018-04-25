@@ -29,7 +29,7 @@ body {
 .navbar-header-co {
   width: 108%;
   margin-left: -15px;
-  background-color: #2c3e50;
+  background-color: #0288d1;
 }
 
 .navbar-brand-co {
@@ -57,6 +57,11 @@ body {
   background-repeat: repeat;
   color: #fff;
   font-size: 19px;
+}
+
+.alert {
+  font-size: 16px;
+  font-weight: 300;
 }
 
 .alert.alert-success {
@@ -127,7 +132,7 @@ body {
 }
 
 .well.well-sm {
-  background-color: #2c3e50;
+  background-color: #0288d1;
   font-size: 17px;
   font-weight: 300;
 }
@@ -167,7 +172,7 @@ body {
     margin-left: -15px;
     padding-right: 0px;
     padding-left: 0px;
-    background-color: #2c3e50;
+    background-color: #0288d1;
   }
   .navbar-brand-co {
     height: 60px;
@@ -208,7 +213,7 @@ body {
     text-align: center;
   }
   .well.well-sm {
-    background-color: #2c3e50;
+    background-color: #0288d1;
   }
 }
 
@@ -245,7 +250,7 @@ body {
   .navbar-header-co {
     margin-right: -15px;
     margin-left: -15px;
-    background-color: #2c3e50;
+    background-color: #0288d1;
   }
   .navbar-brand-co {
     height: 60px;
@@ -294,21 +299,33 @@ body {
     text-align: center;
   }
   .well.well-sm {
-    background-color: #2c3e50;
+    background-color: #0288d1;
   }
 }
 
 @media (max-width: 479px) {
+  .body-div {
+    height: auto;
+  }
   .navbar-co.navbar-co-default {
     margin-bottom: 0px;
   }
   .container-fluid {
+    width: 88%;
+    margin-left: 0px;
     background-image: none;
   }
   .navbar-header-co {
-    background-color: #2c3e50;
+    width: 109%;
+    background-color: #0288d1;
+  }
+  .navbar-brand-co {
+    padding-top: 16.5px;
+    padding-left: 10px;
+    font-size: 20px;
   }
   .tab-content.fb-tab-actions.fpanels {
+    min-height: 178px;
     margin: auto;
   }
   .body {
@@ -317,6 +334,14 @@ body {
     background-size: auto;
     background-repeat: repeat;
     background-attachment: scroll;
+  }
+  .alert.alert-success {
+    display: none;
+    font-size: 16px;
+    font-weight: 300;
+  }
+  .alert.alert-danger {
+    display: none;
   }
   .account-info {
     height: 50px;
@@ -329,5 +354,16 @@ body {
     font-style: italic;
     font-weight: 200;
     text-align: center;
+  }
+  .avail-points {
+    display: none;
+  }
+  .image-2 {
+    margin-top: 2px;
+    margin-left: 11px;
+    padding-top: 11px;
+  }
+  .well.well-sm {
+    background-color: #0288d1;
   }
 }

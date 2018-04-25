@@ -1,5 +1,5 @@
 .image-2 {
-	padding: 15px 0px 0px 5px !important;
+	/*padding: 15px 0px 0px 5px !important;*/
 }
 .well.well-sm {
 	overflow: hidden;
@@ -8,7 +8,7 @@
 }
 
 #no-email-alert {
-	margin-top: 10px;
+	margin-top: 20px;
 }
 
 
@@ -17,8 +17,8 @@ span.glyphicon.glyphicon-usd {
 }
 
 body {
-	width:410px; 
-	height:height:100%;
+	width:360px; 
+	height:300px;
 	font-family: Roboto,"Helvetica Neue", Arial, sans-serif;
 }
 .activate-btn {
@@ -51,7 +51,7 @@ body {
 	margin-bottom: 0px;
 }
 .fbuttons{
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 }
 .fpanels{
 	margin-top: 20px;

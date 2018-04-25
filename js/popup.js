@@ -34,14 +34,19 @@ var emailExists = function() {
         .fail(function(data) {
             $('#no-email-alert').show();
             $('.image-2').attr('src','images/icon128.png');
-            $('.navbar-brand-co').html('Complinks Rewards Everywhere');
+            $('.navbar-brand-co').html('CompLinks Rewards Everywhere');
+            $('body').css({"height":"300px !important;"});
+            $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"});
             // put default data in popup
             return false;        
         });    
     } catch (ex) {
         $('#no-email-alert').show();
         $('.image-2').attr('src','images/icon128.png');
-        $('.navbar-brand-co').html('Complinks Rewards Everywhere');
+        $('.navbar-brand-co').html('CompLinks Rewards Everywhere');
+        $('body').css({"height":"300px !important;"});
+        $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"});
+        
         return false;
     }
     
