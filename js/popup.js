@@ -34,7 +34,7 @@ var emailExists = function() {
         .fail(function(data) {
             $('#no-email-alert').show();
             $('.image-2').attr('src','images/icon128.png');
-            $('.navbar-brand-co').html('CompLinks Rewards Everywhere');
+            $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');
             $('body').css({"height":"300px !important;"});
             $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"});
             // put default data in popup
@@ -43,7 +43,7 @@ var emailExists = function() {
     } catch (ex) {
         $('#no-email-alert').show();
         $('.image-2').attr('src','images/icon128.png');
-        $('.navbar-brand-co').html('CompLinks Rewards Everywhere');
+        $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');
         $('body').css({"height":"300px !important;"});
         $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"});
         
@@ -284,21 +284,72 @@ var getEvents = function() {
     }    
 };
 
-var initSubdomain = function() {
-    var domains = ['shop','xclub'];
-    var loggedIn = [];
-    domains.forEach(function(domain) {
-        var apiUrl = "https://"+domain+".complinks.co/api/v1/getUserDetail";
-  
-        $.post(apiUrl, {})
+function getUserDetail(domain, i) {
+    console.log(i);
+    var apiUrl = "https://"+domain+".complinks.co/api/v1/getUserDetail";
+    return $.post(apiUrl, {})
         .done(function(data) {
             if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
+                console.log(data);
+                loggedIn.push(data.partnerSubdomain);
+                userDetail.push(data);
+            } else {
+                console.log(data);
                 loggedIn.push(data.partnerSubdomain);
                 userDetail.push(data);
             }
-
         });
-    });
+}
+
+var initSubdomain = function() {
+    var domains = ['shop','xclub'];
+    var promiseChain = getUserDetail(domains[0], 0);
+    for(let i = 1; i<domains.length; i++) {
+        // console.log(i);
+        if(i == domains.length-1) { //on last call
+            promiseChain = promiseChain.then(function() {
+                return getUserDetail(domains[i], i);
+            }).then(function() {
+                try {
+                    userDetail = userDetail.filter(function(item) {
+                        return !(item.status === "unauthorized");
+                    });
+                    console.log(userDetail);
+                    var latestLogin = Math.max.apply(Math,userDetail.map(function(u) {
+                        // if(u.status !== "unauthorized") {
+                            var ainxs = u.lastLogin.indexOf("(");
+                            var ainxe = u.lastLogin.indexOf(")");
+                            var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
+                            suba = Number(suba);            
+                            return suba;
+                        // }
+                    }));
+
+                    recentSubdomain = userDetail.find(function(u) {
+                       console.log(typeof u.lastLogin);
+                       return u.lastLogin.includes(latestLogin); 
+                    });
+                    bindEvents();
+                    toggleEmailField();
+                    getEvents();
+                    getOffers();
+                    buildTheme();
+                } catch(ex) {
+                    console.log(ex);
+                    $('#no-email-alert').show();
+                    $('.image-2').attr('src','images/icon128.png');
+                    $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');
+                    $('body').css({"height":"300px !important;"});
+                    $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"});                    
+                }
+            });
+        } else {
+            promiseChain = promiseChain.then(function() {
+                return getUserDetail(domains[i], i);
+            });    
+        }
+        
+    }
     return loggedIn;
 }
 
@@ -350,37 +401,11 @@ var buildTheme = function() {
     }
 }
 
-var loggedIn;
+var loggedIn = [];
 var userDetail = [];
 var recentSubdomain;
 
 
 $(document).ready(function() {
-    $('.navbar-header-co').click();
-    loggedIn = initSubdomain();
-    setTimeout(function() {
-        try {
-            var latestLogin = Math.max.apply(Math,userDetail.map(function(u){
-                var ainxs = u.lastLogin.indexOf("(");
-                var ainxe = u.lastLogin.indexOf(")");
-                var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
-                suba = Number(suba);            
-                return suba;
-            }));
-            
-            recentSubdomain = userDetail.find(function(u) {
-               console.log(typeof u.lastLogin);
-               return u.lastLogin.includes(latestLogin); 
-            });
-
-            console.log(recentSubdomain);
-        } catch(ex) {
-
-        }
-        bindEvents();
-        toggleEmailField();
-        getEvents();
-        getOffers();
-        buildTheme();
-    }, 300);
+    initSubdomain();
 });

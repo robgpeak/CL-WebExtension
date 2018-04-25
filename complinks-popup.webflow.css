@@ -320,7 +320,10 @@ body {
     background-color: #0288d1;
   }
   .navbar-brand-co {
-    padding-top: 19.5px;
+    width: 70%;
+    margin-bottom: 10px;
+    padding-top: 9.5px;
+    padding-bottom: 9.5px;
     padding-left: 10px;
     font-size: 20px;
   }
@@ -359,9 +362,9 @@ body {
     display: none;
   }
   .image-2 {
-    margin-top: 2px;
-    margin-left: 11px;
-    padding-top: 11px;
+    margin-top: 12px;
+    margin-left: 5px;
+    padding-top: 0px;
   }
   .well.well-sm {
     background-color: #0288d1;
