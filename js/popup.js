@@ -395,7 +395,7 @@ var buildTheme = function() {
         // console.log(colors[primaryHex]);
         $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
         //else { Complinks Rewards Everywhere}   images/icon128.png
-        $('.navbar-brand-co').html(recentSubdomain.partnerName);
+        $('.navbar-brand-co').html(recentSubdomain.partnerName+' Rewards Everywhere Shopping Assistant');
     } catch (ex) {
 
     }
