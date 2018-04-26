@@ -205,9 +205,10 @@ var getEmailAddress = function() {
  */
 var makeGoogleRequest = function(userDataResponse, callbacks, res, elems) {
     var apiUrl = "https://"+userDataResponse.partnerSubdomain+".complinks.co/api/v1/checkDomain";
+    console.log(res);
     var res2 = res.map(function(item) {
-        var a = item.replace('www.', '').replace('en.', '').replace('http://', '').replace('https://', '');
-        return a.substring(0, a.indexOf('.com') + 4);
+        var a = item.replace('http://', '').replace('https://', '');
+        return a.substring(0, a.indexOf('/'));
     });
     console.log({"domainName":res2});
     $.post({

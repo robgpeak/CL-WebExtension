@@ -368,6 +368,7 @@ var buildTheme = function() {
         var partnerStyle = JSON.parse(recentSubdomain.partnerStyle);
         var primaryName = partnerStyle.primary.name.replace('-','').toLowerCase();
         var primaryHex = primaryName.concat(partnerStyle.primary.main);
+        var primaryHue2Hex = primaryName.concat(partnerStyle.primary.hue1);
         var accentName = partnerStyle.accent.name.replace('-','').toLowerCase();
         var accentHex = accentName.concat(partnerStyle.accent.main);
 
@@ -401,7 +402,7 @@ var buildTheme = function() {
         });
         $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you currently have '+recentSubdomain.availablePoints+' points');
         $('#name-panel').css({"height":"25px"});
-        $('.greeting-points').css({"padding-top":"4px","background-color":colors[accentHex]});
+        $('.greeting-points').css({"padding-top":"4px","background-color":colors[primaryHue2Hex]});
         localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
         $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
         $('.navbar-brand-co').html(recentSubdomain.partnerName+' Rewards Everywhere Shopping Assistant');
