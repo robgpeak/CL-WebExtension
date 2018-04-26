@@ -1,5 +1,5 @@
 body {
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: Josefin Sans, sans-serif;
   color: #333;
   font-size: 15px;
   line-height: 20px;
@@ -84,7 +84,7 @@ body {
   padding-top: 15px;
   padding-right: 70px;
   float: right;
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: Josefin Sans, sans-serif;
   font-size: 40px;
   font-style: normal;
   font-weight: 200;
@@ -208,7 +208,7 @@ body {
   .username-inscript {
     padding-top: 15px;
     padding-right: 75px;
-    font-family: 'Josefin Sans', sans-serif;
+    font-family: Josefin Sans, sans-serif;
     font-size: 40px;
     text-align: center;
   }
@@ -222,7 +222,7 @@ body {
     width: 410px;
     height: 479px;
     border: 1px none #000;
-    font-family: 'Josefin Sans', sans-serif;
+    font-family: Josefin Sans, sans-serif;
     font-size: 15px;
   }
   .navbar-co {
@@ -294,7 +294,7 @@ body {
   .username-inscript {
     padding-top: 15px;
     padding-right: 75px;
-    font-family: 'Josefin Sans', sans-serif;
+    font-family: Josefin Sans, sans-serif;
     font-size: 40px;
     text-align: center;
   }
@@ -322,10 +322,10 @@ body {
   .navbar-brand-co {
     width: 70%;
     margin-bottom: 10px;
-    padding-top: 9.5px;
+    padding-top: 13.5px;
     padding-bottom: 9.5px;
-    padding-left: 10px;
-    font-size: 18px;
+    padding-left: 15px;
+    font-size: 17px;
   }
   .tab-content.fb-tab-actions.fpanels {
     min-height: 178px;
@@ -352,7 +352,7 @@ body {
   }
   .username-inscript {
     padding-top: 0px;
-    font-family: 'Josefin Sans', sans-serif;
+    font-family: Josefin Sans, sans-serif;
     font-size: 40px;
     font-style: italic;
     font-weight: 200;
@@ -368,5 +368,14 @@ body {
   }
   .well.well-sm {
     background-color: #0288d1;
+  }
+  .name-panel {
+    height: 0px;
+  }
+  .greeting-points {
+    padding-top: 0px;
+    padding-left: 10px;
+    background-color: rgba(0, 0, 0, .49);
+    font-weight: 300;
   }
 }

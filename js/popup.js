@@ -390,7 +390,9 @@ var buildTheme = function() {
         },function (){
            $(this).animate({'opacity':'1'}, 100);
         });
-        $('.avail-points').html(recentSubdomain.availablePoints+' Points');
+        $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you currently have '+recentSubdomain.availablePoints+' points');
+        $('#name-panel').css({"height":"35px"});
+        $('.greeting-points').css({"padding-top":"4px","background-color":colors[accentHex]});
         localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
         // console.log(colors[primaryHex]);
         $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
