@@ -60,13 +60,16 @@ function saveOptions(e) {
                             email = $("#user-email-address").val();   
                             saveEmail(email);
                             recentSubdomain = data;
-                            console.log(data);
                             if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
                                 $("#success-alert").html("");
                                 $("#success-alert").append("Success! You are logged into the  <strong>"+recentSubdomain.partnerName+"</strong> Shopping Assistant")
                                 $("#success-alert").alert();
                                 $("#success-alert").fadeTo(2000, 500);
                                 $("#logout").show();
+                                $('.btn-default.save').html('Start Shopping');
+                                $('body').on('click','.btn-default.save', function(e) {
+                                    window.location.href = "https://"+recentSubdomain.partnerSubdomain+".complinks.co";
+                                });
                                 $("#auth-alert").hide();
                                 $("#error-alert").hide();
                                 loggedIn.push(data.partnerSubdomain);
@@ -217,6 +220,10 @@ var initSubdomain = function() {
                     $("#success-alert").append("Success! You are logged into the  <strong>"+recentSubdomain.partnerName+"</strong> Shopping Assistant")
                     $("#success-alert").alert();
                     $("#success-alert").fadeTo(2000, 500);
+                    $('.btn-default.save').html('Start Shopping');
+                    $('body').on('click','.btn-default.save', function(e) {
+                        window.location.href = "https://"+recentSubdomain.partnerSubdomain+".complinks.co";
+                    });                    
                     $("#logout").show();
                     $("#auth-alert").hide();
                     $("#error-alert").hide();
