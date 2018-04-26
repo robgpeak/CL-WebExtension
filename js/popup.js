@@ -391,7 +391,7 @@ var buildTheme = function() {
            $(this).animate({'opacity':'1'}, 100);
         });
         $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you currently have '+recentSubdomain.availablePoints+' points');
-        $('#name-panel').css({"height":"35px"});
+        $('#name-panel').css({"height":"25px"});
         $('.greeting-points').css({"padding-top":"4px","background-color":colors[accentHex]});
         localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
         // console.log(colors[primaryHex]);
