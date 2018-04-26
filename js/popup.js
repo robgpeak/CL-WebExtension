@@ -89,13 +89,29 @@ var showOffer = function(data) {
     if (!data.isAdvertiser || data.reward == '') {
         return;
     }
+    $('.navbar-co').hide();
     var lsph = localStorage.getItem('primaryHex');
     var lsah = localStorage.getItem('accentHex');
 
-    var html = '<div class="row">';
-    html += '<div class="col-xs-12">';
-    html += '<buttons class="btn btn-primary activate-btn" style="background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
-    html += '</div></div>';
+    // var html = '<div class="row">';
+    // html += '<div class="col-xs-12">';
+    var html = "";
+    html = '<buttons class="btn btn-primary activate-btn" style="background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
+    // html += '</div></div>';
+    
+    $('.image-3').attr('src',data.logoUrl);
+    
+    $('.navbar-co').fadeTo(2000, 0, function() {
+
+    }); 
+
+    $('.partner-header').css({"height":"70px"});
+    // $('.navbar-co').hide();
+    $('body-div').css({"position":"relative"});
+    $('.navbar-co, .partner-header').css({"position":"absolute"});
+    $('.name-panel').hide();
+    $('.partner-header').show()
+    $('.container-fluid').css({"padding-top":"55px"});
 
     $(document).on('click','.activate-btn',function() {
         console.log('activate-btn clicked');
@@ -114,11 +130,11 @@ var showOffer = function(data) {
                 }, function(tabs) {
                     if(response.type=="activated") {
                         var html = "";
-                        html = '<div class="row">';
-                        html += '<div class="col-xs-12">';
+                        // html = '<div class="row">';
+                        // html += '<div class="col-xs-12">';
                         html += '<buttons class="btn btn-primary activate-btn" style="background-color:green; border-color: green;">' + data.reward + ' Activated!</buttons>';
-                        html += '</div></div>';
-                        $('.show-offers').html(html);
+                        // html += '</div></div>';
+                        $('.offer-btn-container').html(html);
                     }
                 });
             });
@@ -139,7 +155,7 @@ var showOffer = function(data) {
                 html += '<buttons class="btn btn-primary activate-btn" style="background-color:green; border-color: green;">' + data.reward + ' Activated!</buttons>';
                 html += '</div></div>';
             }
-            $('.show-offers').html(html);
+            $('.offer-btn-container').html(html);
         });
     });
 };
@@ -249,8 +265,6 @@ var getNewsErrorHtml = function() {
  * Get timeline of user activities
  */
 var getEvents = function() {
-    // if (!emailAddress)
-        // return true;
     try {
         $(".loading-icon").show();
         var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".complinks.co/api/v1/getNews";
@@ -258,13 +272,11 @@ var getEvents = function() {
                 userEmail: emailAddress,
             })
             .done(function(data) {
-                // workaround until api doesn't always return 200
                 if(data['status'] === 'unauthorized') {
                     $(".loading-icon").hide();
                     $('.timeline-events').html(getNewsErrorHtml());    
                     return false;
                 }
-                // console.log("Events loaded ", data);
                 $(".loading-icon").hide();
                 if (data) {
                     var eventHtml = buildTimelineHtml(data);
@@ -305,7 +317,6 @@ var initSubdomain = function() {
     var domains = ['shop','xclub'];
     var promiseChain = getUserDetail(domains[0], 0);
     for(let i = 1; i<domains.length; i++) {
-        // console.log(i);
         if(i == domains.length-1) { //on last call
             promiseChain = promiseChain.then(function() {
                 return getUserDetail(domains[i], i);
@@ -316,13 +327,11 @@ var initSubdomain = function() {
                     });
                     console.log(userDetail);
                     var latestLogin = Math.max.apply(Math,userDetail.map(function(u) {
-                        // if(u.status !== "unauthorized") {
-                            var ainxs = u.lastLogin.indexOf("(");
-                            var ainxe = u.lastLogin.indexOf(")");
-                            var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
-                            suba = Number(suba);            
-                            return suba;
-                        // }
+                        var ainxs = u.lastLogin.indexOf("(");
+                        var ainxe = u.lastLogin.indexOf(")");
+                        var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
+                        suba = Number(suba);            
+                        return suba;
                     }));
 
                     recentSubdomain = userDetail.find(function(u) {
@@ -394,9 +403,7 @@ var buildTheme = function() {
         $('#name-panel').css({"height":"25px"});
         $('.greeting-points').css({"padding-top":"4px","background-color":colors[accentHex]});
         localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
-        // console.log(colors[primaryHex]);
         $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
-        //else { Complinks Rewards Everywhere}   images/icon128.png
         $('.navbar-brand-co').html(recentSubdomain.partnerName+' Rewards Everywhere Shopping Assistant');
     } catch (ex) {
 
