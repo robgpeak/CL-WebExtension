@@ -295,8 +295,27 @@ $(function() {
         chrome.runtime.sendMessage({
             type: "get-user-data"
         }, function(response) {
-            console.log(JSON.parse(response.userData));
-            makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);             
+            if(Object.keys(response).length === 0 && response.constructor === Object) {
+                chrome.runtime.sendMessage({
+                        type: "get-user-email"
+                    }, function(response) {
+                        console.log(response);
+                        if (response && response.email) {
+                            subdomain = response.partnerSubdomain;
+                            makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);                         
+                            chrome.runtime.sendMessage({
+                                type: "save-user-data",
+                                data: response
+                            }, function(response) {
+                                
+                            });                 
+                        } else {
+                            console.log('logged out');
+                        }
+                });                
+            } else {
+                makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);             
+            }
         });
     } else if(!window.location.host.includes('google.com')) {
         console.log('2');
