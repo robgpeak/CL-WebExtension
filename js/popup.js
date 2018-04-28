@@ -160,6 +160,15 @@ var showOffer = function(data) {
     });
 };
 
+var showDeals = function(deals) {
+    console.log(deals);
+    var html = "";
+    for(var i = 0; i < deals.length; i++) {
+        html += deals[i].linkCodeHTML+"<br>";
+    }
+    $('.show-offers').html(html);
+}
+
 /**
  * Send POST request to get offers
  */
@@ -178,17 +187,18 @@ var getOffers = function() {
             var arr = [];
             currentDomain = extractHostname(tabs[0].url);
             arr.push(currentDomain);
-            
+            var store = {"includeDeals":"true", "domainName":arr};
             $.post({
                 url: apiUrl,
                 type: "POST",
-                data: JSON.stringify({"domainName":arr}),
+                data: JSON.stringify(store),
                 contentType:"application/json",
                 dataType:"json"
             })
             .done(function(data) {
                 console.log(data[0]);
-                showOffer(data[0]);                    
+                showOffer(data[0]); 
+                showDeals(data[0].Deals);                   
                 chrome.tabs.query({
                     active: true,
                     currentWindow: true

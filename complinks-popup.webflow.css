@@ -308,7 +308,7 @@ body {
     height: auto;
   }
   .navbar-co.navbar-co-default {
-    display: block;
+    display: none;
     margin-bottom: 0px;
   }
   .container-fluid {
@@ -384,11 +384,15 @@ body {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
+    width: 380px;
   }
   .image-3 {
     height: auto;
-    margin-top: 17px;
-    margin-left: 10px;
+    max-width: 80px;
+    margin: 30%;
+  }
+  .img-col {
+    max-height: 100px;
   }
   .offer-btn-container {
     padding-top: 12px;

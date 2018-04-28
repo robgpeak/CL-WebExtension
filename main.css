@@ -11,8 +11,21 @@
 	position: absolute;
 }
 */
+.navbar-co {
+	z-index: -1;
+}
+.timeline-events {
+	display: none;
+}
+.row.fbuttons {
+	width: 360px !important;
+}
+.navbar-co {
+	display: block !important;
+}
 .img-col {
 	width: 40%;
+	margin-right: 12px;
 }
 
 .partner-header {
@@ -45,6 +58,7 @@ body {
 .activate-btn {
 	border-radius: 0px !important;
 	box-shadow: -1px 3px 1px -10px rgba(0,0,0,0.5), -1px 3px 4px -1px rgba(0,0,0,0.5);
+	font-size: 14px !important;
 }
 .btn-primary {
 	background-color: #2CC750;

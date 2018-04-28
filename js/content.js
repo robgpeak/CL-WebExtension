@@ -210,20 +210,25 @@ var makeGoogleRequest = function(userDataResponse, callbacks, res, elems) {
         var a = item.replace('http://', '').replace('https://', '');
         return a.substring(0, a.indexOf('/'));
     });
-    console.log({"domainName":res2});
+    var set = [...new Set(res2)];
     $.post({
         url: apiUrl,
         type: "POST",
-        data: JSON.stringify({"domainName":res2}),
+        data: JSON.stringify({"domainName":set}),
         contentType:"application/json",
         dataType:"json"
     })
     .done(function(data) {
         console.log(data);
-        Object.keys(data).forEach(function(key, index) {
-            // callbacks.success(data[index], userDataResponse, elems[index]);
-            if(data[index].isAdvertiser && data[index].extensionEnabled) {
-                $(elems[index]).before("<div style=\"margin-bottom: 0px;\"><img class=\"searchResultDeal\" style=\"height: 25px; display: inline-block; margin-bottom:-5px;\" src=\""+userDataResponse.searchResultLogoUrl+"\"></img>"+"<a class=\"btn btn-primary activate-btn google-activate\" href=\""+elems[index].getAttribute('href')+"\"style=\"margin-bottom: 5px !important; margin-left: 15px; padding: 10px 15px; background-color:#FF3D02; border-color: #FF3D02; border-radius: 0px !important; border-width: 2px; color: #ffffff; display: inline-block; margin-bottom: 0; font-weight: normal; text-align: center; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap; padding: 10px 15px; font-size: 12px; line-height: 1;\">Activate " + data[index].reward + "</a></div>");
+        console.log(elems);
+        console.log(set);
+        Object.keys(res2).forEach(function(key, index) { //for each in long list
+            //find position in set to check if valid
+            var idx = set.findIndex(function(item) {
+                return item === res2[key];
+            });
+            if(data[idx].isAdvertiser && data[idx].extensionEnabled) {
+                $(elems[index]).before("<div style=\"margin-bottom: 0px;\"><img class=\"searchResultDeal\" style=\"height: 25px; display: inline-block; margin-bottom:-5px;\" src=\""+userDataResponse.searchResultLogoUrl+"\"></img>"+"<a class=\"btn btn-primary activate-btn google-activate\" href=\""+elems[index].getAttribute('href')+"\"style=\"margin-bottom: 5px !important; margin-left: 15px; padding: 10px 15px; background-color:#FF3D02; border-color: #FF3D02; border-radius: 0px !important; border-width: 2px; color: #ffffff; display: inline-block; margin-bottom: 0; font-weight: normal; text-align: center; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap; padding: 10px 15px; font-size: 12px; line-height: 1;\">Activate " + data[idx].reward + "</a></div>");
             }
         });
     })
@@ -256,8 +261,8 @@ function getLocation(href) {
 var makeRequest = function(userDataResponse, callbacks, domain, element) {
     if(domain!==null && typeof domain !== 'undefined') {
         console.log(domain);
-        var a = domain.replace('www.', '').replace('en.', '').replace('http://', '').replace('https://', '');
-        currentDomain = a.substring(0, a.indexOf('.com') + 4);
+        var a = domain.replace('http://', '').replace('https://', '');
+        currentDomain = a.substring(0, a.indexOf('/'));
     } else {
         console.log(getLocation(window.location.href).hostname);
         var currentDomain = window.location.host.replace('www.', '');    
@@ -302,6 +307,7 @@ $(function() {
                     }, function(response) {
                         console.log(response);
                         if (response && response.email) {
+                            //map full array indices to unique array, pass into req function
                             subdomain = response.partnerSubdomain;
                             makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);                         
                             chrome.runtime.sendMessage({
