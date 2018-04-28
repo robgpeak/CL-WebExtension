@@ -163,10 +163,43 @@ var showOffer = function(data) {
 var showDeals = function(deals) {
     console.log(deals);
     var html = "";
+    // var lsph = localStorage.getItem('primaryHex');
+    var lsah = localStorage.getItem('accentHex');
     for(var i = 0; i < deals.length; i++) {
-        html += deals[i].linkCodeHTML+"<br>";
+        // html += "<a href=\""+deals[i].startTripLink+"\">"+deals[i].description+"</a><br>";
+        // console.log(recentSubdomain.partnerSubdomain);
+        console.log(lsah);
+        html +=`<div class="retailer-deal">
+                    <div class="row-2 w-row">
+                        <div class="column deal-col w-col w-col-8">
+                            <div target="_blank" class="retailer-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">`+deals[i].description+`</div>
+                            <div class="retailer-deal-points">`+deals[i].PointText+`</div>
+                            <div class="retailer-deal-exp">`+Date.parse(deals[i].endDate)+`</div>
+                        </div>
+                        <div class="column-2 w-col w-col-4 deal-link-col"><a class="w-button retailer-deal-link" target="_blank" style="background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">Shop Now</a></div>
+                    </div>
+                </div>`;
     }
-    $('.show-offers').html(html);
+
+
+    $(document).on('click','.retailer-deal-link', function(e) {
+        e.preventDefault();
+        var href = $(this).attr('href');
+        console.log(href);
+        chrome.tabs.query({
+            active: true,
+            currentWindow: true
+        }, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+                type: "redirect",
+                data: href
+            }, function(response) { });
+        });          
+    });         
+
+    $('.show-offers .container').html(html);
+
+    $('.show-offers').show();
 }
 
 /**
@@ -350,9 +383,9 @@ var initSubdomain = function() {
                     });
                     bindEvents();
                     toggleEmailField();
+                    buildTheme();
                     getEvents();
                     getOffers();
-                    buildTheme();
                 } catch(ex) {
                     console.log(ex);
                     $('#no-email-alert').show();
@@ -399,7 +432,8 @@ var buildTheme = function() {
                 console.log(response);
                 if(response.type !== "show" && response.type !== null) {
                     $('.activate-btn').css({'background-color':colors[accentHex]});
-                    $('.activate-btn').css({'border-color':colors[accentHex]});      
+                    $('.activate-btn').css({'border-color':colors[accentHex]});   
+                    $('.retailer-deal-link').css({'background-color':colors[accentHex]});
                 }
             });
         });  

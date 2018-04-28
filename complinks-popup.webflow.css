@@ -367,10 +367,14 @@ body {
     margin-left: 8px;
     padding-top: 0px;
   }
+  .timeline-events {
+    display: none;
+  }
   .well.well-sm {
     background-color: #0288d1;
   }
   .name-panel {
+    display: none;
     height: 0px;
   }
   .greeting-points {
@@ -396,5 +400,50 @@ body {
   }
   .offer-btn-container {
     padding-top: 12px;
+  }
+  .deals-promotions-header {
+    margin-bottom: 20px;
+    font-family: Josefin Sans, sans-serif;
+    color: #000;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0px;
+  }
+  .row-2 {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 0px;
+  }
+  .column {
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+  }
+  .column.deal-col {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  .column-2 {
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+  .column-2.deal-link-col {
+    margin-top: 30px;
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  .container {
+    margin-top: 10px;
+    padding-right: 20px;
+  }
+  .container.offers-container {
+    margin-top: 0px;
+    padding-right: 0px;
+  }
+  .link {
+    font-size: 14px;
   }
 }

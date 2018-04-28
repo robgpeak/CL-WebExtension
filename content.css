@@ -32,6 +32,8 @@
     padding: 9% 0px;
     display: inline-block;
     max-width: 100%;
+    max-height: 110px;
+    margin-left:2%;
 }
 
 .complinks_main_content {
