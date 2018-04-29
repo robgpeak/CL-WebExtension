@@ -305,6 +305,7 @@ body {
 
 @media (max-width: 479px) {
   .body-div {
+    width: 455px;
     height: auto;
   }
   .navbar-co.navbar-co-default {
@@ -363,8 +364,12 @@ body {
     display: none;
   }
   .image-2 {
+    max-height: 50px;
+    max-width: 50px;
+    min-height: 50px;
+    min-width: 50px;
     margin-top: 12px;
-    margin-left: 8px;
+    margin-left: 10px;
     padding-top: 0px;
   }
   .timeline-events {
@@ -374,7 +379,7 @@ body {
     background-color: #0288d1;
   }
   .name-panel {
-    display: none;
+    display: block;
     height: 0px;
   }
   .greeting-points {
@@ -388,12 +393,12 @@ body {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    width: 380px;
+    width: 450px;
   }
   .image-3 {
     height: auto;
     max-width: 80px;
-    margin: 30%;
+    margin: 23%;
   }
   .img-col {
     max-height: 100px;
@@ -431,7 +436,7 @@ body {
     bottom: 0px;
   }
   .column-2.deal-link-col {
-    margin-top: 30px;
+    margin-top: 10%;
     padding-right: 0px;
     padding-left: 0px;
   }
@@ -445,5 +450,11 @@ body {
   }
   .link {
     font-size: 14px;
+  }
+  .button {
+    text-transform: uppercase;
+  }
+  .button.retailer-deal-link {
+    text-transform: uppercase;
   }
 }

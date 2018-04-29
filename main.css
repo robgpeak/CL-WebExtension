@@ -11,6 +11,25 @@
 	position: absolute;
 }
 */
+.w-button {
+	padding: 11px 10px !important;
+}
+.retailer-deal-link {
+	text-transform: uppercase;
+	font-size: medium !important;
+	width:80%;
+}
+#triangle-right {
+	vertical-align: top;
+	margin-left: 5px;
+	display: inline-block;
+	border-top: 8px solid transparent;
+    border-left: 14px solid white;
+    border-bottom: 8px solid transparent;
+}
+.deal-link-col {
+	width: 100%;
+}
 .offers-container {
 	box-shadow: -1px 3px 1px -10px rgba(0,0,0,0.5), -1px 3px 4px -1px rgba(0,0,0,0.5);
 	padding:0px;
@@ -49,6 +68,7 @@
 }
 .retailer-deal-exp {
 	margin-bottom: 15px;
+	width: 200px;
 }
 .show-offers {
 	display: none;
@@ -60,7 +80,7 @@
 	display: none;
 }
 .row.fbuttons {
-	width: 360px !important;
+	width: 390px !important;
 }
 .navbar-co {
 	display: block !important;
@@ -69,7 +89,11 @@
 	width: 40%;
 	margin-right: 12px;
 }
-
+.clock-icon {
+	max-height: 20px;
+    max-width: 20px;
+    padding-bottom: 2px;
+}
 .partner-header {
 	display: none;
 }
@@ -93,7 +117,7 @@ span.glyphicon.glyphicon-usd {
 }
 
 body {
-	width:360px; 
+	width:400px; 
 	height:300px;
 	font-family: Roboto,"Helvetica Neue", Arial, sans-serif;
 }
