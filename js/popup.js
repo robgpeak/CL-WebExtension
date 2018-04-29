@@ -235,7 +235,9 @@ var getOffers = function() {
             .done(function(data) {
                 console.log(data[0]);
                 showOffer(data[0]); 
-                showDeals(data[0].Deals);                   
+                showDeals(data[0].Deals);  
+                console.log();
+                $('.deals-promotions-header').append("<a class=\"cl-link\" target=\"_blank\" href=\"https://"+recentSubdomain.partnerSubdomain+".complinks.co/stores/index/"+data[0].Deals[0].advertiserid+"\">(View More...)</a>");                 
                 chrome.tabs.query({
                     active: true,
                     currentWindow: true

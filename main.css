@@ -11,6 +11,14 @@
 	position: absolute;
 }
 */
+.cl-link {
+	color: red;
+	text-decoration: none;
+
+}
+.cl-link:hover {
+	color: black;
+}
 .w-col {
     padding-left: 20px;
 }
