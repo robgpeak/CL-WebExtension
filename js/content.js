@@ -359,8 +359,6 @@ $(function() {
                     //     sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
                     //     sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
                     // }, 1000);
-                } else if (request.type == 'redirect') {
-                    window.location.href = request.data;
                 }
             });
     }

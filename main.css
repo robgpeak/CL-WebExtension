@@ -11,6 +11,9 @@
 	position: absolute;
 }
 */
+.w-col {
+    padding-left: 20px;
+}
 .w-button {
 	padding: 11px 10px !important;
 }

@@ -189,13 +189,14 @@ var showDeals = function(deals) {
         e.preventDefault();
         var href = $(this).attr('href');
         console.log(href);
+        //set activated session storage on content page first, then redirect
         chrome.tabs.query({
             active: true,
             currentWindow: true
         }, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {
-                type: "redirect",
-                data: href
+                type: "create-activate-tab",
+                url: href
             }, function(response) { });
         });          
     });         
