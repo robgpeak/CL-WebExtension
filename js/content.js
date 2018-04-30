@@ -113,6 +113,8 @@ var handleSuccess = function(data, userDataResponse) {
                 } else {
                     console.log('less than 1 hr and x\'ed out');
                 }
+            } else if (dismissed === "show") {
+                console.log('2-4');
             } else { // timeout, activate again
                 console.log('2');
                 console.log('complinks timeout');
