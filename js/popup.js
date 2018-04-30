@@ -171,13 +171,20 @@ var showDeals = function(deals) {
         var date = deals[i].endDate.split("(")[1].slice(0, -2);
         var d = new Date(date*1);
         console.log(d);
+        var dateString;
 
+        d.setDate(d.getDate() + 20);
+
+        dateString = ('0' + (d.getMonth()+1)).slice(-2) + '/'
+                     + ( '0' + d.getDate()).slice(-2) + '/'
+                     + d.getFullYear();
+        console.log(dateString);
         html +=`<div class="retailer-deal">
                     <div class="row-2 w-row">
                         <div class="column deal-col w-col w-col-8">
                             <div target="_blank" class="retailer-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">`+deals[i].description+`</div>
                             <div class="retailer-deal-points">`+deals[i].PointText+`</div>
-                            <div class="retailer-deal-exp"><img class="clock-icon" src="../img/clock-icon.png"/>Expiration Date: `+d.getMonth()+`/`+d.getDay()+`/`+d.getFullYear()+`</div>
+                            <div class="retailer-deal-exp"><img class="clock-icon" src="../img/clock-icon.png"/>Expiration Date: `+dateString+`</div>
                         </div>
                         <div class="column-2 w-col w-col-4 deal-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
                     </div>
@@ -237,7 +244,8 @@ var getOffers = function() {
                 showOffer(data[0]); 
                 showDeals(data[0].Deals);  
                 console.log();
-                $('.deals-promotions-header').append("<a class=\"cl-link\" target=\"_blank\" href=\"https://"+recentSubdomain.partnerSubdomain+".complinks.co/stores/index/"+data[0].Deals[0].advertiserid+"\">(View More...)</a>");                 
+                $('.show-offers .deals-promotions-header').html('Deals &amp; Promotions');
+                $('.deals-promotions-header').append("<a class=\"cl-link\" target=\"_blank\" href=\"https://"+recentSubdomain.partnerSubdomain+".complinks.co/stores/index/"+data[0].Deals[0].advertiserid+"\"> (View More...)</a>");                 
                 chrome.tabs.query({
                     active: true,
                     currentWindow: true

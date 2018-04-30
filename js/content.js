@@ -51,6 +51,9 @@ var bindActivateEvent = function(data) {
             'background-color': 'green'
         });         
         sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+        var date = new Date;
+        var time = date.getTime();
+        sessionStorage.setItem('cl_activated_stamp', time);
         if (data && data.clickUrl) {
             window.location.href = data.clickUrl;
         }
@@ -79,19 +82,16 @@ var handleSuccess = function(data, userDataResponse) {
     //activated or dismissed the offer earlier
     // console.log(userDataResponse);
     // set activated cookie and timestamp, don't show if passed 1 hour
-    var date = new Date;
-    var time = date.getTime();
-    var oldStamp = Number(sessionStorage.getItem('cl_activated_stamp'));
-    var diff = Math.abs(time - new Date(oldStamp)); //1 hr = 3600000
-
-    sessionStorage.setItem('cl_activated_stamp', time);
-
     if(data.isAdvertiser && data.extensionEnabled) {
         var show = sessionStorage.getItem('ebatesCloneShowPopup');
         var activated = sessionStorage.getItem('ebatesCloneShowPopupActivated');
         var dismissed = sessionStorage.getItem('ebatesCloneShowPopupDismissed'); 
 
         if (show == 'show' && activated !== 'show') { //1st time activated and not dismissed, make green
+            var date = new Date;
+            var time = date.getTime();
+            var oldStamp = Number(sessionStorage.getItem('cl_activated_stamp'));
+            var diff = Math.abs(time - new Date(oldStamp)); //1 hr = 3600000
             if(diff < 3600000) { //show activated if not x'ed
                 if(dismissed !== 'show') {
                     console.log('1');
@@ -289,6 +289,13 @@ var makeRequest = function(userDataResponse, callbacks, domain, element) {
 
 var subdomain;
 $(function() {
+    if(document.referrer.includes('complinks.co') || document.referrer.includes('ebates.com')) { //check if other extension notification is enabled 
+        sessionStorage.setItem('ebatesCloneShowPopup', 'show'); 
+        sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');
+        var date = new Date;
+        var time = date.getTime();
+        sessionStorage.setItem('cl_activated_stamp', time);
+    }
     callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
     var elems = document.querySelectorAll('.g h3.r > a:not(.l)');
     console.log(typeof elems.length);
