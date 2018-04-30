@@ -11,10 +11,37 @@
 	position: absolute;
 }
 */
+.ads-link-col {
+	margin-top: 7% !important;
+}
+.ads-deal-text {
+	font-weight: 700;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    font-size: 16px !important;
+    width: 102% !important;
+}
+.ads-deal-points {
+	color: #828282 !important;
+	font-weight: 300 !important;
+	margin-top: 2.5px !important;
+}
+.image-4 {
+    margin: 0px 0px 0px 5px;
+    padding: 10px 0px 0px;
+    float: none;
+    max-width: 50px;
+    min-width: 100px;
+    margin-top: 12px;
+    margin-left: 10px;
+    padding-top: 0px;
+}
+.timeline-events {
+	margin: 20px 0px;
+}
 .cl-link {
 	color: red;
 	text-decoration: none;
-
 }
 .cl-link:hover {
 	color: black;

@@ -318,7 +318,7 @@ var getEvents = function() {
         $(".loading-icon").show();
         var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".complinks.co/api/v1/getNews";
         $.post(apiUrl, {
-                userEmail: emailAddress,
+                userEmail: emailAddress
             })
             .done(function(data) {
                 if(data['status'] === 'unauthorized') {
@@ -328,11 +328,38 @@ var getEvents = function() {
                 }
                 $(".loading-icon").hide();
                 if (data) {
-                    var eventHtml = buildTimelineHtml(data);
-                    $('.timeline-events').html(eventHtml);
+                    // var eventHtml = buildTimelineHtml(data.news);
+                    // $('.timeline-events').html(eventHtml);
+                    var ads = data.featuredAdvertisers;
+                    console.log(ads);
+                    var html = "";
+                    // var lsph = localStorage.getItem('primaryHex');
+                    var lsah = localStorage.getItem('accentHex');
+                    for(var i = 0; i < ads.length; i++) {
+                        // html += "<a href=\""+deals[i].startTripLink+"\">"+deals[i].description+"</a><br>";
+                        // console.log(recentSubdomain.partnerSubdomain);
+                        // var date = deals[i].endDate.split("(")[1].slice(0, -2);
+                        // var d = new Date(date*1);
+                        // console.log(d);
+
+                        html +=`<div class="retailer-deal">
+                                    <div class="row-2 w-row">
+                                        <div class="column deal-col w-col w-col-8">
+                                            <div><img class="image-4" src="`+ads[i].logo+`"/></div>
+                                            <div target="_blank" class="retailer-deal-text ads-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+ads[i].startTripLink+`">Earn `+ads[i].PointText+`</div>
+                                            <div class="retailer-deal-points ads-deal-points">Shop all `+ads[i].name+` deals</div>
+                                        </div>
+                                        <div class="column-2 w-col w-col-4 deal-link-col ads-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+ads[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
+                                    </div>
+                                </div>`;
+                    }
+                    $('.show-offers .deals-promotions-header').html('Shop <strong>Featured Stores</strong>');
+                    $('.show-offers .container').html(html);
+                    $('.show-offers').show();
+
                     var lsph = localStorage.getItem('primaryHex');
-                    $('.well-sm, .btn-primary').css({'background-color':lsph});
-                    $('.well-sm, .btn-primary').css({'border-color':lsph});
+                    $('.well-sm, .btn-primary').css({'background-color':lsah});
+                    $('.well-sm, .btn-primary').css({'border-color':lsah});
                 }
             })
             .fail(function() {
