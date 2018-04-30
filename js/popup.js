@@ -191,7 +191,6 @@ var showDeals = function(deals) {
                 </div>`;
     }
 
-
     $(document).on('click','.retailer-deal-link', function(e) {
         e.preventDefault();
         var href = $(this).attr('href');
@@ -209,7 +208,7 @@ var showDeals = function(deals) {
     });         
 
     $('.show-offers .container').html(html);
-
+    $('.offers-container').append("<div class=\"cl-link-container\"><a class=\"cl-link\" target=\"_blank\" href=\"https://"+recentSubdomain.partnerSubdomain+".complinks.co/stores/index/"+deals[0].advertiserid+"\"> View More...</a></div>");     
     $('.show-offers').show();
 }
 
@@ -244,8 +243,9 @@ var getOffers = function() {
                 showOffer(data[0]); 
                 showDeals(data[0].Deals);  
                 console.log();
-                $('.show-offers .deals-promotions-header').html('Deals &amp; Promotions');
-                $('.deals-promotions-header').append("<a class=\"cl-link\" target=\"_blank\" href=\"https://"+recentSubdomain.partnerSubdomain+".complinks.co/stores/index/"+data[0].Deals[0].advertiserid+"\"> (View More...)</a>");                 
+                $('.show-offers .deals-promotions-header').html('<hr class="left"/>Deals &amp; Promotions<hr class="right"/>');
+                // $('.deals-promotions-header').append("<div class='delimiter'></div>");
+                            
                 chrome.tabs.query({
                     active: true,
                     currentWindow: true
@@ -361,7 +361,8 @@ var getEvents = function() {
                                     </div>
                                 </div>`;
                     }
-                    $('.show-offers .deals-promotions-header').html('Shop <strong>Featured Stores</strong>');
+                    $('.show-offers .deals-promotions-header').html('<hr class="left"/>Shop <strong>Featured Stores</strong><hr class="right"/>');
+                    // $('.deals-promotions-header').append("<div class='delimiter'></div>");
                     $('.show-offers .container').html(html);
                     $('.show-offers').show();
 

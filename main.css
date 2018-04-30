@@ -11,6 +11,28 @@
 	position: absolute;
 }
 */
+.retailer-deal:nth-last-child(0) {
+	border-bottom: none;
+}
+hr {
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
+	border-style: inset;
+    display: inline-grid;
+    vertical-align: middle;
+}
+hr.left {
+	width: 20px;
+}
+hr.right {
+	width: 180px;
+}
+.delimiter {
+	width: 1px;
+    margin: 15px 0;
+    height: 40px;
+    background-color: #a29f9f;
+}
 .ads-link-col {
 	margin-top: 7% !important;
 }
@@ -38,6 +60,12 @@
 }
 .timeline-events {
 	margin: 20px 0px;
+}
+.cl-link-container {
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+	border-top: transparent;
 }
 .cl-link {
 	color: red;
@@ -73,19 +101,19 @@
 	padding:0px;
 }
 .deals-promotions-header {
-	margin-bottom: 20px !important;
+	margin-bottom: 10px !important;
 	font-family: Lato, sans-serif;
-	font-weight: 700;
+	font-weight: 500;
 }
 .retailer-deal {
 	min-height: 100px;
-	border-bottom: 1px solid #757575;
-	border-right: 1px solid #757575;
-	border-left: 1px solid #757575;
+	border-bottom: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-left: 1px solid #ddd;
 	border-top: transparent;
 }
 .retailer-deal:nth-child(1) {
-	border-top: 1px solid #000;
+	border-top: 1px solid #ddd;
 }
 .retailer-deal-text, .retailer-deal-points, .retailer-deal-exp {
 	font-family: Lato, sans-serif;
@@ -197,7 +225,7 @@ body {
 }
 
 .show-offers {
-	margin-top: 20px;
+	margin-top: 10px;
     margin-bottom: 20px;
     text-align: center;
 }

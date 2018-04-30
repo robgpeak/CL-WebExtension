@@ -291,6 +291,12 @@ var makeRequest = function(userDataResponse, callbacks, domain, element) {
 
 var subdomain;
 $(function() {
+    var stopFlag = false;
+    $(document).on("ready",".ebates-notification-button-activated", function() {
+        console.log("ebates active!!");
+        stopFlag = true;
+    });
+
     if(document.referrer.includes('complinks.co') || document.referrer.includes('ebates.com')) { //check if other extension notification is enabled 
         sessionStorage.setItem('ebatesCloneShowPopup', 'show'); 
         sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');
@@ -315,7 +321,7 @@ $(function() {
                         type: "get-user-email"
                     }, function(response) {
                         console.log(response);
-                        if (response && response.email) {
+                        if (response && response.email && !stopFlag) {
                             //map full array indices to unique array, pass into req function
                             subdomain = response.partnerSubdomain;
                             makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);                         
