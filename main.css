@@ -49,14 +49,10 @@ hr.right {
 	margin-top: 2.5px !important;
 }
 .image-4 {
+	height: 40px;
+    max-width: 100%;
     margin: 0px 0px 0px 5px;
     padding: 10px 0px 0px;
-    float: none;
-    max-width: 50px;
-    min-width: 100px;
-    margin-top: 12px;
-    margin-left: 10px;
-    padding-top: 0px;
 }
 .timeline-events {
 	margin: 20px 0px;
