@@ -298,11 +298,11 @@ $(function() {
     });
 
     if(document.referrer.includes('complinks.co') || document.referrer.includes('ebates.com')) { //check if other extension notification is enabled 
-        sessionStorage.setItem('ebatesCloneShowPopup', 'show'); 
-        sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');
-        var date = new Date;
-        var time = date.getTime();
-        sessionStorage.setItem('cl_activated_stamp', time);
+        // sessionStorage.setItem('ebatesCloneShowPopup', 'show'); 
+        // sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');
+        // var date = new Date;
+        // var time = date.getTime();
+        // sessionStorage.setItem('cl_activated_stamp', time);
     }
     callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
     var elems = document.querySelectorAll('.g h3.r > a:not(.l)');
@@ -348,6 +348,9 @@ $(function() {
             function(request, sender, sendResponse) {
                 if (request.type == 'create-activate-tab') {
                     console.log(request);
+                    var date = new Date;
+                    var time = date.getTime();
+                    sessionStorage.setItem('cl_activated_stamp', time);
                     sessionStorage.setItem('ebatesCloneShowPopup', 'show');
                     if (request && request.url) {
                         window.location.href = request.url;
