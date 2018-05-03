@@ -344,11 +344,25 @@ $(function() {
         type: "check-params",
         data: urlFull
     }, function (response) { 
-        if(response.cease) {
+        if(response.msg === "cease") {
             console.log('ceased');
             sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
         }
     });
+
+    chrome.runtime.sendMessage({
+        type: "path-check",
+        data: href
+    }, function (response) { 
+        if(!window.location.host.includes("complinks.co") && response.msg === "trip-activated") {
+            var date = new Date;
+            var time = date.getTime();
+            sessionStorage.setItem('cl_activated_stamp', time);
+            sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+            sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');        
+            sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+        }
+    });    
 
 
     callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
@@ -391,8 +405,7 @@ $(function() {
         chrome.runtime.sendMessage({
             type: "cease-check"
         }, function(response) {
-            if(response.cease) {
-                console.log('ceased');
+            if(response.msg === "cease") {
                 sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
             } else {
                 callbacks['success'] = handleSuccess;

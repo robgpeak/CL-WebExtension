@@ -3,6 +3,7 @@
  * and send it to content script
  */
 var ceaseStack = [];
+var path = [];
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         console.log(sender.tab ?
@@ -81,27 +82,43 @@ chrome.runtime.onMessage.addListener(
                     userData: item.userData
                 });                
             });
-        } else if (request.type === "check-params") {
+        } else if (request.type === "check-params") { 
             var keys = Object.keys(request.data);
             console.log(keys);
             if(request.data.afsrc === "1" || keys.includes("linksynergy") || keys.includes("ebtoken") || keys.includes("wmlspartner") || keys.includes("affiliate.rakuten.com")) {
                 ceaseStack.push(1);
                 console.log(ceaseStack);
             }
+        } else if(request.type === "path-check") {
+            if(request.data.includes("/trip/start/")) {
+                path.push(request.data);
+                sendResponse({
+                    msg: "trip-activated"
+                });
+            } else if(path.length > 0) {
+                sendResponse({
+                    msg: "trip-activated"
+                });
+            }
+            setTimeout(function() {
+                path = [];
+            }, 5000);
+
         } else if (request.type === "cease-check") {
             console.log(ceaseStack.length);
+            // if(url) //if url is a link from complinks subdomain, set activated cookie in response
             if(ceaseStack.length > 0) {
                 sendResponse({
-                    cease: true 
+                    msg: "cease" 
                 });
             } else {
                 sendResponse({
-                    cease: false
+                    msg: "continue"
                 });
             }
             setTimeout(function() {
                 ceaseStack = [];
-            }, 5000);
+            }, 7000);
         } else if (request.type === "clear-cease") {
             ceaseStack = [];
         }
