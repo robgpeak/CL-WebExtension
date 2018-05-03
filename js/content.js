@@ -344,25 +344,27 @@ $(function() {
         type: "check-params",
         data: urlFull
     }, function (response) { 
-        if(response.msg === "cease") {
+        if(response !== undefined && response.msg === "cease") {
             console.log('ceased');
             sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
         }
     });
 
-    chrome.runtime.sendMessage({
-        type: "path-check",
-        data: href
-    }, function (response) { 
-        if(!window.location.host.includes("complinks.co") && response.msg === "trip-activated") {
-            var date = new Date;
-            var time = date.getTime();
-            sessionStorage.setItem('cl_activated_stamp', time);
-            sessionStorage.setItem('ebatesCloneShowPopup', 'show');
-            sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');        
-            sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
-        }
-    });    
+    // chrome.runtime.sendMessage({
+    //     type: "path-check",
+    //     data: href
+    // }, function (response) { 
+    //     console.log('path-check destination');
+    //     console.log(response);
+    //     if(!window.location.host.includes("complinks.co") && response.msg === "trip-activated") {
+    //         var date = new Date;
+    //         var time = date.getTime();
+    //         sessionStorage.setItem('cl_activated_stamp', time);
+    //         sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+    //         sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');        
+    //         sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+    //     }
+    // });    
 
 
     callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here

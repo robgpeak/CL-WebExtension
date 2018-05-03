@@ -84,18 +84,20 @@ chrome.runtime.onMessage.addListener(
             });
         } else if (request.type === "check-params") { 
             var keys = Object.keys(request.data);
-            console.log(keys);
+            // console.log(keys);
             if(request.data.afsrc === "1" || keys.includes("linksynergy") || keys.includes("ebtoken") || keys.includes("wmlspartner") || keys.includes("affiliate.rakuten.com")) {
                 ceaseStack.push(1);
-                console.log(ceaseStack);
+                // console.log(ceaseStack);
             }
         } else if(request.type === "path-check") {
             if(request.data.includes("/trip/start/")) {
                 path.push(request.data);
+                console.log(path);
                 sendResponse({
                     msg: "trip-activated"
                 });
             } else if(path.length > 0) {
+                console.log(path);
                 sendResponse({
                     msg: "trip-activated"
                 });
@@ -105,7 +107,7 @@ chrome.runtime.onMessage.addListener(
             }, 5000);
 
         } else if (request.type === "cease-check") {
-            console.log(ceaseStack.length);
+            // console.log(ceaseStack.length);
             // if(url) //if url is a link from complinks subdomain, set activated cookie in response
             if(ceaseStack.length > 0) {
                 sendResponse({
