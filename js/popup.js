@@ -148,7 +148,7 @@ var showOffer = function(data) {
         chrome.tabs.sendMessage(tabs[0].id, {
             type: "activated?"
         }, function(response) {
-            if(response.type=="show") {
+            if(response !== undefined && response.type=="show") {
                 html = "";
                 html = '<div class="row">';
                 html += '<div class="col-xs-12">';
@@ -254,7 +254,7 @@ var getOffers = function() {
                         type: "activated?"
                     }, function(response) {
                         console.log(response);
-                        if(response.type=="show") {
+                        if(response !== undefined && response.type === "show") {
                             $('.activate-btn').css({
                                 'background-color': 'green !important',
                                 'border-color': 'green !important'
@@ -472,7 +472,7 @@ var buildTheme = function() {
                 type: "activated?"
             }, function(response) {
                 console.log(response);
-                if(response.type !== "show" && response.type !== null) {
+                if(response !== undefined && response.type !== "show" && response.type !== null) {
                     $('.activate-btn').css({'background-color':colors[accentHex]});
                     $('.activate-btn').css({'border-color':colors[accentHex]});   
                     $('.retailer-deal-link').css({'background-color':colors[accentHex]});

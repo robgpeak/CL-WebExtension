@@ -2,6 +2,7 @@
  * Get user email address from local storage
  * and send it to content script
  */
+var ceaseStack = [];
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         console.log(sender.tab ?
@@ -20,7 +21,7 @@ chrome.runtime.onMessage.addListener(
                     if (xhr.readyState === 4 && JSON.parse(xhr.response).status !== 'unauthorized' ) {
                         // console.log(JSON.parse(xhr.response).partnerSubdomain);
                         // sessionStorage.setItem('subdomain', JSON.parse(xhr.response).partnerSubdomain);
-                        console.log(JSON.parse(xhr.response));
+                        // console.log(JSON.parse(xhr.response));
                         loggedIn.push(JSON.parse(xhr.response).partnerSubdomain);
                         userDetail.push(JSON.parse(xhr.response));
                         
@@ -38,11 +39,11 @@ chrome.runtime.onMessage.addListener(
                     suba = Number(suba);            
                     return suba;    
                 }));
-                console.log(latestLogin);
+                // console.log(latestLogin);
                 recentSubdomain = userDetail.find(function(u) {
                    return u.lastLogin.includes(latestLogin); 
                 });
-                console.log(recentSubdomain);
+                // console.log(recentSubdomain);
 
                 sendResponse(recentSubdomain);
             }, 700);
@@ -67,8 +68,8 @@ chrome.runtime.onMessage.addListener(
             //     });                
             // }, 3000);
         } else if(request.type === "save-user-data") {
-            console.log('save user data called');
-            console.log(JSON.stringify(request.data));
+            // console.log('save user data called');
+            // console.log(JSON.stringify(request.data));
             var store = {};
             store['userData'] = JSON.stringify(request.data);
             chrome.storage.local.set(store);
@@ -80,7 +81,29 @@ chrome.runtime.onMessage.addListener(
                     userData: item.userData
                 });                
             });
-
+        } else if (request.type === "check-params") {
+            var keys = Object.keys(request.data);
+            console.log(keys);
+            if(request.data.afsrc === "1" || keys.includes("linksynergy") || keys.includes("ebtoken") || keys.includes("wmlspartner") || keys.includes("affiliate.rakuten.com")) {
+                ceaseStack.push(1);
+                console.log(ceaseStack);
+            }
+        } else if (request.type === "cease-check") {
+            console.log(ceaseStack.length);
+            if(ceaseStack.length > 0) {
+                sendResponse({
+                    cease: true 
+                });
+            } else {
+                sendResponse({
+                    cease: false
+                });
+            }
+            setTimeout(function() {
+                ceaseStack = [];
+            }, 5000);
+        } else if (request.type === "clear-cease") {
+            ceaseStack = [];
         }
         return true;
     });

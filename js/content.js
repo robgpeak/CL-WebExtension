@@ -289,21 +289,68 @@ var makeRequest = function(userDataResponse, callbacks, domain, element) {
     });
 }
 
+function getAllUrlParams(url) {
+  var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+  var obj = {};
+  if (queryString) {
+    queryString = queryString.split('#')[0];
+    var arr = queryString.split('&');
+    for (var i=0; i<arr.length; i++) {
+      var a = arr[i].split('=');
+      var paramNum = undefined;
+      var paramName = a[0].replace(/\[\d*\]/, function(v) {
+        paramNum = v.slice(1,-1);
+        return '';
+      });
+      var paramValue = typeof(a[1])==='undefined' ? true : a[1];
+      paramName = paramName.toLowerCase();
+      paramValue = paramValue.toLowerCase();
+      if (obj[paramName]) {
+        if (typeof obj[paramName] === 'string') {
+          obj[paramName] = [obj[paramName]];
+        }
+        if (typeof paramNum === 'undefined') {
+          obj[paramName].push(paramValue);
+        }
+        else {
+          obj[paramName][paramNum] = paramValue;
+        }
+      }
+      else {
+        obj[paramName] = paramValue;
+      }
+    }
+  }
+  return obj;
+}
+
 var subdomain;
 $(function() {
-    var stopFlag = false;
-    $(document).on("ready",".ebates-notification-button-activated", function() {
-        console.log("ebates active!!");
-        stopFlag = true;
+    $(document).on('click','a',function(e) {
+        var href = $(this).attr('href');
+        var urlFull = getAllUrlParams(href);
+        var urlParams = Object.keys(urlFull);
+        chrome.runtime.sendMessage({
+            type: "check-params",
+            data: urlFull
+        }, function () {   });
     });
 
-    if(document.referrer.includes('complinks.co') || document.referrer.includes('ebates.com')) { //check if other extension notification is enabled 
-        // sessionStorage.setItem('ebatesCloneShowPopup', 'show'); 
-        // sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');
-        // var date = new Date;
-        // var time = date.getTime();
-        // sessionStorage.setItem('cl_activated_stamp', time);
-    }
+    //set cease from redirect page or cease if in previous link
+    var href = window.location.href;
+    var urlFull = getAllUrlParams(href);
+    var urlParams = Object.keys(urlFull);
+    chrome.runtime.sendMessage({
+        type: "check-params",
+        data: urlFull
+    }, function (response) { 
+        if(response.cease) {
+            console.log('ceased');
+            sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+        }
+    });
+
+
     callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
     var elems = document.querySelectorAll('.g h3.r > a:not(.l)');
     console.log(typeof elems.length);
@@ -321,7 +368,7 @@ $(function() {
                         type: "get-user-email"
                     }, function(response) {
                         console.log(response);
-                        if (response && response.email && !stopFlag) {
+                        if (response && response.email) {
                             //map full array indices to unique array, pass into req function
                             subdomain = response.partnerSubdomain;
                             makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);                         
@@ -341,43 +388,52 @@ $(function() {
         });
     } else if(!window.location.host.includes('google.com')) {
         console.log('2');
-        callbacks['success'] = handleSuccess;
-        getEmailAddress();
-        // makeRequest(callbacks);
-        chrome.runtime.onMessage.addListener(
-            function(request, sender, sendResponse) {
-                if (request.type == 'create-activate-tab') {
-                    console.log(request);
-                    var date = new Date;
-                    var time = date.getTime();
-                    sessionStorage.setItem('cl_activated_stamp', time);
-                    sessionStorage.setItem('ebatesCloneShowPopup', 'show');
-                    if (request && request.url) {
-                        window.location.href = request.url;
-                    }
-                    sendResponse({
-                        type: "activated"
+        chrome.runtime.sendMessage({
+            type: "cease-check"
+        }, function(response) {
+            if(response.cease) {
+                console.log('ceased');
+                sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+            } else {
+                callbacks['success'] = handleSuccess;
+                getEmailAddress();
+                // makeRequest(callbacks);
+                chrome.runtime.onMessage.addListener(
+                    function(request, sender, sendResponse) {
+                        if (request.type == 'create-activate-tab') {
+                            console.log(request);
+                            var date = new Date;
+                            var time = date.getTime();
+                            sessionStorage.setItem('cl_activated_stamp', time);
+                            sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+                            if (request && request.url) {
+                                window.location.href = request.url;
+                            }
+                            sendResponse({
+                                type: "activated"
+                            });
+                        } else if (request.type == 'activated?') {
+                            sendResponse({
+                                type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
+                            });
+                        } else if (request.type == 'set-activated-from-bg') {
+                            // var date = new Date;                
+                            // var time = date.getTime();           
+                            // sessionStorage.setItem('cl_activated_stamp', time); 
+                            // setTimeout(function() {
+                            //     $('.complinks_activate_button').html("Activated!");    
+                            //     $(".complinks_activate_button").css({
+                            //         'background-color': 'green'
+                            //     });       
+                            //     $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
+                            //         $(".complinks_popup").slideUp(2000);
+                            //     }); 
+                            //     sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
+                            //     sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
+                            // }, 1000);
+                        }
                     });
-                } else if (request.type == 'activated?') {
-                    sendResponse({
-                        type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
-                    });
-                } else if (request.type == 'set-activated-from-bg') {
-                    // var date = new Date;                
-                    // var time = date.getTime();           
-                    // sessionStorage.setItem('cl_activated_stamp', time); 
-                    // setTimeout(function() {
-                    //     $('.complinks_activate_button').html("Activated!");    
-                    //     $(".complinks_activate_button").css({
-                    //         'background-color': 'green'
-                    //     });       
-                    //     $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
-                    //         $(".complinks_popup").slideUp(2000);
-                    //     }); 
-                    //     sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
-                    //     sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
-                    // }, 1000);
-                }
-            });
+            }
+        });
     }
 });
