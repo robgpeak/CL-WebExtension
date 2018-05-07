@@ -3,12 +3,13 @@
  * and send it to content script
  */
 var ceaseStack = [];
+var activateStack = [];
 var path = [];
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        console.log(sender.tab ?
-            "from a content script:" + sender.tab.url :
-            "from the extension");
+        // console.log(sender.tab ?
+        //     "from a content script:" + sender.tab.url :
+        //     "from the extension");
         if (request.type == "get-user-email") {
         	var email = localStorage.getItem('userEmailAddress');
             var domains = ['shop','xclub'];
@@ -83,34 +84,47 @@ chrome.runtime.onMessage.addListener(
                 });                
             });
         } else if (request.type === "check-params") { 
+            console.log('check-params top');
             console.log(request.data);
+            console.log(request.host);
+            console.log(request.type);
             var keys = Object.keys(request.data);
-            // console.log(keys);
             if(request.data.afsrc === "1" || keys.includes("linksynergy") || keys.includes("ebtoken") || keys.includes("wmlspartner") || keys.includes("affiliate.rakuten.com")) {
                 ceaseStack.push(1);
-                // console.log(ceaseStack);
             }
-        } else if(request.type === "path-check") {
-            if(request.data.includes("/trip/start/")) {
-                path.push(request.data);
-                console.log(path);
-                sendResponse({
-                    msg: "trip-activated"
-                });
-            } else if(path.length > 0) {
-                console.log(path);
-                sendResponse({
-                    msg: "trip-activated"
-                });
+            if(request.mode === 'click' && request.host.includes("complinks.co")) {
+                activateStack.push(1);
+                console.log('activate stack push');
             }
-            setTimeout(function() {
-                path = [];
-            }, 5000);
-
+        // } else if(request.type === "path-check") {
+        //     if(request.data.includes("/trip/start/")) {
+        //         path.push(request.data);
+        //         console.log(path);
+        //         sendResponse({
+        //             msg: "trip-activated"
+        //         });
+        //     } else if(path.length > 0) {
+        //         console.log(path);
+        //         sendResponse({
+        //             msg: "trip-activated"
+        //         });
+        //     }
+        //     setTimeout(function() {
+        //         path = [];
+        //     }, 5000);
         } else if (request.type === "cease-check") {
             // console.log(ceaseStack.length);
             // if(url) //if url is a link from complinks subdomain, set activated cookie in response
-            if(ceaseStack.length > 0) {
+            console.log(activateStack);
+            console.log("did not break");
+            if(activateStack.length > 0 && !request.host.includes("complinks.co")) {
+                // setTimeout(function() {
+                activateStack = [];
+                // }, 5000);
+                sendResponse({
+                    msg: "activated"
+                });
+            } else if(ceaseStack.length > 0) {
                 sendResponse({
                     msg: "cease" 
                 });
@@ -121,7 +135,7 @@ chrome.runtime.onMessage.addListener(
             }
             setTimeout(function() {
                 ceaseStack = [];
-            }, 7000);
+            }, 10000);
         } else if (request.type === "clear-cease") {
             ceaseStack = [];
         }

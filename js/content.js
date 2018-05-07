@@ -309,22 +309,10 @@ $(function() {
         var urlParams = Object.keys(urlFull);
         chrome.runtime.sendMessage({
             type: "check-params",
-            data: urlFull
+            data: urlFull,
+            host: window.location.host,
+            mode: 'click'
         }, function () {   });
-    });
-
-    //set cease from redirect page or cease if in previous link
-    var href = window.location.href;
-    var urlFull = getAllUrlParams(href);
-    var urlParams = Object.keys(urlFull);
-    chrome.runtime.sendMessage({
-        type: "check-params",
-        data: urlFull
-    }, function (response) { 
-        if(response !== undefined && response.msg === "cease") {
-            console.log('ceased');
-            sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
-        }
     });
 
     // chrome.runtime.sendMessage({
@@ -334,10 +322,10 @@ $(function() {
     //     console.log('path-check destination');
     //     console.log(response);
     //     if(!window.location.host.includes("complinks.co") && response.msg === "trip-activated") {
-    //         var date = new Date;
-    //         var time = date.getTime();
-    //         sessionStorage.setItem('cl_activated_stamp', time);
-    //         sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+            // var date = new Date;
+            // var time = date.getTime();
+            // sessionStorage.setItem('cl_activated_stamp', time);
+            // sessionStorage.setItem('ebatesCloneShowPopup', 'show');
     //         sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');        
     //         sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
     //     }
@@ -381,51 +369,84 @@ $(function() {
         });
     } else if(!window.location.host.includes('google.com')) {
         console.log('2');
+        //set cease from redirect page or cease if in previous link
+        var href = window.location.href;
+        var urlFull = getAllUrlParams(href);
+        var urlParams = Object.keys(urlFull);
+        console.log(href);
+        console.log(urlFull);
+        console.log(urlParams);
         chrome.runtime.sendMessage({
-            type: "cease-check"
+            type: "check-params",
+            data: urlFull,
+            host: window.location.host,
+            mode: 'refresh'
+        }, function (response) { 
+            if(response !== undefined && response.msg === "cease") {
+                console.log('ceased');
+                sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+            }
+        });
+        console.log('2.a');
+
+
+
+        chrome.runtime.sendMessage({
+            type: "cease-check",
+            host: window.location.host
         }, function(response) {
+            console.log(response.msg);
             if(response.msg === "cease") {
                 sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+            } else if (response.msg === "activated") {
+                var date = new Date;
+                var time = date.getTime();
+                sessionStorage.setItem('cl_activated_stamp', time);
+                sessionStorage.setItem('ebatesCloneShowPopup', 'show');                
+                sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+                sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');   
             } else {
                 callbacks['success'] = handleSuccess;
                 getEmailAddress();
-                // makeRequest(callbacks);
-                chrome.runtime.onMessage.addListener(
-                    function(request, sender, sendResponse) {
-                        if (request.type == 'create-activate-tab') {
-                            console.log(request);
-                            var date = new Date;
-                            var time = date.getTime();
-                            sessionStorage.setItem('cl_activated_stamp', time);
-                            sessionStorage.setItem('ebatesCloneShowPopup', 'show');
-                            if (request && request.url) {
-                                window.location.href = request.url;
-                            }
-                            sendResponse({
-                                type: "activated"
-                            });
-                        } else if (request.type == 'activated?') {
-                            sendResponse({
-                                type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
-                            });
-                        } else if (request.type == 'set-activated-from-bg') {
-                            // var date = new Date;                
-                            // var time = date.getTime();           
-                            // sessionStorage.setItem('cl_activated_stamp', time); 
-                            // setTimeout(function() {
-                            //     $('.complinks_activate_button').html("Activated!");    
-                            //     $(".complinks_activate_button").css({
-                            //         'background-color': 'green'
-                            //     });       
-                            //     $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
-                            //         $(".complinks_popup").slideUp(2000);
-                            //     }); 
-                            //     sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
-                            //     sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
-                            // }, 1000);
-                        }
-                    });
             }
         });
+
+
+        // makeRequest(callbacks);
+        chrome.runtime.onMessage.addListener(
+            function(request, sender, sendResponse) {
+                if (request.type == 'create-activate-tab') {
+                    console.log(request);
+                    var date = new Date;
+                    var time = date.getTime();
+                    sessionStorage.setItem('cl_activated_stamp', time);
+                    sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+                    if (request && request.url) {
+                        window.location.href = request.url;
+                    }
+                    sendResponse({
+                        type: "activated"
+                    });
+                } else if (request.type == 'activated?') {
+                    sendResponse({
+                        type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
+                    });
+                } else if (request.type == 'set-activated-from-bg') {
+                    // var date = new Date;                
+                    // var time = date.getTime();           
+                    // sessionStorage.setItem('cl_activated_stamp', time); 
+                    // setTimeout(function() {
+                    //     $('.complinks_activate_button').html("Activated!");    
+                    //     $(".complinks_activate_button").css({
+                    //         'background-color': 'green'
+                    //     });       
+                    //     $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
+                    //         $(".complinks_popup").slideUp(2000);
+                    //     }); 
+                    //     sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
+                    //     sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
+                    // }, 1000);
+                }
+            });        
     }
 });
