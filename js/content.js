@@ -421,6 +421,9 @@ $(function() {
                     var time = date.getTime();
                     sessionStorage.setItem('cl_activated_stamp', time);
                     sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+                    if(request.mode === "popup-activate") {
+                        sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');
+                    }
                     if (request && request.url) {
                         window.location.href = request.url;
                     }

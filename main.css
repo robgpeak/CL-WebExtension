@@ -11,6 +11,9 @@
 	position: absolute;
 }
 */
+img {
+	opacity: 1 !important;
+}
 .retailer-deal:nth-last-child(0) {
 	border-bottom: none;
 }

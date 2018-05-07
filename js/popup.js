@@ -115,13 +115,21 @@ var showOffer = function(data) {
 
     $(document).on('click','.activate-btn',function() {
         console.log('activate-btn clicked');
+        // chrome.browserAction.setIcon({
+        //     path: {
+        //         // 16:    '../img/alt-icon16.png',
+        //         48:    '../img/alt-icon48.png',
+        //         // 128:   '../img/alt-icon128.png'            
+        //     }
+        // });
         chrome.tabs.query({
             active: true,
             currentWindow: true
         }, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {
                 type: "create-activate-tab",
-                url: data.clickUrl
+                url: data.clickUrl,
+                mode: 'popup-activate'
             }, function(response) {
                 console.log(response);
                 chrome.tabs.query({
@@ -202,7 +210,8 @@ var showDeals = function(deals) {
         }, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {
                 type: "create-activate-tab",
-                url: href
+                url: href,
+                mode: 'other'
             }, function(response) { });
         });          
     });         
