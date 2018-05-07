@@ -288,47 +288,24 @@ var makeRequest = function(userDataResponse, callbacks, domain, element) {
         callbacks.error(data[0], userDataResponse);
     });
 }
+function getAllUrlParams() {
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
 
-function getAllUrlParams(url) {
-  var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
-  var obj = {};
-  if (queryString) {
-    queryString = queryString.split('#')[0];
-    var arr = queryString.split('&');
-    for (var i=0; i<arr.length; i++) {
-      var a = arr[i].split('=');
-      var paramNum = undefined;
-      var paramName = a[0].replace(/\[\d*\]/, function(v) {
-        paramNum = v.slice(1,-1);
-        return '';
-      });
-      var paramValue = typeof(a[1])==='undefined' ? true : a[1];
-      paramName = paramName.toLowerCase();
-      paramValue = paramValue.toLowerCase();
-      if (obj[paramName]) {
-        if (typeof obj[paramName] === 'string') {
-          obj[paramName] = [obj[paramName]];
-        }
-        if (typeof paramNum === 'undefined') {
-          obj[paramName].push(paramValue);
-        }
-        else {
-          obj[paramName][paramNum] = paramValue;
-        }
-      }
-      else {
-        obj[paramName] = paramValue;
-      }
-    }
-  }
-  return obj;
-}
+    var urlParams = {};
+    while (match = search.exec(query))
+       urlParams[decode(match[1])] = decode(match[2]);
+    return urlParams;
+};
 
 var subdomain;
 $(function() {
     $(document).on('click','a',function(e) {
-        var href = $(this).attr('href');
-        var urlFull = getAllUrlParams(href);
+        // var href = $(this).attr('href');
+        var urlFull = getAllUrlParams();
         var urlParams = Object.keys(urlFull);
         chrome.runtime.sendMessage({
             type: "check-params",

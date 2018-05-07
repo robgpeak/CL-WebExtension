@@ -83,6 +83,7 @@ chrome.runtime.onMessage.addListener(
                 });                
             });
         } else if (request.type === "check-params") { 
+            console.log(request.data);
             var keys = Object.keys(request.data);
             // console.log(keys);
             if(request.data.afsrc === "1" || keys.includes("linksynergy") || keys.includes("ebtoken") || keys.includes("wmlspartner") || keys.includes("affiliate.rakuten.com")) {
