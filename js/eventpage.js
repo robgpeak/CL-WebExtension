@@ -101,7 +101,7 @@ chrome.runtime.onMessage.addListener(
                     || keys.includes("linksynergy") 
                     || keys.includes("ebtoken") 
                     || keys.includes("affiliate.rakuten.com")
-                    || keys.includes("utm_campaign")
+                    // || keys.includes("utm_campaign")
                     || keys.includes("campaign_entity_id")
                     || keys.includes("adobeRef"))
                     )

@@ -88,6 +88,7 @@ var handleSuccess = function(data, userDataResponse) {
         var dismissed = sessionStorage.getItem('ebatesCloneShowPopupDismissed'); 
 
         if (show == 'show' && activated !== 'show') { //1st time activated and not dismissed, make green
+            console.log('a');
             var date = new Date;
             var time = date.getTime();
             var oldStamp = Number(sessionStorage.getItem('cl_activated_stamp'));
@@ -401,8 +402,10 @@ $(function() {
                 var time = date.getTime();
                 sessionStorage.setItem('cl_activated_stamp', time);
                 sessionStorage.setItem('ebatesCloneShowPopup', 'show');                
-                sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
-                sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');   
+                // sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+                // sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');   
+                callbacks['success'] = handleSuccess;
+                getEmailAddress();
             } else {
                 callbacks['success'] = handleSuccess;
                 getEmailAddress();
