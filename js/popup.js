@@ -248,7 +248,7 @@ var getOffers = function() {
                 dataType:"json"
             })
             .done(function(data) {
-                console.log(data[0]);
+                console.log(data);
                 showOffer(data[0]); 
                 showDeals(data[0].Deals);  
                 console.log();
@@ -408,7 +408,7 @@ function getUserDetail(domain, i) {
 }
 
 var initSubdomain = function() {
-    var domains = ['shop','xclub'];
+    var domains = ['shop','xclub','totalrewards'];
     var promiseChain = getUserDetail(domains[0], 0);
     for(let i = 1; i<domains.length; i++) {
         if(i == domains.length-1) { //on last call
@@ -420,6 +420,10 @@ var initSubdomain = function() {
                     });
                     if(userDetail.length > 0) {
                         var latestLogin = Math.max.apply(Math,userDetail.map(function(u) {
+                            if(u.lastLogin === null) {
+                                u.lastLogin = "/Date(1525787051000)/"
+                            }
+                            console.log(u.lastLogin);
                             var ainxs = u.lastLogin.indexOf("(");
                             var ainxe = u.lastLogin.indexOf(")");
                             var suba = u.lastLogin.substring(ainxs+1,ainxe-1);

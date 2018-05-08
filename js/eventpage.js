@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener(
         //     "from the extension");
         if (request.type == "get-user-email") {
         	var email = localStorage.getItem('userEmailAddress');
-            var domains = ['shop','xclub'];
+            var domains = ['shop','xclub','totalrewards'];
             var loggedIn = [];
             var userDetail = [];
             domains.forEach(function(domain) {
@@ -95,7 +95,7 @@ chrome.runtime.onMessage.addListener(
                 console.log(request.data);
                 activateStack.push(1);
                 console.log('activate stack push');
-            } else if (request.href.includes("="))
+            } else if (request.href.includes("=") && !request.href.includes("google.com"))
             // if(   ( request.host.includes("ebates.com") && request.mode === 'refresh' && Object.keys(request.data).length !== 0 && request.data.constructor === Object) 
             //     || (!request.host.includes("complinks.co") //must not originate from complinks
             //         && (request.href.includes("afsrc")         // AND include standdown param
