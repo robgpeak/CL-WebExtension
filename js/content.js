@@ -305,17 +305,18 @@ function getAllUrlParams() {
 var subdomain;
 $(function() {
     var whost = window.location.host;
-    // $(document).on('click','a',function(e) {
-    //     var href = $(this).attr('href');
-    //     var urlFull = getAllUrlParams(href);
-    //     var urlParams = Object.keys(urlFull);
-    //     chrome.runtime.sendMessage({
-    //         type: "check-params",
-    //         data: urlFull,
-    //         host: whost,
-    //         mode: 'click'
-    //     }, function () {   });
-    // });    
+    $(document).on('click','a',function(e) {
+        var href = $(this).attr('href');
+        var urlFull = getAllUrlParams(href);
+        var urlParams = Object.keys(urlFull);
+        chrome.runtime.sendMessage({
+            type: "check-params",
+            data: urlFull,
+            host: whost,
+            mode: 'click',
+            href: window.location.href
+        }, function () {   });
+    });    
     var href = window.location.href;
     var urlFull = getAllUrlParams(href);
     var urlParams = Object.keys(urlFull);

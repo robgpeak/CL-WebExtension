@@ -95,17 +95,18 @@ chrome.runtime.onMessage.addListener(
                 console.log(request.data);
                 activateStack.push(1);
                 console.log('activate stack push');
-            } else if(   ( request.host.includes("ebates.com") && request.mode === 'refresh' && Object.keys(request.data).length !== 0 && request.data.constructor === Object) 
-                || (!request.host.includes("complinks.co") //must not originate from complinks
-                    && (request.data.afsrc === "1"         // AND include standdown param
-                    || keys.includes("linksynergy") 
-                    || keys.includes("ebtoken") 
-                    || keys.includes("affiliate.rakuten.com")
-                    // || keys.includes("utm_campaign")
-                    || keys.includes("campaign_entity_id")
-                    || keys.includes("adobeRef"))
-                    )
-                )
+            } else if (request.href.includes("="))
+            // if(   ( request.host.includes("ebates.com") && request.mode === 'refresh' && Object.keys(request.data).length !== 0 && request.data.constructor === Object) 
+            //     || (!request.host.includes("complinks.co") //must not originate from complinks
+            //         && (request.href.includes("afsrc")         // AND include standdown param
+            //         || keys.includes("linksynergy") 
+            //         || keys.includes("ebtoken") 
+            //         || keys.includes("affiliate.rakuten.com")
+            //         // || keys.includes("utm_campaign")
+            //         || keys.includes("campaign_entity_id")
+            //         || keys.includes("adobeRef"))
+            //         )
+            //     )
             {
                 ceaseStack.push(1);
             }
