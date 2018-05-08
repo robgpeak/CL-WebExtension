@@ -303,18 +303,36 @@ function getAllUrlParams() {
 
 var subdomain;
 $(function() {
-    $(document).on('click','a',function(e) {
-        // var href = $(this).attr('href');
-        var urlFull = getAllUrlParams();
-        var urlParams = Object.keys(urlFull);
-        chrome.runtime.sendMessage({
-            type: "check-params",
-            data: urlFull,
-            host: window.location.host,
-            mode: 'click'
-        }, function () {   });
+    var whost = window.location.host;
+    // $(document).on('click','a',function(e) {
+    //     var href = $(this).attr('href');
+    //     var urlFull = getAllUrlParams(href);
+    //     var urlParams = Object.keys(urlFull);
+    //     chrome.runtime.sendMessage({
+    //         type: "check-params",
+    //         data: urlFull,
+    //         host: whost,
+    //         mode: 'click'
+    //     }, function () {   });
+    // });    
+    var href = window.location.href;
+    var urlFull = getAllUrlParams(href);
+    var urlParams = Object.keys(urlFull);
+    console.log(href);
+    console.log(urlFull);
+    console.log(urlParams);    
+    chrome.runtime.sendMessage({
+        type: "check-params",
+        data: urlFull,
+        host: window.location.host,
+        mode: 'refresh',
+        href: window.location.href
+    }, function (response) { 
+        if(response !== undefined && response.msg === "cease") {
+            console.log('ceased');
+            sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+        }
     });
-
     // chrome.runtime.sendMessage({
     //     type: "path-check",
     //     data: href
@@ -370,27 +388,7 @@ $(function() {
     } else if(!window.location.host.includes('google.com')) {
         console.log('2');
         //set cease from redirect page or cease if in previous link
-        var href = window.location.href;
-        var urlFull = getAllUrlParams(href);
-        var urlParams = Object.keys(urlFull);
-        console.log(href);
-        console.log(urlFull);
-        console.log(urlParams);
-        chrome.runtime.sendMessage({
-            type: "check-params",
-            data: urlFull,
-            host: window.location.host,
-            mode: 'refresh'
-        }, function (response) { 
-            if(response !== undefined && response.msg === "cease") {
-                console.log('ceased');
-                sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
-            }
-        });
         console.log('2.a');
-
-
-
         chrome.runtime.sendMessage({
             type: "cease-check",
             host: window.location.host

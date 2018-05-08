@@ -87,15 +87,29 @@ chrome.runtime.onMessage.addListener(
             console.log('check-params top');
             console.log(request.data);
             console.log(request.host);
-            console.log(request.type);
+            console.log(request.mode);
             var keys = Object.keys(request.data);
-            if(request.data.afsrc === "1" || keys.includes("linksynergy") || keys.includes("ebtoken") || keys.includes("wmlspartner") || keys.includes("affiliate.rakuten.com")) {
-                ceaseStack.push(1);
-            }
-            if(request.mode === 'click' && request.host.includes("complinks.co")) {
+
+            if(request.href.includes("complinks.co/trip/start")) 
+            {
+                console.log(request.data);
                 activateStack.push(1);
                 console.log('activate stack push');
+            } else if(   ( request.host.includes("ebates.com") && request.mode === 'refresh' && Object.keys(request.data).length !== 0 && request.data.constructor === Object) 
+                || (!request.host.includes("complinks.co") //must not originate from complinks
+                    && (request.data.afsrc === "1"         // AND include standdown param
+                    || keys.includes("linksynergy") 
+                    || keys.includes("ebtoken") 
+                    || keys.includes("affiliate.rakuten.com")
+                    || keys.includes("utm_campaign")
+                    || keys.includes("campaign_entity_id")
+                    || keys.includes("adobeRef"))
+                    )
+                )
+            {
+                ceaseStack.push(1);
             }
+
         // } else if(request.type === "path-check") {
         //     if(request.data.includes("/trip/start/")) {
         //         path.push(request.data);
@@ -115,8 +129,8 @@ chrome.runtime.onMessage.addListener(
         } else if (request.type === "cease-check") {
             // console.log(ceaseStack.length);
             // if(url) //if url is a link from complinks subdomain, set activated cookie in response
+            console.log(ceaseStack);
             console.log(activateStack);
-            console.log("did not break");
             if(activateStack.length > 0 && !request.host.includes("complinks.co")) {
                 // setTimeout(function() {
                 activateStack = [];
