@@ -34,7 +34,7 @@ var emailExists = function() {
         .fail(function(data) {
             $('#no-email-alert').show();
             $('.image-2').attr('src','images/icon128.png');
-            $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');
+            $('.navbar-brand-co').html('Shopping Assistant');
             $('body').css({"height":"300px !important;"});
             $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"});
             // put default data in popup
@@ -43,7 +43,7 @@ var emailExists = function() {
     } catch (ex) {
         $('#no-email-alert').show();
         $('.image-2').attr('src','images/icon128.png');
-        $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');
+        $('.navbar-brand-co').html('Shopping Assistant');
         $('body').css({"height":"300px !important;"});
         $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"});
         
@@ -444,7 +444,7 @@ var initSubdomain = function() {
                         bindEvents();
                         $('#no-email-alert').show();
                         $('.image-2').attr('src','images/icon128.png');
-                        $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');
+                        $('.navbar-brand-co').html('Shopping Assistant');
                         $('body').css({"height":"300px !important;"});
                         $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"}); 
                         $(".loading-icon").hide();                   
@@ -504,7 +504,7 @@ var buildTheme = function() {
         $('.greeting-points').css({"padding-top":"4px","background-color":colors[primaryHue2Hex]});
         localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
         $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
-        $('.navbar-brand-co').html(recentSubdomain.partnerName+' Rewards Everywhere Shopping Assistant');
+        $('.navbar-brand-co').html(recentSubdomain.partnerName+' Shopping Assistant');
     } catch (ex) {
 
     }

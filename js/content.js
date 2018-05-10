@@ -36,8 +36,8 @@ var buildPopup = function(data, userDataResponse) {
 };
 
 $(document).on('click','.complinks_dismiss_button',function(e) {
-    sessionStorage.setItem('ebatesCloneShowPopup', 'show'); 
-    sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show'); 
+    sessionStorage.setItem('showPopup', 'show'); 
+    sessionStorage.setItem('showPopupDismissed', 'show'); 
 })
 /**
  * Handle activate button click
@@ -50,7 +50,7 @@ var bindActivateEvent = function(data) {
         $(".complinks_activate_button").css({
             'background-color': 'green'
         });         
-        sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+        sessionStorage.setItem('showPopup', 'show');
         var date = new Date;
         var time = date.getTime();
         sessionStorage.setItem('cl_activated_stamp', time);
@@ -69,7 +69,7 @@ var bindActivateLaterEvent = function() {
         // we will use this session variable to 
         // check either to show the popup on page refresh
         // or not
-        sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+        sessionStorage.setItem('showPopup', 'show');
         $('.complinks_popup').hide();
     });
 };
@@ -83,9 +83,9 @@ var handleSuccess = function(data, userDataResponse) {
     // console.log(userDataResponse);
     // set activated cookie and timestamp, don't show if passed 1 hour
     if(data.isAdvertiser && data.extensionEnabled) {
-        var show = sessionStorage.getItem('ebatesCloneShowPopup');
-        var activated = sessionStorage.getItem('ebatesCloneShowPopupActivated');
-        var dismissed = sessionStorage.getItem('ebatesCloneShowPopupDismissed'); 
+        var show = sessionStorage.getItem('showPopup');
+        var activated = sessionStorage.getItem('showPopupActivated');
+        var dismissed = sessionStorage.getItem('showPopupDismissed'); 
 
         if (show == 'show' && activated !== 'show') { //1st time activated and not dismissed, make green
             console.log('a');
@@ -109,7 +109,7 @@ var handleSuccess = function(data, userDataResponse) {
                         $(".complinks_popup").slideUp(2000);
                     }); 
                     if(dismissed !== 'show') {    
-                        sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');
+                        sessionStorage.setItem('showPopupActivated', 'show');
                     }
                 } else {
                     console.log('less than 1 hr and x\'ed out');
@@ -332,7 +332,7 @@ $(function() {
     }, function (response) { 
         if(response !== undefined && response.msg === "cease") {
             console.log('ceased');
-            sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+            sessionStorage.setItem('showPopupDismissed', 'show');  
         }
     });
     // chrome.runtime.sendMessage({
@@ -345,9 +345,9 @@ $(function() {
             // var date = new Date;
             // var time = date.getTime();
             // sessionStorage.setItem('cl_activated_stamp', time);
-            // sessionStorage.setItem('ebatesCloneShowPopup', 'show');
-    //         sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');        
-    //         sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+            // sessionStorage.setItem('showPopup', 'show');
+    //         sessionStorage.setItem('showPopupActivated', 'show');        
+    //         sessionStorage.setItem('showPopupDismissed', 'show');  
     //     }
     // });    
 
@@ -397,14 +397,14 @@ $(function() {
         }, function(response) {
             console.log(response.msg);
             if(response.msg === "cease") {
-                sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
+                sessionStorage.setItem('showPopupDismissed', 'show');  
             } else if (response.msg === "activated") {
                 var date = new Date;
                 var time = date.getTime();
                 sessionStorage.setItem('cl_activated_stamp', time);
-                sessionStorage.setItem('ebatesCloneShowPopup', 'show');                
-                // sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
-                // sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');   
+                sessionStorage.setItem('showPopup', 'show');                
+                // sessionStorage.setItem('showPopupDismissed', 'show');  
+                // sessionStorage.setItem('showPopupActivated', 'show');   
                 callbacks['success'] = handleSuccess;
                 getEmailAddress();
             } else {
@@ -422,9 +422,9 @@ $(function() {
                     var date = new Date;
                     var time = date.getTime();
                     sessionStorage.setItem('cl_activated_stamp', time);
-                    sessionStorage.setItem('ebatesCloneShowPopup', 'show');
+                    sessionStorage.setItem('showPopup', 'show');
                     if(request.mode === "popup-activate") {
-                        sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');
+                        sessionStorage.setItem('showPopupActivated', 'show');
                     }
                     if (request && request.url) {
                         window.location.href = request.url;
@@ -434,7 +434,7 @@ $(function() {
                     });
                 } else if (request.type == 'activated?') {
                     sendResponse({
-                        type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
+                        type: sessionStorage.getItem('showPopupActivated')
                     });
                 } else if (request.type == 'set-activated-from-bg') {
                     // var date = new Date;                
@@ -448,8 +448,8 @@ $(function() {
                     //     $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
                     //         $(".complinks_popup").slideUp(2000);
                     //     }); 
-                    //     sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
-                    //     sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
+                    //     sessionStorage.setItem('showPopupActivated', 'show'); 
+                    //     sessionStorage.setItem('showPopupDismissed', 'show');                     
                     // }, 1000);
                 }
             });        

@@ -205,6 +205,9 @@ var initSubdomain = function() {
                         return !(item.status === "unauthorized");
                     });
                     var latestLogin = Math.max.apply(Math,userDetail.map(function(u){
+                        if(u.lastLogin === null) {
+                            u.lastLogin = "/Date(1525787051000)/"
+                        }                        
                         var ainxs = u.lastLogin.indexOf("(");
                         var ainxe = u.lastLogin.indexOf(")");
                         var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
@@ -232,15 +235,7 @@ var initSubdomain = function() {
                     console.log(recentSubdomain);
                 } catch(ex) {
                     console.log(ex);
-                    // $("#logout").show();
-                    //if not logged in
-                    // $('#no-email-alert').show();
-                    // $('.image-2').attr('src','images/icon128.png');
-                    // $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');
-                    // $('body').css({"height":"300px !important;"});
-                    // $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"});                    
                 }
-                // restore_options();
             });
         } else {
             promiseChain = promiseChain.then(function() {

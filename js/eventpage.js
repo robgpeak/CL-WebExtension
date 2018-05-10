@@ -35,6 +35,9 @@ chrome.runtime.onMessage.addListener(
             });
             setTimeout(function() {
                 var latestLogin = Math.max.apply(Math,userDetail.map(function(u){
+                    if(u.lastLogin === null) {
+                        u.lastLogin = "/Date(1525787051000)/"
+                    }                    
                     var ainxs = u.lastLogin.indexOf("(");
                     var ainxe = u.lastLogin.indexOf(")");
                     var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
@@ -95,47 +98,14 @@ chrome.runtime.onMessage.addListener(
                 console.log(request.data);
                 activateStack.push(1);
                 console.log('activate stack push');
-            } else if (request.href.includes("=") && !request.href.includes("google.com"))
-            // if(   ( request.host.includes("ebates.com") && request.mode === 'refresh' && Object.keys(request.data).length !== 0 && request.data.constructor === Object) 
-            //     || (!request.host.includes("complinks.co") //must not originate from complinks
-            //         && (request.href.includes("afsrc")         // AND include standdown param
-            //         || keys.includes("linksynergy") 
-            //         || keys.includes("ebtoken") 
-            //         || keys.includes("affiliate.rakuten.com")
-            //         // || keys.includes("utm_campaign")
-            //         || keys.includes("campaign_entity_id")
-            //         || keys.includes("adobeRef"))
-            //         )
-            //     )
-            {
+            } else if (request.href.includes("=") && !request.href.includes("google.com")) {
                 ceaseStack.push(1);
             }
-
-        // } else if(request.type === "path-check") {
-        //     if(request.data.includes("/trip/start/")) {
-        //         path.push(request.data);
-        //         console.log(path);
-        //         sendResponse({
-        //             msg: "trip-activated"
-        //         });
-        //     } else if(path.length > 0) {
-        //         console.log(path);
-        //         sendResponse({
-        //             msg: "trip-activated"
-        //         });
-        //     }
-        //     setTimeout(function() {
-        //         path = [];
-        //     }, 5000);
         } else if (request.type === "cease-check") {
-            // console.log(ceaseStack.length);
-            // if(url) //if url is a link from complinks subdomain, set activated cookie in response
             console.log(ceaseStack);
             console.log(activateStack);
             if(activateStack.length > 0 && !request.host.includes("complinks.co")) {
-                // setTimeout(function() {
                 activateStack = [];
-                // }, 5000);
                 sendResponse({
                     msg: "activated"
                 });
