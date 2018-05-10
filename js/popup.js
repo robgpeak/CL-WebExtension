@@ -2,16 +2,6 @@ colors = {};colors.red50 = '#ffebee';colors.red100 = '#ffcdd2';colors.red200 = '
 
 var emailAddress = null;
 
-// setTimeout(function() {
-//     chrome.browserAction.setIcon({
-//         path: {
-//             16:    '../img/alt-icon16.png',
-//             32:    '../img/alt-icon32.png',
-//             128:   '../img/alt-icon128.png'            
-//         }
-//     });
-// }, 5000);
-
 /**
  * check if user has provide the email address 
  * and it exists in local storage
@@ -93,11 +83,8 @@ var showOffer = function(data) {
     var lsph = localStorage.getItem('primaryHex');
     var lsah = localStorage.getItem('accentHex');
 
-    // var html = '<div class="row">';
-    // html += '<div class="col-xs-12">';
     var html = "";
     html = '<buttons class="btn btn-primary activate-btn" style="background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
-    // html += '</div></div>';
     
     $('.image-3').attr('src',data.logoUrl);
     
@@ -174,8 +161,6 @@ var showDeals = function(deals) {
     // var lsph = localStorage.getItem('primaryHex');
     var lsah = localStorage.getItem('accentHex');
     for(var i = 0; i < deals.length; i++) {
-        // html += "<a href=\""+deals[i].startTripLink+"\">"+deals[i].description+"</a><br>";
-        // console.log(recentSubdomain.partnerSubdomain);
         var date = deals[i].endDate.split("(")[1].slice(0, -2);
         var d = new Date(date*1);
         console.log(d);
@@ -253,7 +238,6 @@ var getOffers = function() {
                 showDeals(data[0].Deals);  
                 console.log();
                 $('.show-offers .deals-promotions-header').html('<hr class="left"/>Deals &amp; Promotions<hr class="right"/>');
-                // $('.deals-promotions-header').append("<div class='delimiter'></div>");
                             
                 chrome.tabs.query({
                     active: true,
@@ -461,21 +445,37 @@ var initSubdomain = function() {
 }
 
 var buildTheme = function() {
-    // console.log(recentSubdomain.partnerStyle);
+    console.log(recentSubdomain);
     try {
-        var partnerStyle = JSON.parse(recentSubdomain.partnerStyle);
-        var primaryName = partnerStyle.primary.name.replace('-','').toLowerCase();
-        var primaryHex = primaryName.concat(partnerStyle.primary.main);
-        var primaryHue2Hex = primaryName.concat(partnerStyle.primary.hue1);
-        var accentName = partnerStyle.accent.name.replace('-','').toLowerCase();
-        var accentHex = accentName.concat(partnerStyle.accent.main);
+        var primary = localStorage.getItem('primaryHex');
+        var accent = localStorage.getItem('accentHex');
+        var primaryHue = localStorage.getItem('primaryHue');
 
-        localStorage.setItem('primaryHex', colors[primaryHex]);
-        localStorage.setItem('accentHex', colors[accentHex]);
+        console.log(primary);
+        console.log(accent);
+        console.log(primaryHue);
 
-        $('.navbar-header-co').css({'background-color':colors[primaryHex]});
+        // if(primary == null || accent == null || primaryHue == null) {
+            var partnerStyle = JSON.parse(recentSubdomain.partnerStyle);
+            var primaryName = partnerStyle.primary.name.replace('-','').toLowerCase();
+            var primaryHex = primaryName.concat(partnerStyle.primary.main);
+            var primaryHue2Hex = primaryName.concat(partnerStyle.primary.hue1);
+            var accentName = partnerStyle.accent.name.replace('-','').toLowerCase();
+            var accentHex = accentName.concat(partnerStyle.accent.main);
 
-        $('.well-sm').css({'background-color':colors[primaryHex]});
+            localStorage.setItem('primaryHex', colors[primaryHex]);
+            localStorage.setItem('accentHex', colors[accentHex]);
+            localStorage.setItem('primaryHue', colors[primaryHue2Hex]);
+            
+            primary = colors[primaryHex];
+            accent = colors[accentHex];
+            primaryHue = colors[primaryHue2Hex];
+        // }
+        console.log(primary);
+        console.log(accent);
+        $('.navbar-header-co').css({'background-color':primary});
+
+        $('.well-sm').css({'background-color':primary});
         
         chrome.tabs.query({
             active: true,
@@ -486,9 +486,9 @@ var buildTheme = function() {
             }, function(response) {
                 console.log(response);
                 if(response !== undefined && response.type !== "show" && response.type !== null) {
-                    $('.activate-btn').css({'background-color':colors[accentHex]});
-                    $('.activate-btn').css({'border-color':colors[accentHex]});   
-                    $('.retailer-deal-link').css({'background-color':colors[accentHex]});
+                    $('.activate-btn').css({'background-color':accent});
+                    $('.activate-btn').css({'border-color':accent});   
+                    $('.retailer-deal-link').css({'background-color':accent});
                 }
             });
         });  
@@ -501,7 +501,7 @@ var buildTheme = function() {
         });
         $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you currently have '+recentSubdomain.availablePoints+' points');
         $('#name-panel').css({"height":"25px"});
-        $('.greeting-points').css({"padding-top":"4px","background-color":colors[primaryHue2Hex]});
+        $('.greeting-points').css({"padding-top":"4px","background-color":primaryHue});
         localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
         $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
         $('.navbar-brand-co').html(recentSubdomain.partnerName+' Rewards Everywhere Shopping Assistant');
@@ -510,11 +510,59 @@ var buildTheme = function() {
     }
 }
 
+
+var preBuildTheme = function() {
+        var primary = localStorage.getItem('primaryHex');
+        var accent = localStorage.getItem('accentHex');
+        var primaryHue = localStorage.getItem('primaryHue');
+
+        console.log(primary);
+        console.log(accent);
+        console.log(primaryHue);
+
+        if(primary !== null && accent !== null && primaryHue !== null) {
+            // fail, wait for real buildTheme()
+            $('.navbar-header-co').css({'background-color':primary});
+            $('.well-sm').css({'background-color':primary});
+        }
+        
+        
+        // chrome.tabs.query({
+        //     active: true,
+        //     currentWindow: true
+        // }, function(tabs) {
+        //     chrome.tabs.sendMessage(tabs[0].id, {
+        //         type: "activated?"
+        //     }, function(response) {
+        //         console.log(response);
+        //         if(response !== undefined && response.type !== "show" && response.type !== null) {
+        //             $('.activate-btn').css({'background-color':accent});
+        //             $('.activate-btn').css({'border-color':accent});   
+        //             $('.retailer-deal-link').css({'background-color':accent});
+        //         }
+        //     });
+        // });  
+
+
+        // $(".activate-btn").hover(function () {
+        //    $(this).animate({'opacity':'0.7'}, 100);
+        // },function (){
+        //    $(this).animate({'opacity':'1'}, 100);
+        // });
+        // $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you currently have '+recentSubdomain.availablePoints+' points');
+        // $('#name-panel').css({"height":"25px"});
+        // $('.greeting-points').css({"padding-top":"4px","background-color":primaryHue});
+        // localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
+        // $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
+        // $('.navbar-brand-co').html(recentSubdomain.partnerName+' Rewards Everywhere Shopping Assistant');
+}
+
 var loggedIn = [];
 var userDetail = [];
 var recentSubdomain;
 
 
 $(document).ready(function() {
+    preBuildTheme();
     initSubdomain();
 });

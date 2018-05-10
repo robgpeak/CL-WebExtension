@@ -44,9 +44,6 @@ $(document).on('click','.complinks_dismiss_button',function(e) {
  */
 var bindActivateEvent = function(data) {
     $('.complinks_activate_button').click(function() {
-        // we will use this session variable to 
-        // check either to show the popup on page refresh
-        // or not
         $(".complinks_activate_button").css({
             'background-color': 'green'
         });         
@@ -66,9 +63,6 @@ var bindActivateEvent = function(data) {
  */
 var bindActivateLaterEvent = function() {
     $('.complinks_dismiss_button').click(function() {
-        // we will use this session variable to 
-        // check either to show the popup on page refresh
-        // or not
         sessionStorage.setItem('ebatesCloneShowPopup', 'show');
         $('.complinks_popup').hide();
     });
@@ -78,8 +72,8 @@ var bindActivateLaterEvent = function() {
  * show popup after getting data from API
  */
 var handleSuccess = function(data, userDataResponse) {
-    //Dont show popup to user if user has already  
-    //activated or dismissed the offer earlier
+    // Dont show popup to user if user has already  
+    // activated or dismissed the offer earlier
     // console.log(userDataResponse);
     // set activated cookie and timestamp, don't show if passed 1 hour
     if(data.isAdvertiser && data.extensionEnabled) {
@@ -413,7 +407,6 @@ $(function() {
             }
         });
 
-
         // makeRequest(callbacks);
         chrome.runtime.onMessage.addListener(
             function(request, sender, sendResponse) {
@@ -436,21 +429,6 @@ $(function() {
                     sendResponse({
                         type: sessionStorage.getItem('ebatesCloneShowPopupActivated')
                     });
-                } else if (request.type == 'set-activated-from-bg') {
-                    // var date = new Date;                
-                    // var time = date.getTime();           
-                    // sessionStorage.setItem('cl_activated_stamp', time); 
-                    // setTimeout(function() {
-                    //     $('.complinks_activate_button').html("Activated!");    
-                    //     $(".complinks_activate_button").css({
-                    //         'background-color': 'green'
-                    //     });       
-                    //     $(".complinks_popup").fadeTo(2000, 500).slideUp(500, function() {
-                    //         $(".complinks_popup").slideUp(2000);
-                    //     }); 
-                    //     sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show'); 
-                    //     sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');                     
-                    // }, 1000);
                 }
             });        
     }

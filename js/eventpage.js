@@ -21,12 +21,8 @@ chrome.runtime.onMessage.addListener(
 
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4 && JSON.parse(xhr.response).status !== 'unauthorized' ) {
-                        // console.log(JSON.parse(xhr.response).partnerSubdomain);
-                        // sessionStorage.setItem('subdomain', JSON.parse(xhr.response).partnerSubdomain);
-                        // console.log(JSON.parse(xhr.response));
                         loggedIn.push(JSON.parse(xhr.response).partnerSubdomain);
                         userDetail.push(JSON.parse(xhr.response));
-                        
                     } else {
                         // sendResponse({error: 'loggedOut'});
                     }
@@ -41,37 +37,18 @@ chrome.runtime.onMessage.addListener(
                     suba = Number(suba);            
                     return suba;    
                 }));
-                // console.log(latestLogin);
                 recentSubdomain = userDetail.find(function(u) {
                    return u.lastLogin.includes(latestLogin); 
                 });
-                // console.log(recentSubdomain);
-
                 sendResponse(recentSubdomain);
             }, 700);
             
         } else if (request.type === "get-domain-cookie") {
-            // chrome.cookies.get({"url" :"apis.google.com","name" : "QTZ"}, function(cookie) {
-                sendResponse({
-                    cookie: document.cookie
-                });
-            // });
+            sendResponse({
+                cookie: document.cookie
+            });
         } else if (request.type === "set-activated-from-google") {
-            // setTimeout(function() {
-            //     chrome.tabs.query({
-            //         active: true,
-            //         currentWindow: true
-            //     }, function(tabs) {
-            //         chrome.tabs.sendMessage(tabs[0].id, {
-            //             type: "set-activated-from-bg"
-            //         }, function(response) {
-                        
-            //         });
-            //     });                
-            // }, 3000);
         } else if(request.type === "save-user-data") {
-            // console.log('save user data called');
-            // console.log(JSON.stringify(request.data));
             var store = {};
             store['userData'] = JSON.stringify(request.data);
             chrome.storage.local.set(store);
@@ -95,47 +72,14 @@ chrome.runtime.onMessage.addListener(
                 console.log(request.data);
                 activateStack.push(1);
                 console.log('activate stack push');
-            } else if (request.href.includes("=") && !request.href.includes("google.com"))
-            // if(   ( request.host.includes("ebates.com") && request.mode === 'refresh' && Object.keys(request.data).length !== 0 && request.data.constructor === Object) 
-            //     || (!request.host.includes("complinks.co") //must not originate from complinks
-            //         && (request.href.includes("afsrc")         // AND include standdown param
-            //         || keys.includes("linksynergy") 
-            //         || keys.includes("ebtoken") 
-            //         || keys.includes("affiliate.rakuten.com")
-            //         // || keys.includes("utm_campaign")
-            //         || keys.includes("campaign_entity_id")
-            //         || keys.includes("adobeRef"))
-            //         )
-            //     )
-            {
+            } else if (request.href.includes("=") && !request.href.includes("google.com")) {
                 ceaseStack.push(1);
             }
-
-        // } else if(request.type === "path-check") {
-        //     if(request.data.includes("/trip/start/")) {
-        //         path.push(request.data);
-        //         console.log(path);
-        //         sendResponse({
-        //             msg: "trip-activated"
-        //         });
-        //     } else if(path.length > 0) {
-        //         console.log(path);
-        //         sendResponse({
-        //             msg: "trip-activated"
-        //         });
-        //     }
-        //     setTimeout(function() {
-        //         path = [];
-        //     }, 5000);
         } else if (request.type === "cease-check") {
-            // console.log(ceaseStack.length);
-            // if(url) //if url is a link from complinks subdomain, set activated cookie in response
             console.log(ceaseStack);
             console.log(activateStack);
             if(activateStack.length > 0 && !request.host.includes("complinks.co")) {
-                // setTimeout(function() {
                 activateStack = [];
-                // }, 5000);
                 sendResponse({
                     msg: "activated"
                 });
