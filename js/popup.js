@@ -520,7 +520,7 @@ var buildTheme = function() {
         $('.greeting-points').css({"padding-top":"4px","background-color":primaryHue});
         localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
         $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
-        $('.navbar-brand-co').html(recentSubdomain.partnerName+' Rewards Everywhere Shopping Assistant');
+        $('.navbar-brand-co').html(recentSubdomain.partnerName+' Shopping Assistant');
     } catch (ex) {
 
     }
@@ -541,36 +541,6 @@ var preBuildTheme = function() {
             $('.navbar-header-co').css({'background-color':primary});
             $('.well-sm').css({'background-color':primary});
         }
-        
-        
-        // chrome.tabs.query({
-        //     active: true,
-        //     currentWindow: true
-        // }, function(tabs) {
-        //     chrome.tabs.sendMessage(tabs[0].id, {
-        //         type: "activated?"
-        //     }, function(response) {
-        //         console.log(response);
-        //         if(response !== undefined && response.type !== "show" && response.type !== null) {
-        //             $('.activate-btn').css({'background-color':accent});
-        //             $('.activate-btn').css({'border-color':accent});   
-        //             $('.retailer-deal-link').css({'background-color':accent});
-        //         }
-        //     });
-        // });  
-
-
-        // $(".activate-btn").hover(function () {
-        //    $(this).animate({'opacity':'0.7'}, 100);
-        // },function (){
-        //    $(this).animate({'opacity':'1'}, 100);
-        // });
-        // $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you currently have '+recentSubdomain.availablePoints+' points');
-        // $('#name-panel').css({"height":"25px"});
-        // $('.greeting-points').css({"padding-top":"4px","background-color":primaryHue});
-        // localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
-        // $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
-        // $('.navbar-brand-co').html(recentSubdomain.partnerName+' Rewards Everywhere Shopping Assistant');
 }
 
 var loggedIn = [];
