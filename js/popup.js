@@ -392,7 +392,7 @@ function getUserDetail(domain, i) {
 }
 
 var initSubdomain = function() {
-    var domains = ['shop','xclub','totalrewards'];
+    var domains = ['shop','xclub','totalrewards','foxwoods'];
     var promiseChain = getUserDetail(domains[0], 0);
     for(let i = 1; i<domains.length; i++) {
         if(i == domains.length-1) { //on last call

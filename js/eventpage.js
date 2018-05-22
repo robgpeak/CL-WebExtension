@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener(
         //     "from the extension");
         if (request.type == "get-user-email") {
         	var email = localStorage.getItem('userEmailAddress');
-            var domains = ['shop','xclub','totalrewards'];
+            var domains = ['shop','xclub','totalrewards','foxwoods'];
             var loggedIn = [];
             var userDetail = [];
             domains.forEach(function(domain) {
