@@ -250,7 +250,7 @@ var initSubdomain = function() {
 $("#logout").hide();
 var loggedIn = [];
 var userDetail = [];
-var domains = ['shop','xclub','totalrewards'];
+var domains = ['shop','xclub','totalrewards','foxwoods'];
 var recentSubdomain;
 initSubdomain();
 
