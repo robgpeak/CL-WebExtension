@@ -391,8 +391,8 @@ function getUserDetail(domain, i) {
         });
 }
 
-var initSubdomain = function() {
-    var domains = ['shop','xclub','totalrewards','foxwoods'];
+var initSubdomain = function(domains) {
+    // var domains = ['shop','xclub','totalrewards','foxwoods'];
     var promiseChain = getUserDetail(domains[0], 0);
     for(let i = 1; i<domains.length; i++) {
         if(i == domains.length-1) { //on last call
@@ -561,8 +561,15 @@ var loggedIn = [];
 var userDetail = [];
 var recentSubdomain;
 
-
 $(document).ready(function() {
     preBuildTheme();
-    initSubdomain();
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET','https://shop.complinks.co/api/v1/getSubdomains');
+    xhr.onreadystatechange = function() {
+        var domainsList = JSON.parse(xhr.response);
+        var domains = Object.keys(domainsList).map((key) => domainsList[key].subdomain);
+
+        initSubdomain(domains);
+    }
+    xhr.send();
 });
