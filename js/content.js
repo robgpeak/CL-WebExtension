@@ -233,7 +233,13 @@ var makeGoogleRequest = function(userDataResponse, callbacks, res, elems) {
                 return item === res2[key];
             });
             if(data[idx].isAdvertiser && data[idx].extensionEnabled) {
-                $(elems[index]).before("<div style=\"margin-bottom: 0px;\"><img class=\"searchResultDeal\" style=\"height: 25px; display: inline-block; margin-bottom:-5px;\" src=\""+userDataResponse.searchResultLogoUrl+"\"></img>"+"<a class=\"btn btn-primary activate-btn google-activate\" href=\""+elems[index].getAttribute('href')+"\"style=\"margin-bottom: 5px !important; margin-left: 15px; padding: 10px 15px; background-color:"+colors[accentHex]+"; border-color: #FF3D02; border-radius: 0px !important; border-width: 2px; color: #ffffff; display: inline-block; margin-bottom: 0; font-weight: normal; text-align: center; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap; padding: 10px 15px; font-size: 12px; line-height: 1;\">Activate " + data[idx].reward + "</a></div>");
+                var buttonHTML = "";
+                if(userDataResponse.partnerName === "CompLinks") {
+                    buttonHTML = "<div style=\"margin-bottom: 0px;\"><img class=\"searchResultDeal\" style=\"height: 25px; display: inline-block; margin-bottom:-5px;\" src=\""+userDataResponse.searchResultLogoUrl+"\"></img>"+"<a class=\"btn btn-primary activate-btn google-activate\" href=\""+elems[index].getAttribute('href')+"\"style=\"margin-bottom: 5px !important; margin-left: 15px; padding: 10px 15px; background-color:"+colors[accentHex]+"; border-color: #FF3D02; border-radius: 0px !important; border-width: 2px; color: #ffffff; display: inline-block; margin-bottom: 0; font-weight: normal; text-align: center; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap; padding: 10px 15px; font-size: 12px; line-height: 1;\">Activate " + data[idx].reward + "</a></div>";
+                } else {
+                    buttonHTML = "<div style=\"margin-bottom: 0px;\"><img class=\"searchResultDeal\" style=\"height: 25px; display: inline-block; margin-bottom:-5px;\" src=\""+userDataResponse.searchResultLogoUrl+"\"></img>"+"<a class=\"btn btn-primary activate-btn google-activate\" href=\""+elems[index].getAttribute('href')+"\"style=\"margin-bottom: 5px !important; margin-left: 15px; padding: 10px 15px; background-color:"+colors[accentHex]+"; border-color: #FF3D02; border-radius: 0px !important; border-width: 2px; color: "+colors[primaryHex]+"; display: inline-block; margin-bottom: 0; font-weight: normal; text-align: center; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap; padding: 10px 15px; font-size: 12px; line-height: 1;\">Activate " + data[idx].reward + "</a></div>";
+                }
+                $(elems[index]).before(buttonHTML);
             }
         });
     })
@@ -353,7 +359,7 @@ $(function() {
     //     }
     // });    
 
-
+    getEmailAddress();  
     callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
     var elems = document.querySelectorAll('.g h3.r > a:not(.l)');
     console.log(typeof elems.length);
@@ -373,8 +379,7 @@ $(function() {
                         console.log(response);
                         if (response && response.email) {
                             //map full array indices to unique array, pass into req function
-                            subdomain = response.partnerSubdomain;
-                            getEmailAddress();                       
+                            subdomain = response.partnerSubdomain;                     
                             makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);  
                             chrome.runtime.sendMessage({
                                 type: "save-user-data",
@@ -387,7 +392,6 @@ $(function() {
                         }
                 });                
             } else {
-                getEmailAddress();  
                 makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);   
             }
         });
