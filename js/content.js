@@ -24,15 +24,15 @@ var buildPopup = function(data, userDataResponse) {
         var p = userDataResponse.partnerName;
         if(p === "Foxwoods") {
             if(window.location.host.includes('godaddy.com')) {
-                html += '<buttons class="complinks_activate_button" style="min-width: 210px; padding: 16px 14px; font-size: 11px; padding-top: 16px; color: #000; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
+                html += '<buttons class="complinks_activate_button" style="min-width: 210px; padding: 16px 14px; font-size: 12.9px !important; padding-top: 16px; color: #000; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
             } else {
-                html += '<buttons class="complinks_activate_button" style="min-width: 280px; color: #000; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
+                html += '<buttons class="complinks_activate_button" style="min-width: 210px; font-size: 12.9px !important; color: #000; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
             }
         } else {
             if(window.location.host.includes('godaddy.com')) {
-                html += '<buttons class="complinks_activate_button" style="min-width: 210px; padding: 16px 14px; font-size: 11px; padding-top: 16px; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
+                html += '<buttons class="complinks_activate_button" style="min-width: 210px; padding: 16px 14px; font-size: 12.9px !important; padding-top: 16px; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
             } else {
-                html += '<buttons class="complinks_activate_button" style="min-width: 280px; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
+                html += '<buttons class="complinks_activate_button" style="min-width: 210px; font-size: 12.9px !important; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
             }
         }
         html += '<span class="complinks_dismiss_container">';
