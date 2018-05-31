@@ -13,18 +13,27 @@ var buildPopup = function(data, userDataResponse) {
     var html = '';
     if (data.isAdvertiser && data.extensionEnabled) {
         html += '<div class="complinks_popup">';
-        html += '<div class="complinks_partner_logo" style="background-color: '+colors[primaryHex]+'; border-color: '+colors[primaryHex]+';">';
+        html += '<div class="complinks_partner_logo" style="background-color: '+colors[primaryHex]+'; border-color: '+colors[primaryHex]+';"><span class="helper"></span>';
         if(window.location.host.includes('berries.com')) {
             html += '<img style="height: 80px !important;" class="complinks_logo" src="'+userDataResponse.partnerLogo+'" />';
         } else {
             html += '<img class="complinks_logo" src="'+userDataResponse.partnerLogo+'" />';    
         }
         html += '</div>';
-        html += '<div class="complinks_main_content" style="border-color: '+colors[primaryHex]+';">';
-        if(window.location.host.includes('godaddy.com')) {
-            html += '<buttons class="complinks_activate_button" style="font-size: 11px; padding-top: 16px; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
+        html += '<div class="complinks_main_content" style="border-color: '+colors[primaryHex]+';"><span class="helper"></span>';
+        var p = userDataResponse.partnerName;
+        if(p === "Foxwoods") {
+            if(window.location.host.includes('godaddy.com')) {
+                html += '<buttons class="complinks_activate_button" style="min-width: 210px; padding: 16px 14px; font-size: 11px; padding-top: 16px; color: #000; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
+            } else {
+                html += '<buttons class="complinks_activate_button" style="min-width: 280px; color: #000; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
+            }
         } else {
-            html += '<buttons class="complinks_activate_button" style="background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
+            if(window.location.host.includes('godaddy.com')) {
+                html += '<buttons class="complinks_activate_button" style="min-width: 210px; padding: 16px 14px; font-size: 11px; padding-top: 16px; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
+            } else {
+                html += '<buttons class="complinks_activate_button" style="min-width: 280px; background-color: '+colors[accentHex]+';" >Click here to earn ' + data.reward + '</buttons>';
+            }
         }
         html += '<span class="complinks_dismiss_container">';
         html += '<a href="#" class="complinks_dismiss_button">×</a>';

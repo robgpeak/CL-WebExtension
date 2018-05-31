@@ -17,6 +17,11 @@ img {
     font-family: Verilag;
 }
 
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
 .complinks_partner_logo {
     position:absolute;
     z-index:999998;
@@ -29,15 +34,16 @@ img {
 	height:98px !important;
 	border:2px solid black;
     box-sizing: content-box;
+    text-align: center;
 }
 
 .complinks_logo {
-    /*margin:11% auto;*/
-    padding: 9% 0px;
+    max-height:70px;
+    margin: 0 auto;
+    padding: 0;
+    vertical-align: middle;
     display: inline-block;
     max-width: 100%;
-    max-height: 110px;
-    margin-left:2%;
 }
 
 .complinks_main_content {
@@ -56,7 +62,7 @@ img {
 
 .complinks_activate_button {
     font-family: Roboto,"Helvetica Neue", Arial, sans-serif;
-    margin: 10% 5% !important;
+    margin: 9% 5% 10% 5% !important;
     /*min-width: 210px;*/
     /*float:right;*/
     box-shadow: -1px 3px 1px -10px rgba(0,0,0,0.5), -1px 3px 4px -1px rgba(0,0,0,0.5);
@@ -69,7 +75,7 @@ img {
 	padding:15px 32px;
 	text-align:center;
 	text-decoration:none;
-	font-size:11px;
+	font-size:13px !important;
 	cursor:pointer;
     font-weight: 400 !important;
     -webkit-font-smoothing: auto;

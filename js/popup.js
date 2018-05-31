@@ -84,7 +84,12 @@ var showOffer = function(data) {
     var lsah = localStorage.getItem('accentHex');
 
     var html = "";
-    html = '<buttons class="btn btn-primary activate-btn" style="background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
+    var p = recentSubdomain.partnerName;
+    if(p === "Foxwoods") {
+        html = '<buttons class="btn btn-primary activate-btn" style="color: #000; background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
+    } else {
+        html = '<buttons class="btn btn-primary activate-btn" style="background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
+    }
     
     $('.image-3').attr('src',data.logoUrl);
     
@@ -172,16 +177,30 @@ var showDeals = function(deals) {
                      + ( '0' + d.getDate()).slice(-2) + '/'
                      + d.getFullYear();
         console.log(dateString);
-        html +=`<div class="retailer-deal">
-                    <div class="row-2 w-row">
-                        <div class="column deal-col w-col w-col-8">
-                            <div target="_blank" class="retailer-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">`+deals[i].description+`</div>
-                            <div class="retailer-deal-points">`+deals[i].PointText+`</div>
-                            <div class="retailer-deal-exp"><img class="clock-icon" src="../img/clock-icon.png"/>Expiration Date: `+dateString+`</div>
+        var p = recentSubdomain.partnerName;
+        if(p === "Foxwoods") {
+            html +=`<div class="retailer-deal">
+                        <div class="row-2 w-row">
+                            <div class="column deal-col w-col w-col-8">
+                                <div target="_blank" class="retailer-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">`+deals[i].description+`</div>
+                                <div class="retailer-deal-points">`+deals[i].PointText+`</div>
+                                <div class="retailer-deal-exp"><img class="clock-icon" src="../img/clock-icon.png"/>Expiration Date: `+dateString+`</div>
+                            </div>
+                            <div class="column-2 w-col w-col-4 deal-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="color: #000; background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
                         </div>
-                        <div class="column-2 w-col w-col-4 deal-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
-                    </div>
-                </div>`;
+                    </div>`;
+        } else {
+            html +=`<div class="retailer-deal">
+                        <div class="row-2 w-row">
+                            <div class="column deal-col w-col w-col-8">
+                                <div target="_blank" class="retailer-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">`+deals[i].description+`</div>
+                                <div class="retailer-deal-points">`+deals[i].PointText+`</div>
+                                <div class="retailer-deal-exp"><img class="clock-icon" src="../img/clock-icon.png"/>Expiration Date: `+dateString+`</div>
+                            </div>
+                            <div class="column-2 w-col w-col-4 deal-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
+                        </div>
+                    </div>`;            
+        }
     }
 
     $(document).on('click','.retailer-deal-link', function(e) {
