@@ -73,7 +73,7 @@ chrome.runtime.onMessage.addListener(
             });
         } else if (request.type === "check-params") { 
             console.log('check-params top');
-            console.log(request.data);
+            console.log(request);
             console.log(request.host);
             console.log(request.mode);
             var keys = Object.keys(request.data);
@@ -83,7 +83,7 @@ chrome.runtime.onMessage.addListener(
                 console.log(request.data);
                 activateStack.push(1);
                 console.log('activate stack push');
-            } else if (request.href.includes("=") && !request.href.includes("google.com")) {
+            } else if (request.href.includes("=") && !request.host.includes("google.com") && !request.referrer.includes("google.com")) {
                 ceaseStack.push(1);
             }
         } else if (request.type === "cease-check") {
