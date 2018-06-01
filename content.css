@@ -44,6 +44,7 @@ img {
     vertical-align: middle;
     display: inline-block;
     max-width: 100%;
+    width: auto;
 }
 
 .complinks_main_content {
@@ -61,6 +62,7 @@ img {
 }
 
 .complinks_activate_button {
+    box-sizing: content-box;
     font-family: Roboto,"Helvetica Neue", Arial, sans-serif;
     margin: 9% 5% 10% 5% !important;
     /*min-width: 210px;*/
