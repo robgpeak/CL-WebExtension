@@ -83,6 +83,8 @@ chrome.runtime.onMessage.addListener(
                 console.log(request.data);
                 activateStack.push(1);
                 console.log('activate stack push');
+            } else if (request.href.includes("aclk")) {
+                ceaseStack.push(1);
             } else if (request.href.includes("=") && !request.host.includes("google.com") && !request.referrer.includes("google.com")) {
                 ceaseStack.push(1);
             }
