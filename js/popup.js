@@ -76,7 +76,7 @@ var extractHostname = function(url) {
 }
 
 var showOffer = function(data) {
-    if (!data.isAdvertiser || data.reward == '') {
+    if (data === undefined || !data.isAdvertiser || data.reward == '') {
         return;
     }
     $('.navbar-co').hide();
@@ -85,7 +85,7 @@ var showOffer = function(data) {
 
     var html = "";
     var p = recentSubdomain.partnerName;
-    if(p === "Foxwoods") {
+    if(data !== undefined && p === "Foxwoods") {
         html = '<buttons class="btn btn-primary activate-btn" style="color: #000; background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
     } else {
         html = '<buttons class="btn btn-primary activate-btn" style="background-color:'+lsah+'; border-color: '+lsah+';">Activate ' + data.reward + '</buttons>';
@@ -162,6 +162,9 @@ var showOffer = function(data) {
 
 var showDeals = function(deals) {
     console.log(deals);
+    if(deals === null) {
+        return false;
+    }
     var html = "";
     // var lsph = localStorage.getItem('primaryHex');
     var lsah = localStorage.getItem('accentHex');
@@ -252,28 +255,27 @@ var getOffers = function() {
                 dataType:"json"
             })
             .done(function(data) {
-                console.log(data);
-                showOffer(data[0]); 
-                showDeals(data[0].Deals);  
-                console.log();
-                $('.show-offers .deals-promotions-header').html('<hr class="left"/>Deals &amp; Promotions<hr class="right"/>');
-                            
-                chrome.tabs.query({
-                    active: true,
-                    currentWindow: true
-                }, function(tabs) {
-                    chrome.tabs.sendMessage(tabs[0].id, {
-                        type: "activated?"
-                    }, function(response) {
-                        console.log(response);
-                        if(response !== undefined && response.type === "show") {
-                            $('.activate-btn').css({
-                                'background-color': 'green !important',
-                                'border-color': 'green !important'
-                            });       
-                        }
-                    });
-                });            
+                if(data.length > 0) {                    
+                    showOffer(data[0]); 
+                    showDeals(data[0].Deals);  
+                    $('.show-offers .deals-promotions-header').html('<hr class="left"/>Deals &amp; Promotions<hr class="right"/>');
+                    chrome.tabs.query({
+                        active: true,
+                        currentWindow: true
+                    }, function(tabs) {
+                        chrome.tabs.sendMessage(tabs[0].id, {
+                            type: "activated?"
+                        }, function(response) {
+                            console.log(response);
+                            if(response !== undefined && response.type === "show") {
+                                $('.activate-btn').css({
+                                    'background-color': 'green !important',
+                                    'border-color': 'green !important'
+                                });       
+                            }
+                        });
+                    });            
+                }
             })
             .fail(function(data) {
                 callbacks.error(data[0]);
@@ -585,10 +587,13 @@ $(document).ready(function() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET','https://shop.complinks.co/api/v1/getSubdomains');
     xhr.onreadystatechange = function() {
-        var domainsList = JSON.parse(xhr.response);
-        var domains = Object.keys(domainsList).map((key) => domainsList[key].subdomain);
+        console.log(xhr.response);
+        if(xhr.response.trim() !== "") {
+            var domainsList = JSON.parse(xhr.response);
+            var domains = Object.keys(domainsList).map((key) => domainsList[key].subdomain);
 
-        initSubdomain(domains);
+            initSubdomain(domains);            
+        }
     }
     xhr.send();
 });

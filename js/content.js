@@ -373,8 +373,8 @@ $(function() {
 
     getEmailAddress();  
     callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
-    var elems = document.querySelectorAll('.g h3.r > a:not(.l)');
-    console.log(typeof elems.length);
+    var elems = document.querySelectorAll('.g .r > a:not(.l)');
+    console.log(elems.length);
     if(elems.length > 0) {
         console.log('1');
         var res = Array.from(elems).map(function(el) {
