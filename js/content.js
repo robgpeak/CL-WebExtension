@@ -371,7 +371,7 @@ $(function() {
     //     }
     // });    
 
-    getEmailAddress();  
+    // getEmailAddress();  
     callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
     var elems = document.querySelectorAll('.g .r > a:not(.l)');
     console.log(elems.length);
@@ -382,30 +382,20 @@ $(function() {
             return el.getAttribute('href');
         });
         chrome.runtime.sendMessage({
-            type: "get-user-data"
-        }, function(response) {
-            if(Object.keys(response).length === 0 && response.constructor === Object) {
-                chrome.runtime.sendMessage({
-                        type: "get-user-email"
-                    }, function(response) {
-                        console.log(response);
-                        if (response && response.email) {
-                            //map full array indices to unique array, pass into req function
-                            subdomain = response.partnerSubdomain;                     
-                            makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);  
-                            chrome.runtime.sendMessage({
-                                type: "save-user-data",
-                                data: response
-                            }, function(response) {
-                                
-                            });                 
-                        } else {
-                            console.log('logged out');
-                        }
-                });                
-            } else {
-                makeGoogleRequest(JSON.parse(response.userData), callbacks, res, elems);   
-            }
+                type: "get-user-email"
+            }, function(response2) {
+                console.log('got response from get-user-email');
+                console.log(response2);
+                if (response2 && response2.email) {
+                    subdomain = response2.partnerSubdomain;                     
+                    makeGoogleRequest(response2, callbacks, res, elems);  
+                    chrome.runtime.sendMessage({
+                        type: "save-user-data",
+                        data: response2
+                    }, function(response3) {});                 
+                } else {
+                    console.log('logged out');
+                }
         });
     } else if(!window.location.host.includes('google.com')) {
         console.log('2');
@@ -426,10 +416,10 @@ $(function() {
                 // sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
                 // sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');   
                 callbacks['success'] = handleSuccess;
-                getEmailAddress();
+                // getEmailAddress();
             } else {
                 callbacks['success'] = handleSuccess;
-                getEmailAddress();
+                // getEmailAddress();
             }
         });
 
