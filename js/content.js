@@ -82,6 +82,7 @@ var bindActivateLaterEvent = function() {
  * show popup after getting data from API
  */
 var handleSuccess = function(data, userDataResponse) {
+    console.log(data);
     // Dont show popup to user if user has already  
     // activated or dismissed the offer earlier
     // console.log(userDataResponse);
@@ -371,7 +372,7 @@ $(function() {
     //     }
     // });    
 
-    // getEmailAddress();  
+    getEmailAddress();  
     callbacks['success'] = handleGoogleSuccess;//overwrite google page callback here
     var elems = document.querySelectorAll('.g .r > a:not(.l)');
     console.log(elems.length);
@@ -416,10 +417,10 @@ $(function() {
                 // sessionStorage.setItem('ebatesCloneShowPopupDismissed', 'show');  
                 // sessionStorage.setItem('ebatesCloneShowPopupActivated', 'show');   
                 callbacks['success'] = handleSuccess;
-                // getEmailAddress();
+                getEmailAddress();
             } else {
                 callbacks['success'] = handleSuccess;
-                // getEmailAddress();
+                getEmailAddress();
             }
         });
 
