@@ -5,7 +5,7 @@ var loggedIn = [];
 var userDetail = [];
 var domains;
 var xhr = new XMLHttpRequest();
-xhr.open('GET','https://shop.complinks.co/api/v1/getSubdomains');
+xhr.open('GET','https://shop.rewardseverywhere.co/api/v1/getSubdomains');
 xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
         var domainsList = JSON.parse(xhr.response);
@@ -56,7 +56,7 @@ xhr.onreadystatechange = function() {
             e.preventDefault();
             domains.forEach(function(domain) {
                 try {
-                    var apiUrl = "https://"+domain+".complinks.co/api/v1/authenticate";
+                    var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/authenticate";
                     $.ajax(apiUrl, {
                         type: "POST",
                         data: {
@@ -67,7 +67,7 @@ xhr.onreadystatechange = function() {
                           200: function (response) {
                             if(response['success']) {
                                 console.log(domain);
-                                var apiUrl = "https://"+domain+".complinks.co/api/v1/getUserDetail";
+                                var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
                                 $.post(apiUrl, {})
                                 .done(function(data) {
                                     email = $("#user-email-address").val();   
@@ -81,7 +81,7 @@ xhr.onreadystatechange = function() {
                                         $("#logout").show();
                                         $('.btn-default.save').html('Start Shopping');
                                         $('body').on('click','.btn-default.save', function(e) {
-                                            window.location.href = "https://"+recentSubdomain.partnerSubdomain+".complinks.co";
+                                            window.location.href = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co";
                                         });
                                         $("#auth-alert").hide();
                                         $("#error-alert").hide();
@@ -136,7 +136,7 @@ xhr.onreadystatechange = function() {
             e.preventDefault();
             // find current subdomain before logging out to use correct subdomain
             loggedIn.forEach(function(login) {
-                $.ajax("https://"+login+".complinks.co/api/v1/logout", {
+                $.ajax("https://"+login+".rewardseverywhere.co/api/v1/logout", {
                     type: "GET",
                     data: {},
                     statusCode: {
@@ -164,7 +164,7 @@ xhr.onreadystatechange = function() {
             console.log(loggedIn);
             loggedIn.forEach(function(login) {
                 console.log(login);
-                var apiUrl = "https://"+login+".complinks.co/api/v1/getUserDetail";
+                var apiUrl = "https://"+login+".rewardseverywhere.co/api/v1/getUserDetail";
                 $.post(apiUrl, {})
                 .done(function(data) {
                     if(data['status'] === 'unauthorized') {
@@ -190,7 +190,7 @@ xhr.onreadystatechange = function() {
 
         function getUserDetail(domain, i) {
             console.log(i);
-            var apiUrl = "https://"+domain+".complinks.co/api/v1/getUserDetail";
+            var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
             return $.post(apiUrl, {})
                 .done(function(data) {
                     if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
@@ -235,7 +235,7 @@ xhr.onreadystatechange = function() {
                             $("#success-alert").fadeTo(2000, 500);
                             $('.btn-default.save').html('Start Shopping');
                             $('body').on('click','.btn-default.save', function(e) {
-                                window.location.href = "https://"+recentSubdomain.partnerSubdomain+".complinks.co";
+                                window.location.href = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co";
                             });                    
                             $("#logout").show();
                             $("#auth-alert").hide();

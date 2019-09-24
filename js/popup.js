@@ -14,7 +14,7 @@ var emailExists = function() {
     }
     //don't need to have email saved to be logged in
     try {
-        var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".complinks.co/api/v1/getUserDetail";
+        var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co/api/v1/getUserDetail";
 
         $.post(apiUrl, {})
         .done(function(data) {
@@ -185,22 +185,22 @@ var showDeals = function(deals) {
             html +=`<div class="retailer-deal">
                         <div class="row-2 w-row">
                             <div class="column deal-col w-col w-col-8">
-                                <div target="_blank" class="retailer-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">`+deals[i].description+`</div>
+                                <div target="_blank" class="retailer-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.rewardseverywhere.co`+deals[i].startTripLink+`">`+deals[i].description+`</div>
                                 <div class="retailer-deal-points">`+deals[i].PointText+`</div>
                                 <div class="retailer-deal-exp"><img class="clock-icon" src="../img/clock-icon.png"/>Expiration Date: `+dateString+`</div>
                             </div>
-                            <div class="column-2 w-col w-col-4 deal-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="color: #000; background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
+                            <div class="column-2 w-col w-col-4 deal-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="color: #000; background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.rewardseverywhere.co`+deals[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
                         </div>
                     </div>`;
         } else {
             html +=`<div class="retailer-deal">
                         <div class="row-2 w-row">
                             <div class="column deal-col w-col w-col-8">
-                                <div target="_blank" class="retailer-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">`+deals[i].description+`</div>
+                                <div target="_blank" class="retailer-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.rewardseverywhere.co`+deals[i].startTripLink+`">`+deals[i].description+`</div>
                                 <div class="retailer-deal-points">`+deals[i].PointText+`</div>
                                 <div class="retailer-deal-exp"><img class="clock-icon" src="../img/clock-icon.png"/>Expiration Date: `+dateString+`</div>
                             </div>
-                            <div class="column-2 w-col w-col-4 deal-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+deals[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
+                            <div class="column-2 w-col w-col-4 deal-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.rewardseverywhere.co`+deals[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
                         </div>
                     </div>`;            
         }
@@ -224,7 +224,7 @@ var showDeals = function(deals) {
     });         
 
     $('.show-offers .container').html(html);
-    $('.offers-container').append("<div class=\"cl-link-container\"><a class=\"cl-link\" target=\"_blank\" href=\"https://"+recentSubdomain.partnerSubdomain+".complinks.co/stores/index/"+deals[0].advertiserid+"\"> View More...</a></div>");     
+    $('.offers-container').append("<div class=\"cl-link-container\"><a class=\"cl-link\" target=\"_blank\" href=\"https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co/stores/index/"+deals[0].advertiserid+"\"> View More...</a></div>");     
     $('.show-offers').show();
 }
 
@@ -234,7 +234,7 @@ var showDeals = function(deals) {
 var getOffers = function() {
     try {
         var currentDomain = '';
-        var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".complinks.co/api/v1/checkDomain";
+        var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co/api/v1/checkDomain";
         var email = localStorage.getItem('userEmailAddress');
         chrome.tabs.query({
             active: true,
@@ -338,7 +338,7 @@ var getNewsErrorHtml = function() {
 var getEvents = function() {
     try {
         $(".loading-icon").show();
-        var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".complinks.co/api/v1/getNews";
+        var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co/api/v1/getNews";
         $.post(apiUrl, {
                 userEmail: emailAddress
             })
@@ -368,10 +368,10 @@ var getEvents = function() {
                                     <div class="row-2 w-row">
                                         <div class="column deal-col w-col w-col-8">
                                             <div><img class="image-4" src="`+ads[i].logo+`"/></div>
-                                            <div target="_blank" class="retailer-deal-text ads-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+ads[i].startTripLink+`">Earn `+ads[i].PointText+`</div>
+                                            <div target="_blank" class="retailer-deal-text ads-deal-text" "href="https://`+recentSubdomain.partnerSubdomain+`.rewardseverywhere.co`+ads[i].startTripLink+`">Earn `+ads[i].PointText+`</div>
                                             <div class="retailer-deal-points ads-deal-points">Shop all `+ads[i].name+` deals</div>
                                         </div>
-                                        <div class="column-2 w-col w-col-4 deal-link-col ads-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.complinks.co`+ads[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
+                                        <div class="column-2 w-col w-col-4 deal-link-col ads-link-col"><a class="w-button retailer-deal-link activate-btn btn-primary" target="_blank" style="background-color: `+lsah+`;" href="https://`+recentSubdomain.partnerSubdomain+`.rewardseverywhere.co`+ads[i].startTripLink+`">Shop Now  <div id="triangle-right"></div></a></div>
                                     </div>
                                 </div>`;
                     }
@@ -397,7 +397,7 @@ var getEvents = function() {
 
 function getUserDetail(domain, i) {
     console.log(i);
-    var apiUrl = "https://"+domain+".complinks.co/api/v1/getUserDetail";
+    var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
     return $.post(apiUrl, {})
         .done(function(data) {
             if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
@@ -585,7 +585,7 @@ var recentSubdomain;
 $(document).ready(function() {
     preBuildTheme();
     var xhr = new XMLHttpRequest();
-    xhr.open('GET','https://shop.complinks.co/api/v1/getSubdomains');
+    xhr.open('GET','https://shop.rewardseverywhere.co/api/v1/getSubdomains');
     xhr.onreadystatechange = function() {
         console.log(xhr.response);
         if(xhr.response.trim() !== "") {

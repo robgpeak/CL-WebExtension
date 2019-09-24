@@ -37,14 +37,14 @@ chrome.runtime.onMessage.addListener(
         if (request.type == "get-user-email") {
         	var email = localStorage.getItem('userEmailAddress');
             // var domains = ['shop','xclub','totalrewards','foxwoods'];
-            makeRequest('GET','https://shop.complinks.co/api/v1/getSubdomains').then(function(data) {
+            makeRequest('GET','https://shop.rewardseverywhere.co/api/v1/getSubdomains').then(function(data) {
                 var domainsList = JSON.parse(data);
                 var domains = Object.keys(domainsList).map((key) => domainsList[key].subdomain);
                 var loggedIn = [];
                 var userDetail = [];
                 var promises = [];
                 domains.forEach(function(domain, idx, array) {
-                    promises.push(makeRequest('POST','https://'+domain+'.complinks.co/api/v1/getUserDetail'));
+                    promises.push(makeRequest('POST','https://'+domain+'.rewardseverywhere.co/api/v1/getUserDetail'));
                 });                    
                 Promise.all(promises).then(function(values) {
                     console.log(values);

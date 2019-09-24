@@ -219,7 +219,7 @@ var makeGoogleRequest = function(userDataResponse, callbacks, res, elems) {
     var accentHex = accentName.concat(partnerStyle.accent.main);
 
     console.log(colors[accentHex]);
-    var apiUrl = "https://"+userDataResponse.partnerSubdomain+".complinks.co/api/v1/checkDomain";
+    var apiUrl = "https://"+userDataResponse.partnerSubdomain+".rewardseverywhere.co/api/v1/checkDomain";
     console.log(res);
     var res2 = res.map(function(item) {
         var a = item.replace('http://', '').replace('https://', '');
@@ -291,7 +291,7 @@ var makeRequest = function(userDataResponse, callbacks, domain, element) {
     }
     var arr = [currentDomain];
     console.log(JSON.stringify({"domainName":arr}));
-    var apiUrl = "https://"+subdomain+".complinks.co/api/v1/checkDomain";
+    var apiUrl = "https://"+subdomain+".rewardseverywhere.co/api/v1/checkDomain";
     $.post({
         url: apiUrl,
         type: "POST",
