@@ -396,19 +396,23 @@ var getEvents = function() {
 };
 
 function getUserDetail(domain, i) {
-    var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
-    return $.post(apiUrl, {})
-        .done(function(data) {
-            if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
+    // if(domain != 'foxwoods') {
+        var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
+        return $.post(apiUrl, {})
+            .done(function(data) {
+                if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
+                    console.log(data);
+                    loggedIn.push(data.partnerSubdomain);
+                    userDetail.push(data);
+                } else {
+                    // console.log(data);
+                    // loggedIn.push(data.partnerSubdomain);
+                    // userDetail.push(data);
+                }
+            }).fail(function(data) {
                 console.log(data);
-                loggedIn.push(data.partnerSubdomain);
-                userDetail.push(data);
-            } else {
-                // console.log(data);
-                // loggedIn.push(data.partnerSubdomain);
-                // userDetail.push(data);
-            }
-        });
+            });
+    // }
 }
 
 var initSubdomain = function(domains) {
