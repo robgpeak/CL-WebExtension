@@ -396,7 +396,6 @@ var getEvents = function() {
 };
 
 function getUserDetail(domain, i) {
-    console.log(i);
     var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
     return $.post(apiUrl, {})
         .done(function(data) {
@@ -405,9 +404,9 @@ function getUserDetail(domain, i) {
                 loggedIn.push(data.partnerSubdomain);
                 userDetail.push(data);
             } else {
-                console.log(data);
-                loggedIn.push(data.partnerSubdomain);
-                userDetail.push(data);
+                // console.log(data);
+                // loggedIn.push(data.partnerSubdomain);
+                // userDetail.push(data);
             }
         });
 }
@@ -416,6 +415,7 @@ var initSubdomain = function(domains) {
     // var domains = ['shop','xclub','totalrewards','foxwoods'];
     var promiseChain = getUserDetail(domains[0], 0);
     for(let i = 1; i<domains.length; i++) {
+        console.log(promiseChain);
         if(i == domains.length-1) { //on last call
             promiseChain = promiseChain.then(function() {
                 return getUserDetail(domains[i], i);
@@ -423,6 +423,7 @@ var initSubdomain = function(domains) {
                     userDetail = userDetail.filter(function(item) {
                         return !(item.status === "unauthorized");
                     });
+                    console.log(userDetail);
                     if(userDetail.length > 0) {
                         var latestLogin = Math.max.apply(Math,userDetail.map(function(u) {
                             if(u.lastLogin === null) {
@@ -537,9 +538,9 @@ var preBuildTheme = function() {
         var accent = localStorage.getItem('accentHex');
         var primaryHue = localStorage.getItem('primaryHue');
 
-        console.log(primary);
-        console.log(accent);
-        console.log(primaryHue);
+        // console.log(primary);
+        // console.log(accent);
+        // console.log(primaryHue);
 
         if(primary !== null && accent !== null && primaryHue !== null) {
             // fail, wait for real buildTheme()
