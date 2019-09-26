@@ -30,9 +30,9 @@ var ceaseStack = [];
 var activateStack = [];
 var path = [];
 
-chrome.runtime.onConnect.addListener(port => {
-    console.log('connected ', port);
-    port.onMessage.addListener(function(request, sender, sendResponse) {
+// chrome.runtime.onConnect.addListener(port => {
+    // console.log('connected ', port);
+    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         // console.log(sender.tab ?
         //     "from a content script:" + sender.tab.url :
         //     "from the extension");
@@ -136,4 +136,4 @@ chrome.runtime.onConnect.addListener(port => {
         }
         return true;
     });
-});
+// });

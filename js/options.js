@@ -189,7 +189,7 @@ xhr.onreadystatechange = function() {
         }
 
         function getUserDetail(domain, i) {
-            console.log(i);
+            // console.log(i);
             var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
             return $.post(apiUrl, {})
                 .done(function(data) {
@@ -198,9 +198,9 @@ xhr.onreadystatechange = function() {
                         loggedIn.push(data.partnerSubdomain);
                         userDetail.push(data);
                     } else {
-                        console.log(data);
-                        loggedIn.push(data.partnerSubdomain);
-                        userDetail.push(data);
+                        // console.log(data);
+                        // loggedIn.push(data.partnerSubdomain);
+                        // userDetail.push(data);
                     }
                 });
         }
@@ -226,23 +226,23 @@ xhr.onreadystatechange = function() {
                             }));
                             
                             recentSubdomain = userDetail.find(function(u) {
-                               console.log(typeof u.lastLogin);
                                return u.lastLogin.includes(latestLogin); 
                             });
                             $("#success-alert").html("");
-                            $("#success-alert").append("Success! You are logged into the  <strong>"+recentSubdomain.partnerName+"</strong> Shopping Assistant")
-                            $("#success-alert").alert();
-                            $("#success-alert").fadeTo(2000, 500);
-                            $('.btn-default.save').html('Start Shopping');
-                            $('body').on('click','.btn-default.save', function(e) {
-                                window.location.href = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co";
-                            });                    
-                            $("#logout").show();
-                            $("#auth-alert").hide();
-                            $("#error-alert").hide();
-                            loggedIn.push(data.partnerSubdomain);                    
-
                             console.log(recentSubdomain);
+                            if(recentSubdomain.partnerName != 'undefined') {
+                                $("#success-alert").append("Success! You are logged into the  <strong>"+recentSubdomain.partnerName+"</strong> Shopping Assistant")
+                                $("#success-alert").alert();
+                                $("#success-alert").fadeTo(2000, 500);
+                                $('.btn-default.save').html('Start Shopping');
+                                $('body').on('click','.btn-default.save', function(e) {
+                                    window.location.href = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co";
+                                });                    
+                                $("#logout").show();
+                                $("#auth-alert").hide();
+                                $("#error-alert").hide();
+                                loggedIn.push(data.partnerSubdomain);                        
+                            }
                         } catch(ex) {
                             console.log(ex);
                             // $("#logout").show();

@@ -377,7 +377,7 @@ $(function() {
     var elems = document.querySelectorAll('.g .r > a:not(.l)');
     console.log(elems.length);
     if(elems.length > 0) {
-        console.log('1');
+        // console.log('1');
         var res = Array.from(elems).map(function(el) {
             console.log(el);
             return el.getAttribute('href');
