@@ -396,7 +396,7 @@ var getEvents = function() {
 };
 
 function getUserDetail(domain, i) {
-    if(domain != 'foxwoods') {
+    // if(domain != 'foxwoods') {
         var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
         return $.post(apiUrl, {})
             .done(function(data) {
@@ -412,7 +412,7 @@ function getUserDetail(domain, i) {
             }).fail(function(data) {
                 console.log(data);
             });
-    }
+    // }
 }
 
 var initSubdomain = function(domains) {
