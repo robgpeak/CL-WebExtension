@@ -198,9 +198,9 @@ xhr.onreadystatechange = function() {
                         loggedIn.push(data.partnerSubdomain);
                         userDetail.push(data);
                     } else {
-                        // console.log(data);
-                        // loggedIn.push(data.partnerSubdomain);
-                        // userDetail.push(data);
+                        console.log(data);
+                        loggedIn.push(data.partnerSubdomain);
+                        userDetail.push(data);
                     }
                 });
         }
@@ -229,7 +229,7 @@ xhr.onreadystatechange = function() {
                                return u.lastLogin.includes(latestLogin); 
                             });
                             $("#success-alert").html("");
-                            console.log(recentSubdomain);
+                            // console.log(recentSubdomain);
                             if(recentSubdomain.partnerName != 'undefined') {
                                 $("#success-alert").append("Success! You are logged into the  <strong>"+recentSubdomain.partnerName+"</strong> Shopping Assistant")
                                 $("#success-alert").alert();
@@ -244,9 +244,9 @@ xhr.onreadystatechange = function() {
                                 loggedIn.push(data.partnerSubdomain);                        
                             }
                         } catch(ex) {
-                            console.log(ex);
+                            // console.log(ex);
                             // $("#logout").show();
-                            //if not logged in
+                            // if not logged in
                             // $('#no-email-alert').show();
                             // $('.image-2').attr('src','images/icon128.png');
                             // $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');

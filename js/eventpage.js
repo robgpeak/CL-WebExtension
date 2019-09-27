@@ -101,7 +101,7 @@ var path = [];
             console.log(request.mode);
             var keys = Object.keys(request.data);
 
-            if(request.href.includes("complinks.co/trip/start")) 
+            if(request.href.includes("rewardseverywhere.co/trip/start")) 
             {
                 console.log(request.data);
                 activateStack.push(1);
@@ -114,7 +114,8 @@ var path = [];
         } else if (request.type === "cease-check") {
             console.log(ceaseStack);
             console.log(activateStack);
-            if(activateStack.length > 0 && !request.host.includes("complinks.co")) {
+            console.log(request.host);
+            if(activateStack.length > 0 && !request.host.includes("rewardseverywhere.co")) {
                 activateStack = [];
                 sendResponse({
                     msg: "activated"
