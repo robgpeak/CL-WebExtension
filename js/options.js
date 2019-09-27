@@ -65,6 +65,7 @@ xhr.onreadystatechange = function() {
                         },
                         statusCode: {
                           200: function (response) {
+                            $("#auth-alert").hide();
                             if(response['success']) {
                                 console.log(domain);
                                 var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
@@ -112,6 +113,7 @@ xhr.onreadystatechange = function() {
                             }
                           },
                           400: function (response) {
+                            $("#auth-alert").hide();
                             console.log('auth error');
                             $("#error-alert").show();             
                             if (!validateEmail('user-email-address')) {
@@ -122,6 +124,24 @@ xhr.onreadystatechange = function() {
                                 return false;
                             }                    
                             // return false;
+                          },
+                          403: function (response) {
+                            console.log('403 auth error');       
+                            if (!validateEmail('user-email-address')) {
+                                $("#error-alert").alert();
+                                $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+                                    $("#error-alert").slideUp(500);
+                                });
+                                return false;
+                            } else {
+                                $("#auth-alert").alert();
+                                $("#auth-alert").fadeTo(5000, 500).slideUp(500, function() {
+                                    $("#auth-alert").slideUp(500);
+                                });
+                                console.log(response);
+                                return false;
+                            }                  
+                            
                           }
                         }
                     });
