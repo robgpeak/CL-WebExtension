@@ -11,7 +11,7 @@
     },
     "options_page": "options.html",
     "content_scripts": [{
-        "matches": ["https://*.google.com/*","https://*.bestbuy.com/*","https://*.rewardseverywhere.co/*"],
+        "matches": ["https://*.rewardseverywhere.co/*","https://*.google.com/*","https://*.bestbuy.com/*","https://*.walmart.com/*","https://*.complinksadsite1.com/*","https://*.complinksadsite2.com/*"],
         // "matches": ["http://*/*","https://*/*"],
         "js": ["/lib/jquery.js","js/colors.js", "js/content.js"],
         "css": ["content.css"]
