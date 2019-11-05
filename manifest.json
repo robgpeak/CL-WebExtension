@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Rewards Everywhere Shopping Assistant",
     "description": "Show offers to registered user",
-    "version": "1.8.3",
+    "version": "1.8.4",
     "icons": {
         "16": "img/icon16.png",
         "19": "img/icon19.png",
@@ -11,7 +11,8 @@
     },
     "options_page": "options.html",
     "content_scripts": [{
-        "matches": ["http://*/*","https://*/*"],
+        "matches": ["https://*.google.com/*","https://*.bestbuy.com/*","https://*.rewardseverywhere.co/*"],
+        // "matches": ["http://*/*","https://*/*"],
         "js": ["/lib/jquery.js","js/colors.js", "js/content.js"],
         "css": ["content.css"]
     }],
