@@ -11,7 +11,7 @@
     },
     "options_page": "options.html",
     "content_scripts": [{
-        "matches": ["https://*./*", "*://*./*"],
+        "matches": ["http://*/*","https://*/*"],
         "js": ["/lib/jquery.js","js/colors.js", "js/content.js"],
         "css": ["content.css"]
     }],
