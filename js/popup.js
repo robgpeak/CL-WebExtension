@@ -471,24 +471,25 @@ var initSubdomain = function(domains) {
 var buildTheme = function() {
     console.log(recentSubdomain);
     try {
-        var primary = localStorage.getItem('primaryHex');
-        var accent = localStorage.getItem('accentHex');
-        var primaryHue = localStorage.getItem('primaryHue');
+        // var primary = localStorage.getItem('primaryHex');
+        // var accent = localStorage.getItem('accentHex');
+        // var primaryHue = localStorage.getItem('primaryHue');
 
         console.log(primary);
         console.log(accent);
         console.log(primaryHue);
         
         var primaryHex = recentSubdomain.primaryColorCode;
-        var accentHex = recentSubdomain.secondaryColorCode;;
-
+        var accentHex = recentSubdomain.buttonColorCode;;
+        var primaryHue = recentSubdomain.secondaryColorCode;
+        
         localStorage.setItem('primaryHex', primaryHex);
         localStorage.setItem('accentHex', accentHex);
-        localStorage.setItem('primaryHue', recentSubdomain.buttonColorCode);
+        localStorage.setItem('primaryHue', primaryHue);
         
-        primary = primaryHex;
-        accent = accentHex;
-        primaryHue = recentSubdomain.buttonColorCode;
+        var primary = primaryHex;
+        var accent = accentHex;
+        
     
         console.log(primary);
         console.log(accent);

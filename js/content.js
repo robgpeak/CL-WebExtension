@@ -27,15 +27,15 @@ var buildPopup = function(data, userDataResponse) {
         var p = userDataResponse.partnerName;
         if(p === "Foxwoods") {
             if(window.location.host.includes('godaddy.com') || window.location.host.includes('walgreens.com') ) {
-                html += '<buttons class="complinks_activate_button" style="min-width: 250px; padding: 16px 14px; font-size: 14px !important; padding-top: 16px; color: #000; background-color: '+userDataResponse.secondaryColorCode+';" >Click to earn ' + data.reward + '</buttons>';
+                html += '<buttons class="complinks_activate_button" style="min-width: 250px; padding: 16px 14px; font-size: 14px !important; padding-top: 16px; color: #000; background-color: '+userDataResponse.buttonColorCode+';" >Click to earn ' + data.reward + '</buttons>';
             } else {
-                html += '<buttons class="complinks_activate_button" style="min-width: 241px; padding: 16px 20px; font-size: 14px !important; color: #000; background-color: '+userDataResponse.secondaryColorCode+';" >Click to earn ' + data.reward + '</buttons>';
+                html += '<buttons class="complinks_activate_button" style="min-width: 241px; padding: 16px 20px; font-size: 14px !important; color: #000; background-color: '+userDataResponse.buttonColorCode+';" >Click to earn ' + data.reward + '</buttons>';
             }
         } else {
             if(window.location.host.includes('godaddy.com') || window.location.host.includes('walgreens.com') ) {
-                html += '<buttons class="complinks_activate_button" style="min-width: 250px; padding: 16px 14px; font-size: 14px !important; padding-top: 16px; background-color: '+userDataResponse.secondaryColorCode+';" >Click to earn ' + data.reward + '</buttons>';
+                html += '<buttons class="complinks_activate_button" style="min-width: 250px; padding: 16px 14px; font-size: 14px !important; padding-top: 16px; background-color: '+userDataResponse.buttonColorCode+';" >Click to earn ' + data.reward + '</buttons>';
             } else {
-                html += '<buttons class="complinks_activate_button" style="min-width: 241px; padding: 16px 20px; font-size: 14px !important; background-color: '+userDataResponse.secondaryColorCode+';" >Click to earn ' + data.reward + '</buttons>';
+                html += '<buttons class="complinks_activate_button" style="min-width: 241px; padding: 16px 20px; font-size: 14px !important; background-color: '+userDataResponse.buttonColorCode+';" >Click to earn ' + data.reward + '</buttons>';
             }
         }
         html += '<span class="complinks_dismiss_container">';
