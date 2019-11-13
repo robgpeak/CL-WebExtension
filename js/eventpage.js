@@ -36,7 +36,27 @@ var path = [];
         // console.log(sender.tab ?
         //     "from a content script:" + sender.tab.url :
         //     "from the extension");
-        if (request.type == "get-user-email") {
+        if(request.type == "checkDomain") {
+            console.log('starting checkDomain on bg');
+            $.post({
+                url: request.apiUrl,
+                type: "POST",
+                data: JSON.stringify({"domainName":request.set}),
+                contentType:"application/json",
+                dataType:"json"
+            })
+            .done(function(data) {
+                //send data back to page   
+                sendResponse(data);              
+            })
+            .fail(function(data) {
+                console.log('failed checkDomain in bgScript')
+                console.log(data);
+                // Object.keys(data).forEach(function(key, index) {
+                //     callbacks.error(data[index], userDataResponse);
+                // });
+            });
+        } else if (request.type == "get-user-email") {
         	var email = localStorage.getItem('userEmailAddress');
             // var domains = ['shop','xclub','totalrewards','foxwoods'];
             makeRequest('GET','https://shop.rewardseverywhere.co/api/v1/getSubdomains').then(function(data) {
@@ -71,13 +91,7 @@ var path = [];
                     });
                     sendResponse(recentSubdomain);                                               
                 });
-            })
-            // .then(function(data1) {
-            //     console.log(data1);            
-            // })
-            // .catch(function (err) {
-            //   console.error('get-user-email error', err.statusText);
-            // });        
+            });        
         } else if (request.type === "get-domain-cookie") {
             sendResponse({
                 cookie: document.cookie
