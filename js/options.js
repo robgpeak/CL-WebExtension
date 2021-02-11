@@ -5,7 +5,7 @@ var loggedIn = [];
 var userDetail = [];
 var domains;
 var xhr = new XMLHttpRequest();
-xhr.open('GET','https://shop.complinks.co/api/v1/getSubdomains');
+xhr.open('GET','https://shop.rewardseverywhere.co/api/v1/getSubdomains');
 xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
         var domainsList = JSON.parse(xhr.response);
@@ -56,7 +56,7 @@ xhr.onreadystatechange = function() {
             e.preventDefault();
             domains.forEach(function(domain) {
                 try {
-                    var apiUrl = "https://"+domain+".complinks.co/api/v1/authenticate";
+                    var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/authenticate";
                     $.ajax(apiUrl, {
                         type: "POST",
                         data: {
@@ -65,9 +65,10 @@ xhr.onreadystatechange = function() {
                         },
                         statusCode: {
                           200: function (response) {
+                            $("#auth-alert").hide();
                             if(response['success']) {
                                 console.log(domain);
-                                var apiUrl = "https://"+domain+".complinks.co/api/v1/getUserDetail";
+                                var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
                                 $.post(apiUrl, {})
                                 .done(function(data) {
                                     email = $("#user-email-address").val();   
@@ -81,7 +82,7 @@ xhr.onreadystatechange = function() {
                                         $("#logout").show();
                                         $('.btn-default.save').html('Start Shopping');
                                         $('body').on('click','.btn-default.save', function(e) {
-                                            window.location.href = "https://"+recentSubdomain.partnerSubdomain+".complinks.co";
+                                            window.location.href = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co";
                                         });
                                         $("#auth-alert").hide();
                                         $("#error-alert").hide();
@@ -112,6 +113,7 @@ xhr.onreadystatechange = function() {
                             }
                           },
                           400: function (response) {
+                            $("#auth-alert").hide();
                             console.log('auth error');
                             $("#error-alert").show();             
                             if (!validateEmail('user-email-address')) {
@@ -122,6 +124,24 @@ xhr.onreadystatechange = function() {
                                 return false;
                             }                    
                             // return false;
+                          },
+                          403: function (response) {
+                            console.log('403 auth error');       
+                            if (!validateEmail('user-email-address')) {
+                                $("#error-alert").alert();
+                                $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
+                                    $("#error-alert").slideUp(500);
+                                });
+                                return false;
+                            } else {
+                                $("#auth-alert").alert();
+                                $("#auth-alert").fadeTo(5000, 500).slideUp(500, function() {
+                                    $("#auth-alert").slideUp(500);
+                                });
+                                console.log(response);
+                                return false;
+                            }                  
+                            
                           }
                         }
                     });
@@ -136,7 +156,7 @@ xhr.onreadystatechange = function() {
             e.preventDefault();
             // find current subdomain before logging out to use correct subdomain
             loggedIn.forEach(function(login) {
-                $.ajax("https://"+login+".complinks.co/api/v1/logout", {
+                $.ajax("https://"+login+".rewardseverywhere.co/api/v1/logout", {
                     type: "GET",
                     data: {},
                     statusCode: {
@@ -164,7 +184,7 @@ xhr.onreadystatechange = function() {
             console.log(loggedIn);
             loggedIn.forEach(function(login) {
                 console.log(login);
-                var apiUrl = "https://"+login+".complinks.co/api/v1/getUserDetail";
+                var apiUrl = "https://"+login+".rewardseverywhere.co/api/v1/getUserDetail";
                 $.post(apiUrl, {})
                 .done(function(data) {
                     if(data['status'] === 'unauthorized') {
@@ -189,8 +209,8 @@ xhr.onreadystatechange = function() {
         }
 
         function getUserDetail(domain, i) {
-            console.log(i);
-            var apiUrl = "https://"+domain+".complinks.co/api/v1/getUserDetail";
+            // console.log(i);
+            var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
             return $.post(apiUrl, {})
                 .done(function(data) {
                     if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
@@ -226,27 +246,27 @@ xhr.onreadystatechange = function() {
                             }));
                             
                             recentSubdomain = userDetail.find(function(u) {
-                               console.log(typeof u.lastLogin);
                                return u.lastLogin.includes(latestLogin); 
                             });
                             $("#success-alert").html("");
-                            $("#success-alert").append("Success! You are logged into the  <strong>"+recentSubdomain.partnerName+"</strong> Shopping Assistant")
-                            $("#success-alert").alert();
-                            $("#success-alert").fadeTo(2000, 500);
-                            $('.btn-default.save').html('Start Shopping');
-                            $('body').on('click','.btn-default.save', function(e) {
-                                window.location.href = "https://"+recentSubdomain.partnerSubdomain+".complinks.co";
-                            });                    
-                            $("#logout").show();
-                            $("#auth-alert").hide();
-                            $("#error-alert").hide();
-                            loggedIn.push(data.partnerSubdomain);                    
-
-                            console.log(recentSubdomain);
+                            // console.log(recentSubdomain);
+                            if(recentSubdomain.partnerName != 'undefined') {
+                                $("#success-alert").append("Success! You are logged into the  <strong>"+recentSubdomain.partnerName+"</strong> Shopping Assistant")
+                                $("#success-alert").alert();
+                                $("#success-alert").fadeTo(2000, 500);
+                                $('.btn-default.save').html('Start Shopping');
+                                $('body').on('click','.btn-default.save', function(e) {
+                                    window.location.href = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co";
+                                });                    
+                                $("#logout").show();
+                                $("#auth-alert").hide();
+                                $("#error-alert").hide();
+                                loggedIn.push(data.partnerSubdomain);                        
+                            }
                         } catch(ex) {
-                            console.log(ex);
+                            // console.log(ex);
                             // $("#logout").show();
-                            //if not logged in
+                            // if not logged in
                             // $('#no-email-alert').show();
                             // $('.image-2').attr('src','images/icon128.png');
                             // $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');

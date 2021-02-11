@@ -29,22 +29,44 @@ function makeRequest (method, url) {
 var ceaseStack = [];
 var activateStack = [];
 var path = [];
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
+
+// chrome.runtime.onConnect.addListener(port => {
+    // console.log('connected ', port);
+    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         // console.log(sender.tab ?
         //     "from a content script:" + sender.tab.url :
         //     "from the extension");
-        if (request.type == "get-user-email") {
+        if(request.type == "checkDomain") {
+            console.log('starting checkDomain on bg');
+            $.post({
+                url: request.apiUrl,
+                type: "POST",
+                data: JSON.stringify({"domainName":request.set}),
+                contentType:"application/json",
+                dataType:"json"
+            })
+            .done(function(data) {
+                //send data back to page   
+                sendResponse(data);              
+            })
+            .fail(function(data) {
+                console.log('failed checkDomain in bgScript')
+                console.log(data);
+                // Object.keys(data).forEach(function(key, index) {
+                //     callbacks.error(data[index], userDataResponse);
+                // });
+            });
+        } else if (request.type == "get-user-email") {
         	var email = localStorage.getItem('userEmailAddress');
             // var domains = ['shop','xclub','totalrewards','foxwoods'];
-            makeRequest('GET','https://shop.complinks.co/api/v1/getSubdomains').then(function(data) {
+            makeRequest('GET','https://shop.rewardseverywhere.co/api/v1/getSubdomains').then(function(data) {
                 var domainsList = JSON.parse(data);
                 var domains = Object.keys(domainsList).map((key) => domainsList[key].subdomain);
                 var loggedIn = [];
                 var userDetail = [];
                 var promises = [];
                 domains.forEach(function(domain, idx, array) {
-                    promises.push(makeRequest('POST','https://'+domain+'.complinks.co/api/v1/getUserDetail'));
+                    promises.push(makeRequest('POST','https://'+domain+'.rewardseverywhere.co/api/v1/getUserDetail'));
                 });                    
                 Promise.all(promises).then(function(values) {
                     console.log(values);
@@ -69,13 +91,7 @@ chrome.runtime.onMessage.addListener(
                     });
                     sendResponse(recentSubdomain);                                               
                 });
-            })
-            // .then(function(data1) {
-            //     console.log(data1);            
-            // })
-            // .catch(function (err) {
-            //   console.error('get-user-email error', err.statusText);
-            // });        
+            });        
         } else if (request.type === "get-domain-cookie") {
             sendResponse({
                 cookie: document.cookie
@@ -99,7 +115,7 @@ chrome.runtime.onMessage.addListener(
             console.log(request.mode);
             var keys = Object.keys(request.data);
 
-            if(request.href.includes("complinks.co/trip/start")) 
+            if(request.href.includes("rewardseverywhere.co/trip/start")) 
             {
                 console.log(request.data);
                 activateStack.push(1);
@@ -112,7 +128,8 @@ chrome.runtime.onMessage.addListener(
         } else if (request.type === "cease-check") {
             console.log(ceaseStack);
             console.log(activateStack);
-            if(activateStack.length > 0 && !request.host.includes("complinks.co")) {
+            console.log(request.host);
+            if(activateStack.length > 0 && !request.host.includes("rewardseverywhere.co")) {
                 activateStack = [];
                 sendResponse({
                     msg: "activated"
@@ -134,3 +151,4 @@ chrome.runtime.onMessage.addListener(
         }
         return true;
     });
+// });
