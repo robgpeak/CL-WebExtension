@@ -1,8 +1,10 @@
-/**
- * Get user email address from local storage
- * and send it to content script
- */
+// Background page, persistent running script
+
+
+// helper method for any xhr request
 function makeRequest (method, url) {
+  //Promises return deferred object state: pending; resolved; rejected
+  //Chainable processes with .then()
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
     xhr.open(method, url);
@@ -26,111 +28,124 @@ function makeRequest (method, url) {
   });
 }
 
+// Data structures for ad state outside of content page
+// sites that should be blacklisted from showing offers
 var ceaseStack = [];
+// sites that are active in showing offers
 var activateStack = [];
+// url of content page
 var path = [];
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        // console.log(sender.tab ?
-        //     "from a content script:" + sender.tab.url :
-        //     "from the extension");
-        if (request.type == "get-user-email") {
-        	var email = localStorage.getItem('userEmailAddress');
-            // var domains = ['shop','xclub','totalrewards','foxwoods'];
-            makeRequest('GET','https://shop.complinks.co/api/v1/getSubdomains').then(function(data) {
-                var domainsList = JSON.parse(data);
-                var domains = Object.keys(domainsList).map((key) => domainsList[key].subdomain);
-                var loggedIn = [];
-                var userDetail = [];
-                var promises = [];
-                domains.forEach(function(domain, idx, array) {
-                    promises.push(makeRequest('POST','https://'+domain+'.complinks.co/api/v1/getUserDetail'));
-                });                    
-                Promise.all(promises).then(function(values) {
-                    console.log(values);
-                    values.forEach(function(data2) {
-                        if(data2 !== '{"status":"unauthorized"}') {    
-                            loggedIn.push(JSON.parse(data2).partnerSubdomain);
-                            userDetail.push(JSON.parse(data2));
-                        }
-                    });
-                    var latestLogin = Math.max.apply(Math,userDetail.map(function(u){
-                        var ainxs = u.lastLogin.indexOf("(");
-                        var ainxe = u.lastLogin.indexOf(")");
-                        var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
-                        suba = Number(suba);            
-                        return suba;    
-                    }));
-                    userDetail.forEach(function(obj) {
-                        console.log(obj.lastLogin);
-                    });
-                    recentSubdomain = userDetail.find(function(u) {
-                       return u.lastLogin.includes(latestLogin); 
-                    });
-                    sendResponse(recentSubdomain);                                               
-                });
-            })
-            // .then(function(data1) {
-            //     console.log(data1);            
-            // })
-            // .catch(function (err) {
-            //   console.error('get-user-email error', err.statusText);
-            // });        
-        } else if (request.type === "get-domain-cookie") {
-            sendResponse({
-                cookie: document.cookie
-            });
-        } else if (request.type === "set-activated-from-google") {
-        } else if(request.type === "save-user-data") {
-            var store = {};
-            store['userData'] = JSON.stringify(request.data);
-            chrome.storage.local.set(store);
-        } else if(request.type === "get-user-data") {
-            console.log('get user data called');
-            chrome.storage.local.get('userData', function(item) {
-                console.log(item);
-                sendResponse(item);              
-            });
-            
-        } else if (request.type === "check-params") { 
-            console.log('check-params top');
-            console.log(request);
-            console.log(request.host);
-            console.log(request.mode);
-            var keys = Object.keys(request.data);
 
-            if(request.href.includes("complinks.co/trip/start")) 
-            {
-                console.log(request.data);
-                activateStack.push(1);
-                console.log('activate stack push');
-            } else if (request.href.includes("aclk")) {
-                ceaseStack.push(1);
-            } else if (request.href.includes("=") && !request.host.includes("google.com") && !request.referrer.includes("google.com")) {
-                ceaseStack.push(1);
-            }
-        } else if (request.type === "cease-check") {
-            console.log(ceaseStack);
-            console.log(activateStack);
-            if(activateStack.length > 0 && !request.host.includes("complinks.co")) {
-                activateStack = [];
-                sendResponse({
-                    msg: "activated"
+
+//Background page message handler
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    // send domain of google result to API to check for potential offers
+    if(request.type == "checkDomain") {
+        $.post({
+            url: request.apiUrl,
+            type: "POST",
+            data: JSON.stringify({"domainName":request.set}),
+            contentType:"application/json",
+            dataType:"json"
+        })
+        .done(function(data) {  
+            sendResponse(data);              
+        })
+        .fail(function(data) {
+            console.log(data);
+        });
+    // for all subdomains, get user email
+    } else if (request.type == "get-user-email") {
+    	var email = localStorage.getItem('userEmailAddress');
+        makeRequest('GET','https://shop.rewardseverywhere.co/api/v1/getSubdomains').then(function(data) {
+            var domainsList = JSON.parse(data);
+            var domains = Object.keys(domainsList).map((key) => domainsList[key].subdomain);
+            var loggedIn = [];
+            var userDetail = [];
+            var promises = [];
+            domains.forEach(function(domain, idx, array) {
+                promises.push(makeRequest('POST','https://'+domain+'.rewardseverywhere.co/api/v1/getUserDetail'));
+            });                    
+            Promise.all(promises).then(function(values) {
+                console.log(values);
+                values.forEach(function(data2) {
+                    if(data2 !== '{"status":"unauthorized"}') {    
+                        loggedIn.push(JSON.parse(data2).partnerSubdomain);
+                        userDetail.push(JSON.parse(data2));
+                    }
                 });
-            } else if(ceaseStack.length > 0) {
-                sendResponse({
-                    msg: "cease" 
+                var latestLogin = Math.max.apply(Math,userDetail.map(function(u){
+                    var ainxs = u.lastLogin.indexOf("(");
+                    var ainxe = u.lastLogin.indexOf(")");
+                    var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
+                    suba = Number(suba);            
+                    return suba;    
+                }));
+                userDetail.forEach(function(obj) {
+                    console.log(obj.lastLogin);
                 });
-            } else {
-                sendResponse({
-                    msg: "continue"
+                recentSubdomain = userDetail.find(function(u) {
+                   return u.lastLogin.includes(latestLogin); 
                 });
-            }
-            setTimeout(function() {
-                ceaseStack = [];
-            }, 10000);
-        } else if (request.type === "clear-cease") {
-            ceaseStack = [];
+                sendResponse(recentSubdomain);                                               
+            });
+        });        
+    } else if (request.type === "get-domain-cookie") {
+        sendResponse({
+            cookie: document.cookie
+        });
+    } else if (request.type === "set-activated-from-google") {
+    } else if(request.type === "save-user-data") {
+        var store = {};
+        store['userData'] = JSON.stringify(request.data);
+        chrome.storage.local.set(store);
+    } else if(request.type === "get-user-data") {
+        console.log('get user data called');
+        chrome.storage.local.get('userData', function(item) {
+            console.log(item);
+            sendResponse(item);              
+        });
+        
+    } else if (request.type === "check-params") { 
+        console.log('check-params top');
+        console.log(request);
+        console.log(request.host);
+        console.log(request.mode);
+        var keys = Object.keys(request.data);
+
+        if(request.href.includes("rewardseverywhere.co/trip/start")) 
+        {
+            console.log(request.data);
+            activateStack.push(1);
+            console.log('activate stack push');
+        } else if (request.href.includes("aclk")) {
+            ceaseStack.push(1);
+        } else if (request.href.includes("=") && !request.host.includes("google.com") && !request.referrer.includes("google.com")) {
+            ceaseStack.push(1);
         }
-        return true;
-    });
+    } else if (request.type === "cease-check") {
+        console.log(ceaseStack);
+        console.log(activateStack);
+        console.log(request.host);
+        if(activateStack.length > 0 && !request.host.includes("rewardseverywhere.co")) {
+            activateStack = [];
+            sendResponse({
+                msg: "activated"
+            });
+        } else if(ceaseStack.length > 0) {
+            sendResponse({
+                msg: "cease" 
+            });
+        } else {
+            sendResponse({
+                msg: "continue"
+            });
+        }
+        setTimeout(function() {
+            ceaseStack = [];
+        }, 10000);
+    } else if (request.type === "clear-cease") {
+        ceaseStack = [];
+    }
+    return true;
+});
