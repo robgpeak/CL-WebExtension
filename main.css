@@ -32,7 +32,7 @@ hr.left {
 	width: 20px;
 }
 hr.right {
-	width: 180px;
+	width: 230px;
 }
 .delimiter {
 	width: 1px;
@@ -149,7 +149,7 @@ hr.right {
 	display: none;
 }
 .row.fbuttons {
-	width: 390px !important;
+	width: 450px !important;
 }
 .navbar-co {
 	display: block !important;
@@ -186,7 +186,7 @@ span.glyphicon.glyphicon-usd {
 }
 
 body {
-	width:400px; 
+	width:450px; 
 	height:300px;
 	font-family: Roboto,"Helvetica Neue", Arial, sans-serif;
 }

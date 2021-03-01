@@ -121,6 +121,9 @@ var showOffer = function(data) {
                 url: data.clickUrl,
                 mode: 'popup-activate'
             }, function(response) {
+                if(chrome.runtime.lastError) {
+                    console.log(chrome.runtime.lastError);
+                }
                 console.log(response);
                 chrome.tabs.query({
                     active: true,
@@ -135,7 +138,7 @@ var showOffer = function(data) {
                         $('.offer-btn-container').html(html);
                     }
                 });
-            });
+            });    
         });
     });
 
@@ -146,6 +149,9 @@ var showOffer = function(data) {
         chrome.tabs.sendMessage(tabs[0].id, {
             type: "activated?"
         }, function(response) {
+            if(chrome.runtime.lastError) {
+                console.log(chrome.runtime.lastError);
+            }
             if(response !== undefined && response.type=="show") {
                 html = "";
                 html = '<div class="row">';
@@ -155,6 +161,7 @@ var showOffer = function(data) {
             }
             $('.offer-btn-container').html(html);
         });
+    
     });
 };
 
@@ -217,7 +224,11 @@ var showDeals = function(deals) {
                 type: "create-activate-tab",
                 url: href,
                 mode: 'other'
-            }, function(response) { });
+            }, function(response) { 
+                if(chrome.runtime.lastError) {
+                    console.log(chrome.runtime.lastError);
+                }
+            });
         });          
     });         
 
@@ -230,58 +241,70 @@ var showDeals = function(deals) {
  * Send POST request to get offers
  */
 var getOffers = function() {
-    try {
-        var currentDomain = '';
-        var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co/api/v1/checkDomain";
-        var email = localStorage.getItem('userEmailAddress');
-        chrome.tabs.query({
-            active: true,
-            currentWindow: true
-        }, function(tabs) {
-            if (!tabs || !tabs[0] || !tabs[0].url) {
-                return;
-            }
-            var arr = [];
-            currentDomain = extractHostname(tabs[0].url);
-            arr.push(currentDomain);
-            var store = {"includeDeals":"true", "domainName":arr};
-            $.post({
-                url: apiUrl,
-                type: "POST",
-                data: JSON.stringify(store),
-                contentType:"application/json",
-                dataType:"json"
-            })
-            .done(function(data) {
-                if(data.length > 0) {                    
-                    showOffer(data[0]); 
-                    showDeals(data[0].Deals);  
-                    $('.show-offers .deals-promotions-header').html('<hr class="left"/>Deals &amp; Promotions<hr class="right"/>');
-                    chrome.tabs.query({
-                        active: true,
-                        currentWindow: true
-                    }, function(tabs) {
-                        chrome.tabs.sendMessage(tabs[0].id, {
-                            type: "activated?"
-                        }, function(response) {
-                            console.log(response);
-                            if(response !== undefined && response.type === "show") {
-                                $('.activate-btn').css({
-                                    'background-color': 'green !important',
-                                    'border-color': 'green !important'
-                                });       
-                            }
-                        });
-                    });            
+    return new Promise((resolve, reject) => {
+        try {
+            var currentDomain = '';
+            var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co/api/v1/checkDomain";
+            var email = localStorage.getItem('userEmailAddress');
+            chrome.tabs.query({
+                active: true,
+                currentWindow: true
+            }, function(tabs) {
+                if (!tabs || !tabs[0] || !tabs[0].url) {
+                    reject();
+                    return;
                 }
-            })
-            .fail(function(data) {
-                callbacks.error(data[0]);
+                var arr = [];
+                currentDomain = extractHostname(tabs[0].url);
+                arr.push(currentDomain);
+                var store = {"includeDeals":"true", "domainName":arr};
+                $.post({
+                    url: apiUrl,
+                    type: "POST",
+                    data: JSON.stringify(store),
+                    contentType:"application/json",
+                    dataType:"json"
+                })
+                .done(function(data) {
+                    if(data.length > 0 && data[0].Deals !== null && data[0].isAdvertiser) {                    
+                        showOffer(data[0]); 
+                        showDeals(data[0].Deals);  
+                        
+                        chrome.tabs.query({
+                            active: true,
+                            currentWindow: true
+                        }, function(tabs) {
+                            chrome.tabs.sendMessage(tabs[0].id, {
+                                type: "activated?"
+                            }, function(response) {
+                                if(chrome.runtime.lastError) {
+                                    console.log(chrome.runtime.lastError);
+                                }
+                                console.log(response);
+                                if(response !== undefined && response.type === "show") {
+                                    $('.activate-btn').css({
+                                        'background-color': 'green !important',
+                                        'border-color': 'green !important'
+                                    });
+                                }
+                            });
+                        }); 
+                        $('.show-offers .deals-promotions-header').html('<hr class="left"/>Deals &amp; Promotions<hr class="right"/>');
+                        resolve();
+                    } else {
+                        reject();
+                    }
+                })
+                .fail(function(data) {
+                    callbacks.error(data[0]);
+                    reject();
+                });
             });
-        });
-    } catch (ex) {
-        // callbacks.error({status: "unauthorized"});
-    }
+        } catch (ex) {
+            // callbacks.error({status: "unauthorized"});
+            reject();
+        }
+    });
 };
 
 /**
@@ -333,7 +356,7 @@ var getNewsErrorHtml = function() {
 /**
  * Get timeline of user activities
  */
-var getEvents = function() {
+var getEvents = function() {    
     try {
         $(".loading-icon").show();
         var apiUrl = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co/api/v1/getNews";
@@ -386,11 +409,12 @@ var getEvents = function() {
             .fail(function() {
                 $(".loading-icon").hide();
                 $('.timeline-events').html(getNewsErrorHtml());
+                reject();
             });
     } catch (ex) {
         $(".loading-icon").hide();
         $('.timeline-events').html(getNewsErrorHtml());
-    }    
+    }  
 };
 
 function getUserDetail(domain, i) {
@@ -400,8 +424,15 @@ function getUserDetail(domain, i) {
             .done(function(data) {
                 if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
                     console.log(data);
-                    loggedIn.push(data.partnerSubdomain);
-                    userDetail.push(data);
+                    let found = userDetail.some((item) => { 
+                        return item.partnerSubdomain === data.partnerSubdomain 
+                    });
+                    console.log('found', found);
+                    // don't push same partner object twice
+                    if(!found) {
+                        loggedIn.push(data.partnerSubdomain);
+                        userDetail.push(data);
+                    }
                 } else {
                     // console.log(data);
                     // loggedIn.push(data.partnerSubdomain);
@@ -446,8 +477,18 @@ var initSubdomain = function(domains) {
                         bindEvents();
                         toggleEmailField();
                         buildTheme();
-                        getEvents();
-                        getOffers();
+                        getOffers()
+                        .then(() => {
+                            // got offers successfully
+                            $(".loading-icon").hide(); 
+                            // return true;
+                        })
+                        .catch(() => {
+                            // if no offers for this page then show events
+                            getEvents()    
+                            $(".loading-icon").hide(); 
+                            // return true;
+                        });
                     } else {
                         bindEvents();
                         $('#no-email-alert').show();
@@ -504,6 +545,9 @@ var buildTheme = function() {
             chrome.tabs.sendMessage(tabs[0].id, {
                 type: "activated?"
             }, function(response) {
+                if(chrome.runtime.lastError) {
+                    console.log(chrome.runtime.lastError);
+                }
                 console.log(response);
                 if(response !== undefined && response.type !== "show" && response.type !== null) {
                     $('.activate-btn').css({'background-color':accent});
@@ -519,7 +563,7 @@ var buildTheme = function() {
         },function (){
            $(this).animate({'opacity':'1'}, 100);
         });
-        $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you currently have '+recentSubdomain.availablePoints+' points');
+        $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you have '+recentSubdomain.pendingPoints+' pending points and '+recentSubdomain.availablePoints+' available points');
         $('#name-panel').css({"height":"25px"});
         $('.greeting-points').css({"padding-top":"4px","background-color":primaryHue});
         localStorage.setItem('availablePoints', recentSubdomain.availablePoints);

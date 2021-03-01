@@ -305,7 +305,7 @@ body {
 
 @media (max-width: 479px) {
   .body-div {
-    width: 455px;
+    width: 510px;
     height: auto;
   }
   .navbar-co.navbar-co-default {
@@ -407,6 +407,7 @@ body {
     padding-top: 12px;
   }
   .deals-promotions-header {
+    width: 420px;
     margin-bottom: 20px;
     font-family: Josefin Sans, sans-serif;
     color: #000;
