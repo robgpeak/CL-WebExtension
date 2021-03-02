@@ -77,7 +77,7 @@ var showOffer = function(data) {
     if (data === undefined || !data.isAdvertiser || data.reward == '') {
         return;
     }
-    $('.navbar-co').hide();
+    // $('.navbar-co').hide();
     var lsph = localStorage.getItem('primaryHex');
     var lsah = localStorage.getItem('accentHex');
 
@@ -91,17 +91,17 @@ var showOffer = function(data) {
     
     $('.image-3').attr('src',data.logoUrl);
     
-    $('.navbar-co').fadeTo(2000, 0, function() {
+    // $('.navbar-co').fadeTo(2000, 0, function() {
 
-    }); 
+    // }); 
 
-    $('.partner-header').css({"height":"70px"});
+    $('.partner-header').css({"height":"60px"});
     // $('.navbar-co').hide();
     $('body-div').css({"position":"relative"});
-    $('.navbar-co, .partner-header').css({"position":"absolute"});
+    // $('.navbar-co, .partner-header').css({"position":"absolute"});
     $('.name-panel').hide();
     $('.partner-header').show()
-    $('.container-fluid').css({"padding-top":"55px"});
+    // $('.container-fluid').css({"padding-top":"55px"});
 
     $(document).on('click','.activate-btn',function() {
         console.log('activate-btn clicked');
@@ -466,7 +466,7 @@ var initSubdomain = function(domains) {
                             var ainxs = u.lastLogin.indexOf("(");
                             var ainxe = u.lastLogin.indexOf(")");
                             var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
-                            suba = Number(suba);            
+                            suba = Number(suba);
                             return suba;
                         }));
 
@@ -481,10 +481,14 @@ var initSubdomain = function(domains) {
                         .then(() => {
                             // got offers successfully
                             $(".loading-icon").hide(); 
+                            $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you have '+recentSubdomain.pendingPoints+' pending points and '+recentSubdomain.availablePoints+' available points');
+                            $('#name-panel').css({"height":"25px"});
+                            $('.greeting-points').css({"padding-top":"4px","background-color":recentSubdomain.secondaryColorCode});
                             // return true;
                         })
-                        .catch(() => {
+                        .catch(error => {
                             // if no offers for this page then show events
+                            console.log('error', error);
                             getEvents()    
                             $(".loading-icon").hide(); 
                             // return true;
@@ -516,9 +520,9 @@ var buildTheme = function() {
         // var accent = localStorage.getItem('accentHex');
         // var primaryHue = localStorage.getItem('primaryHue');
 
-        console.log(primary);
-        console.log(accent);
-        console.log(primaryHue);
+        // console.log(primary);
+        // console.log(accent);
+        // console.log(primaryHue);
         
         var primaryHex = recentSubdomain.primaryColorCode;
         var accentHex = recentSubdomain.buttonColorCode;;
