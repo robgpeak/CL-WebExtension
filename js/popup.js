@@ -99,7 +99,7 @@ var showOffer = function(data) {
     // $('.navbar-co').hide();
     $('body-div').css({"position":"relative"});
     // $('.navbar-co, .partner-header').css({"position":"absolute"});
-    $('.name-panel').hide();
+    // $('.name-panel').hide();
     $('.partner-header').show()
     // $('.container-fluid').css({"padding-top":"55px"});
 
