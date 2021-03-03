@@ -165,6 +165,13 @@ hr.right {
 }
 .partner-header {
 	display: none;
+	height: 60px;
+    display: block;
+    padding-top: 90px;
+}
+
+.partner-header > div.row {
+	visibility: hidden;
 }
 
 .image-2 {

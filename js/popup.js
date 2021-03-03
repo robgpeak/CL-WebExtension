@@ -370,7 +370,7 @@ var getEvents = function() {
                     return false;
                 }
                 $(".loading-icon").hide();
-                if (data) {
+                if (data && data.featuredAdvertisers) {
                     // var eventHtml = buildTimelineHtml(data.news);
                     // $('.timeline-events').html(eventHtml);
                     var ads = data.featuredAdvertisers;
@@ -404,6 +404,7 @@ var getEvents = function() {
                     var lsph = localStorage.getItem('primaryHex');
                     $('.well-sm, .btn-primary').css({'background-color':lsah});
                     $('.well-sm, .btn-primary').css({'border-color':lsah});
+                    $('.offers-container').append("<div class=\"cl-link-container\"><a class=\"cl-link\" target=\"_blank\" href=\"https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co/"+""+"\"> View More...</a></div>");     
                 }
             })
             .fail(function() {
@@ -481,8 +482,10 @@ var initSubdomain = function(domains) {
                         .then(() => {
                             // got offers successfully
                             $(".loading-icon").hide(); 
+                            $(".partner-header > div.row").css({'visibility':'visible'});
+                            $(".tab-content.fb-tab-actions.fpanels").css({'padding-top': '50px'});
                             $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you have '+recentSubdomain.pendingPoints+' pending points and '+recentSubdomain.availablePoints+' available points');
-                            $('#name-panel').css({"height":"25px"});
+                            // $('#name-panel').css({"height":"25px"});
                             $('.greeting-points').css({"padding-top":"4px","background-color":recentSubdomain.secondaryColorCode});
                             // return true;
                         })
@@ -490,6 +493,7 @@ var initSubdomain = function(domains) {
                             // if no offers for this page then show events
                             console.log('error', error);
                             getEvents()    
+                            $(".partner-header > div.row").css({'visibility':'hidden'});
                             $(".loading-icon").hide(); 
                             // return true;
                         });
