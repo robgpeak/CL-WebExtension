@@ -200,7 +200,7 @@ var makeGoogleRequest = function(userDataResponse, callbacks, elems) {
 
     var apiUrl = "https://"+userDataResponse.partnerSubdomain+".rewardseverywhere.co/api/v1/checkDomain";
     var res2 = elems.map(function(item) {
-        if(item !== undefined) {
+        if(item !== undefined && item.getAttribute('href') !== null) {
             var a = item.getAttribute('href').replace('http://', '').replace('https://', '');
             return a.substring(0, a.indexOf('/'));
         }
