@@ -185,7 +185,7 @@ var getEmailAddress = function() {
                 data: response
             }, function(response) {
                 
-            });                 
+            });
         } else { //logged out, ask for email, look for cookie?
             console.log(response);
         }
@@ -199,11 +199,18 @@ var getEmailAddress = function() {
 var makeGoogleRequest = function(userDataResponse, callbacks, elems) {
 
     var apiUrl = "https://"+userDataResponse.partnerSubdomain+".rewardseverywhere.co/api/v1/checkDomain";
-    var res2 = elems.map(function(item) {
+    elems = elems.filter(function(item) {
         if(item !== undefined && item.getAttribute('href') !== null) {
             var a = item.getAttribute('href').replace('http://', '').replace('https://', '');
-            return a.substring(0, a.indexOf('/'));
+            var ret = a.substring(0, a.indexOf('/'));
+            if(ret !== null || ret !== "") {
+                return true;
+            }
         }
+    });
+    var res2 = elems.map(function(item) {
+        var a = item.getAttribute('href').replace('http://', '').replace('https://', '');
+        return a.substring(0, a.indexOf('/'));
     });
     var set = [...new Set(res2)];
     console.log('sending checkDomain to bg');
