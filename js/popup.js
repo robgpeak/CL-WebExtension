@@ -4,7 +4,7 @@ var emailAddress = null;
  * check if user has provide the email address 
  * and it exists in local storage
  */
-var emailExists = function() {
+var emailExists = function(recentSubdomain) {
     var email = localStorage.getItem('userEmailAddress');
     if (email !== undefined && email != null && email != '') {
         emailAddress = email;
@@ -73,7 +73,7 @@ var extractHostname = function(url) {
     return hostname;
 }
 
-var showOffer = function(data) {
+var showOffer = function(data,  recentSubdomain) {
     if (data === undefined || !data.isAdvertiser || data.reward == '') {
         return;
     }
@@ -165,7 +165,7 @@ var showOffer = function(data) {
     });
 };
 
-var showDeals = function(deals) {
+var showDeals = function(deals, recentSubdomain) {
     console.log(deals);
     if(deals === null) {
         return false;
@@ -240,7 +240,7 @@ var showDeals = function(deals) {
 /**
  * Send POST request to get offers
  */
-var getOffers = function() {
+var getOffers = function(recentSubdomain) {
     return new Promise((resolve, reject) => {
         try {
             var currentDomain = '';
@@ -267,8 +267,8 @@ var getOffers = function() {
                 })
                 .done(function(data) {
                     if(data.length > 0 && data[0].Deals !== null && data[0].isAdvertiser) {                    
-                        showOffer(data[0]); 
-                        showDeals(data[0].Deals);  
+                        showOffer(data[0], recentSubdomain); 
+                        showDeals(data[0].Deals, recentSubdomain);  
                         
                         chrome.tabs.query({
                             active: true,
@@ -419,114 +419,200 @@ var getEvents = function() {
 };
 
 function getUserDetail(domain, i) {
-    // if(domain != 'foxwoods') {
-        var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
-        return $.post(apiUrl, {})
-            .done(function(data) {
-                if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
-                    console.log(data);
-                    let found = userDetail.some((item) => { 
-                        return item.partnerSubdomain === data.partnerSubdomain 
-                    });
-                    console.log('found', found);
-                    // don't push same partner object twice
-                    if(!found) {
-                        loggedIn.push(data.partnerSubdomain);
-                        userDetail.push(data);
-                    }
-                } else {
-                    // console.log(data);
-                    // loggedIn.push(data.partnerSubdomain);
-                    // userDetail.push(data);
-                }
-            }).fail(function(data) {
-                console.log(data);
-            });
-    // }
+    return fetch(`https://${domain}.rewardseverywhere.co/api/v1/getUserDetail`,
+    {
+        method: 'POST',
+        body: {}
+    })
+    .then(response => response.json())
+    .then((data) => {
+        
+    })
+    
+    // var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
+    // return $.post(apiUrl, {})
+    // .done(function(data) {
+    //     if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
+    //         console.log(data);
+    //         let found = userDetail.some((item) => { 
+    //             return item.partnerSubdomain === data.partnerSubdomain 
+    //         });
+    //         console.log('found', found);
+    //         // don't push same partner object twice
+    //         if(!found) {
+    //             loggedIn.push(data.partnerSubdomain);
+    //             userDetail.push(data);
+    //         }
+    //     } else {
+    //         // console.log(data);
+    //         // loggedIn.push(data.partnerSubdomain);
+    //         // userDetail.push(data);
+    //     }
+    // }).fail(function(data) {
+    //     console.log(data);
+    // });
 }
 
 var initSubdomain = function(domains) {
     // var domains = ['shop','xclub','totalrewards','foxwoods'];
-    var promiseChain = getUserDetail(domains[0], 0);
-    for(let i = 1; i<domains.length; i++) {
-        console.log(promiseChain);
-        if(i == domains.length-1) { //on last call
-            promiseChain = promiseChain.then(function() {
-                return getUserDetail(domains[i], i);
-            }).then(function() {
-                    userDetail = userDetail.filter(function(item) {
-                        return !(item.status === "unauthorized");
-                    });
-                    console.log(userDetail);
-                    if(userDetail.length > 0) {
-                        var latestLogin = Math.max.apply(Math,userDetail.map(function(u) {
-                            if(u.lastLogin === null) {
-                                u.lastLogin = "/Date(1525787051000)/"
-                            }
-                            console.log(u.lastLogin);
-                            var ainxs = u.lastLogin.indexOf("(");
-                            var ainxe = u.lastLogin.indexOf(")");
-                            var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
-                            suba = Number(suba);
-                            return suba;
-                        }));
+    // var promiseChain = getUserDetail(domains[0], 0);
 
-                        recentSubdomain = userDetail.find(function(u) {
-                           console.log(typeof u.lastLogin);
-                           return u.lastLogin.includes(latestLogin); 
-                        });
-                        bindEvents();
-                        toggleEmailField();
-                        buildTheme();
-                        getOffers()
-                        .then(() => {
-                            // got offers successfully
-                            $(".loading-icon").hide(); 
-                            $(".partner-header > div.row").css({'visibility':'visible'});
-                            $(".tab-content.fb-tab-actions.fpanels").css({'padding-top': '50px'});
-                            $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you have '+recentSubdomain.pendingPoints+' pending points and '+recentSubdomain.availablePoints+' available points');
-                            // $('#name-panel').css({"height":"25px"});
-                            $('.greeting-points').css({"padding-top":"4px","background-color":recentSubdomain.secondaryColorCode});
-                            // return true;
-                        })
-                        .catch(error => {
-                            // if no offers for this page then show events
-                            console.log('error', error);
-                            getEvents()    
-                            $(".partner-header > div.row").css({'visibility':'hidden'});
-                            $(".loading-icon").hide(); 
-                            // return true;
-                        });
-                    } else {
-                        bindEvents();
-                        $('#no-email-alert').show();
-                        $('.image-2').attr('src','images/icon128.png');
-                        $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');
-                        $('body').css({"height":"300px !important;"});
-                        $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"}); 
-                        $(".loading-icon").hide();                   
-                    }
+    let subdomain;
+    chrome.storage.local.get("userData", (store) => {
+        userData = JSON.parse(store.userData);
+        console.log('subdomain',userData)
+
+        // fetch(`https://${subdomain}.rewardseverywhere.co/api/v1/getUserDetail`,
+        // {
+        //     method: 'POST',
+        //     body: {}
+        // })
+        // .then(response => {
+        //     response.json()
+        // })
+        // .then(json => typeof json.status !== "unauthorized" && typeof json.partnerSubdomain !== "undefined")
+                // console.log(data);
+                // let found = userDetail.some((item) => { 
+                //     return item.partnerSubdomain === data.partnerSubdomain 
+                // });
+                // console.log('found', found);
+                // don't push same partner object twice
+                // if(!found) {
+                    // loggedIn.push(json.partnerSubdomain);
+                    // userDetail.push(json);
+                // }
+        // })
+
+        if(userData !== undefined) {
+            bindEvents();
+            toggleEmailField();
+            buildTheme(userData);
+            getOffers(userData)
+            .then(() => {
+                // // got offers successfully
+                $(".loading-icon").hide(); 
+                $(".partner-header > div.row").css({'visibility':'visible'});
+                $(".tab-content.fb-tab-actions.fpanels").css({'padding-top': '50px'});
+                $('.greeting-points').html('Hi '+userData.firstName+', you have '+userData.pendingPoints+' pending points and '+userData.availablePoints+' available points');
+                // // $('#name-panel').css({"height":"25px"});
+                $('.greeting-points').css({"padding-top":"4px","background-color":userData.secondaryColorCode});
+                // // return true;
+
+            })
+            .catch(error => {
+                // if no offers for this page then show events
+                console.log('error', error);
+                getEvents()
+                $(".partner-header > div.row").css({'visibility':'hidden'});
+                $(".loading-icon").hide(); 
+                // return true;
             });
         } else {
-            promiseChain = promiseChain.then(function() {
-                return getUserDetail(domains[i], i);
-            });    
+                bindEvents();
+                $('#no-email-alert').show();
+                $('.image-2').attr('src','images/icon128.png');
+                $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');
+                $('body').css({"height":"300px !important;"});
+                $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"}); 
+                $(".loading-icon").hide();
         }
+    });
+
+    
+
+    // return Promise.all(domains.map(domain => {
+    
+    //     .catch(error => {
+    //         console.log(error)
+    //     })        
+    // }))
+    // .then(results => {
+    //     console.log('results', results)
+    // })
+
+    // let promises = [];
+    // for(let i = 0; i<domains.length-1; i++) {
+    //     promises.push(getUserDetail(domains[i], i))
+    // }
+
+    // Promise.any(promises)
+    // .then((value) => {
+    //     console.log(value)
+    // })
+    
+    // for(let i = 1; i<domains.length; i++) {
+    //     console.log(promiseChain);
+    //     if(i == domains.length-1) { //on last call
+    //         promiseChain = promiseChain.then(function() {
+    //             return getUserDetail(domains[i], i);
+    //         }).then(function() {
+    //                 userDetail = userDetail.filter(function(item) {
+    //                     return !(item.status === "unauthorized");
+    //                 });
+    //                 console.log(userDetail);
+    //                 if(userDetail.length > 0) {
+    //                     var latestLogin = Math.max.apply(Math,userDetail.map(function(u) {
+    //                         if(u.lastLogin === null) {
+    //                             u.lastLogin = "/Date(1525787051000)/"
+    //                         }
+    //                         console.log(u.lastLogin);
+    //                         var ainxs = u.lastLogin.indexOf("(");
+    //                         var ainxe = u.lastLogin.indexOf(")");
+    //                         var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
+    //                         suba = Number(suba);
+    //                         return suba;
+    //                     }));
+
+    //                     recentSubdomain = userDetail.find(function(u) {
+    //                        console.log(typeof u.lastLogin);
+    //                        return u.lastLogin.includes(latestLogin); 
+    //                     });
+    //                     bindEvents();
+    //                     toggleEmailField();
+    //                     buildTheme();
+    //                     getOffers()
+    //                     .then(() => {
+    //                         // // got offers successfully
+    //                         $(".loading-icon").hide(); 
+    //                         $(".partner-header > div.row").css({'visibility':'visible'});
+    //                         $(".tab-content.fb-tab-actions.fpanels").css({'padding-top': '50px'});
+    //                         $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you have '+recentSubdomain.pendingPoints+' pending points and '+recentSubdomain.availablePoints+' available points');
+    //                         // // $('#name-panel').css({"height":"25px"});
+    //                         $('.greeting-points').css({"padding-top":"4px","background-color":recentSubdomain.secondaryColorCode});
+    //                         // // return true;
+
+    //                     })
+    //                     .catch(error => {
+    //                         // if no offers for this page then show events
+    //                         console.log('error', error);
+    //                         getEvents()
+    //                         $(".partner-header > div.row").css({'visibility':'hidden'});
+    //                         $(".loading-icon").hide(); 
+    //                         // return true;
+    //                     });
+    //                 } else {
+    //                     bindEvents();
+    //                     $('#no-email-alert').show();
+    //                     $('.image-2').attr('src','images/icon128.png');
+    //                     $('.navbar-brand-co').html('Rewards Everywhere Shopping Assistant');
+    //                     $('body').css({"height":"300px !important;"});
+    //                     $('.tab-content.fb-tab-actions.fpanels').css({"min-height":"78px !important;"}); 
+    //                     $(".loading-icon").hide();
+    //                 }
+    //         });
+    //     } else {
+    //         promiseChain = promiseChain.then(function() {
+    //             return getUserDetail(domains[i], i);
+    //         });    
+    //     }
         
-    }
-    return loggedIn;
+    // }
+    // return loggedIn;
 }
 
-var buildTheme = function() {
+var buildTheme = function(recentSubdomain) {
     console.log(recentSubdomain);
     try {
-        // var primary = localStorage.getItem('primaryHex');
-        // var accent = localStorage.getItem('accentHex');
-        // var primaryHue = localStorage.getItem('primaryHue');
-
-        // console.log(primary);
-        // console.log(accent);
-        // console.log(primaryHue);
         
         var primaryHex = recentSubdomain.primaryColorCode;
         var accentHex = recentSubdomain.buttonColorCode;;
@@ -588,63 +674,25 @@ var preBuildTheme = function() {
         var accent = localStorage.getItem('accentHex');
         var primaryHue = localStorage.getItem('primaryHue');
 
-        // console.log(primary);
-        // console.log(accent);
-        // console.log(primaryHue);
-
         if(primary !== null && accent !== null && primaryHue !== null) {
             // fail, wait for real buildTheme()
             $('.navbar-header-co').css({'background-color':primary});
             $('.well-sm').css({'background-color':primary});
         }
-        
-        
-        // chrome.tabs.query({
-        //     active: true,
-        //     currentWindow: true
-        // }, function(tabs) {
-        //     chrome.tabs.sendMessage(tabs[0].id, {
-        //         type: "activated?"
-        //     }, function(response) {
-        //         console.log(response);
-        //         if(response !== undefined && response.type !== "show" && response.type !== null) {
-        //             $('.activate-btn').css({'background-color':accent});
-        //             $('.activate-btn').css({'border-color':accent});   
-        //             $('.retailer-deal-link').css({'background-color':accent});
-        //         }
-        //     });
-        // });  
-
-
-        // $(".activate-btn").hover(function () {
-        //    $(this).animate({'opacity':'0.7'}, 100);
-        // },function (){
-        //    $(this).animate({'opacity':'1'}, 100);
-        // });
-        // $('.greeting-points').html('Hi '+recentSubdomain.firstName+', you currently have '+recentSubdomain.availablePoints+' points');
-        // $('#name-panel').css({"height":"25px"});
-        // $('.greeting-points').css({"padding-top":"4px","background-color":primaryHue});
-        // localStorage.setItem('availablePoints', recentSubdomain.availablePoints);
-        // $('.image-2').attr('src',recentSubdomain.partnerIcon); //change class in webflow
-        // $('.navbar-brand-co').html(recentSubdomain.partnerName+' Rewards Everywhere Shopping Assistant');
 }
 
 var loggedIn = [];
 var userDetail = [];
-var recentSubdomain;
+
 
 $(document).ready(function() {
-    preBuildTheme();
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET','https://shop.rewardseverywhere.co/api/v1/getSubdomains');
-    xhr.onreadystatechange = function() {
-        console.log(xhr.response);
-        if(xhr.response.trim() !== "") {
-            var domainsList = JSON.parse(xhr.response);
-            var domains = Object.keys(domainsList).map((key) => domainsList[key].subdomain);
-
-            initSubdomain(domains);            
-        }
-    }
-    xhr.send();
+    preBuildTheme()
+    fetch('https://shop.rewardseverywhere.co/api/v1/getSubdomains')
+    .then(data => data.json())
+    .then(domainsList => {
+        console.log(domainsList)
+        let domains = Object.keys(domainsList).map((key) => domainsList[key].subdomain)
+        console.log(domains)
+        initSubdomain(domains);
+    })
 });
