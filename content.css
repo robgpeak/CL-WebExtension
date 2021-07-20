@@ -1,99 +1,103 @@
-@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300,400');
+@import url("https://fonts.googleapis.com/css?family=Josefin+Sans:300,400");
 
 img {
-    opacity: 1 !important;
+  opacity: 1 !important;
 }
 .complinks_popup {
-    box-sizing: border-box;
-    line-height:16px !important;
-    border: 1px solid transparent;
-	position:absolute;
-    float:right;
-	right:0;
-	top:20px;
-	height:130px;
-	width:640px;
-    z-index: 99999;
-    font-family: Verilag;
+  box-sizing: border-box;
+  line-height: 16px !important;
+  border: 1px solid transparent;
+  transition: opacity 1s;
+  position: fixed;
+  float: right;
+  right: 0;
+  top: 20px;
+  height: 130px;
+  width: 640px;
+  z-index: 99999;
+  font-family: Verilag;
 }
-
+.opacity0 {
+  opacity: 0 !important;
+}
 .helper {
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
 }
 .complinks_partner_logo {
-    position:absolute;
-    z-index:999998;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-	background-color:black;
-	float:left;
-	padding:10px;
-	width: 40%;
-	height:98px !important;
-	border:2px solid black;
-    box-sizing: content-box;
-    text-align: center;
+  position: absolute;
+  z-index: 999998;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  background-color: black;
+  float: left;
+  padding: 10px;
+  width: 40%;
+  height: 98px !important;
+  border: 2px solid black;
+  box-sizing: content-box;
+  text-align: center;
 }
 
 .complinks_logo {
-    max-height:70px;
-    margin: 0 auto;
-    padding: 0;
-    vertical-align: middle;
-    display: inline-block;
-    max-width: 100%;
-    width: auto;
+  max-height: 70px;
+  margin: 0 auto;
+  padding: 0;
+  vertical-align: middle;
+  display: inline-block;
+  max-width: 100%;
+  width: auto;
 }
 
 .complinks_main_content {
-    box-sizing: content-box;
-    z-index:999999;
-    margin-right: 26px;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-	background-color: white;
-	border:2px solid black;
-	padding:10px;
-	float:right;
-	width:49%;
-	height:98px !important;
+  box-sizing: content-box;
+  z-index: 999999;
+  margin-right: 26px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: white;
+  border: 2px solid black;
+  padding: 10px;
+  float: right;
+  width: 49%;
+  height: 98px !important;
 }
 
 .complinks_activate_button {
-    box-sizing: content-box;
-    font-family: Roboto,"Helvetica Neue", Arial, sans-serif;
-    margin: 9% 5% 10% 5% !important;
-    /*min-width: 210px;*/
-    /*float:right;*/
-    box-shadow: -1px 3px 1px -10px rgba(0,0,0,0.5), -1px 3px 4px -1px rgba(0,0,0,0.5);
-    border: 1px solid transparent;
-    border-radius: 0px;
-	display:inline-block;
-	background-color:teal;
-	border:none;
-	color:white;
-	padding:15px 32px;
-	text-align:center;
-	text-decoration:none;
-	font-size:13px !important;
-	cursor:pointer;
-    font-weight: 400 !important;
-    -webkit-font-smoothing: auto;
-    line-height:1 !important;
+  box-sizing: content-box;
+  font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 9% 5% 10% 5% !important;
+  /*min-width: 210px;*/
+  /*float:right;*/
+  box-shadow: -1px 3px 1px -10px rgba(0, 0, 0, 0.5),
+    -1px 3px 4px -1px rgba(0, 0, 0, 0.5);
+  border: 1px solid transparent;
+  border-radius: 0px;
+  display: inline-block;
+  background-color: teal;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 13px !important;
+  cursor: pointer;
+  font-weight: 400 !important;
+  -webkit-font-smoothing: auto;
+  line-height: 1 !important;
 }
 
 .complinks_dismiss_container {
-    right: 40px;
-    top: 7px;
-    position: absolute;
-    text-transform: uppercase;
+  right: 40px;
+  top: 7px;
+  position: absolute;
+  text-transform: uppercase;
 }
 
 .complinks_dismiss_button {
-    color: #000;
-    font-weight: 700;
-    text-decoration: none;    
-	font-size: 12pt;
+  color: #000;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 12pt;
 }

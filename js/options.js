@@ -1,12 +1,26 @@
-
-
-$("#logout").hide();
 var loggedIn = [];
 var userDetail = [];
 var domains;
+var maxRequests = 8
+var currentRequests = 0
+function setUpCloseBtns() {
+    var closebtns = document.querySelectorAll(".close")
+    for (let i = 0; i < closebtns.length; i++) {
+        var closebtn = closebtns[i];
+        closebtn.addEventListener("click", function (e) {
+            var parent = e.target.parentElement
+            while (parent.classList.contains("alert") == false) {
+                parent = parent.parentElement
+            }
+            hideAlert(parent.id)
+        })
+    }
+}
+setUpCloseBtns()
 var xhr = new XMLHttpRequest();
-xhr.open('GET','https://shop.rewardseverywhere.co/api/v1/getSubdomains');
-xhr.onreadystatechange = function() {
+var sleep = (ms) => new Promise((resolve, reject) => setTimeout(() => { resolve() }, ms))
+xhr.open('GET', 'https://shop.rewardseverywhere.co/api/v1/getSubdomains');
+xhr.onreadystatechange = function () {
     if (xhr.readyState === 4) {
         var domainsList = JSON.parse(xhr.response);
         domains = Object.keys(domainsList).map((key) => domainsList[key].subdomain);
@@ -14,33 +28,15 @@ xhr.onreadystatechange = function() {
         /**
          * check if email is valid or not
          */
-        var validateEmail = function(id, errorOnly = false) {
+        var validateEmail = function (value) {
             var email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
-            if (!email_regex.test($("#" + id).val())) {
-                var div = $("#" + id).closest("div");
-                div.removeClass("has-success");
-                $("#glypcn" + id).remove();
-                div.addClass("has-error has-feedback");
-                return false;
-            } else {
-                if(!errorOnly) {
-                    var div = $("#" + id).closest("div");
-                    div.removeClass("has-error");
-                    $("#glypcn" + id).remove();
-                    div.addClass("has-success has-feedback");            
-                }
-                return true;
-            }
+            return email_regex.test(value);
         }
 
-        var saveEmail = function(email) {
+        var saveEmail = function (email) {
             localStorage.setItem('userEmailAddress', email);
             emailAddress = email;
-            try {
-                return true;
-            } catch (ex) {
-
-            }
+            return true
         }
 
         /**
@@ -48,219 +44,124 @@ xhr.onreadystatechange = function() {
          */
         function saveOptions(e) {
             e.preventDefault();
-            domains.forEach(function(domain) {
-                try {
-                    var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/authenticate";
-                    $.ajax(apiUrl, {
-                        type: "POST",
-                        data: {
-                            "email": $('#user-email-address').val(),
-                            "password": $('#user-password').val()
-                        },
-                        statusCode: {
-                          200: function (response) {
-                            $("#auth-alert").hide();
-                            if(response['success']) {
-                                console.log(domain);
-                                var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
-                                $.post(apiUrl, {})
-                                .done(function(data) {
-                                    email = $("#user-email-address").val();   
+            domains.forEach(async function (domain) {
+                while (currentRequests != 0) {
+                    await sleep(1000)
+                }
+                if (loggedIn.filter(e => e != undefined).length != 0) {
+                    return
+                }
+                if (validateEmail(document.querySelector("#user-email-address").value) == false) {
+                    showAlert("email-error-alert")
+                    return
+                }
+                var apiUrl = "https://" + domain + ".rewardseverywhere.co/api/v1/authenticate";
+                helpfulFunctions.Fetchs.postFetch(apiUrl, {
+                    email: document.querySelector("#user-email-address").value,
+                    password: document.querySelector("#user-password").value
+                }, { credentials: 'include' })
+                    .then(response => response.json())
+                    .then((response) => {
+                        if (response['success']) {
+                            var apiUrl = "https://" + domain + ".rewardseverywhere.co/api/v1/getUserDetail";
+                            helpfulFunctions.Fetchs.postFetch(apiUrl, {}, { credentials: 'include' })
+                                .then(response => response.json())
+                                .then((data) => {
+                                    email = document.querySelector("#user-email-address").value
                                     saveEmail(email);
                                     recentSubdomain = data;
-                                    if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
-                                        $("#success-alert").html("");
-                                        $("#success-alert").append("Success! You are logged into the  <strong>"+recentSubdomain.partnerName+"</strong> Shopping Assistant")
-                                        $("#success-alert").alert();
-                                        $("#success-alert").fadeTo(2000, 500);
-                                        $("#logout").show();
-                                        $('.btn-default.save').html('Start Shopping');
-                                        $('body').on('click','.btn-default.save', function(e) {
-                                            window.location.href = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co";
-                                        });
-                                        $("#auth-alert").hide();
-                                        $("#error-alert").hide();
-                                        loggedIn.push(data.partnerSubdomain);
-                                        setTimeout(function() {
-                                            // location.reload();
-                                        }, 500);
+                                    if (data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined") {
+                                        handleSuccessAuth(data.partnerSubdomain, data.partnerName, data.email);
                                     } else {
-                                        $("#logout").hide();
+                                        handleFailedAuth();
                                     }
-                                });
+                                }).catch(data => {
+                                    console.log(data);
+                                })
 
-                                return true;
-                            } else { //auth unsuccessful
-                                if (!validateEmail('user-email-address', true)) {
-                                    $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
-                                        $("#error-alert").slideUp(500);
-                                    });
-                                    return false;
-                                } else {
-                                    $("#auth-alert").fadeTo(2000, 500).slideUp(500, function() {
-                                        $("#auth-alert").slideUp(500);
-                                    });    
-                                }
-                            }
-                          },
-                          400: function (response) {
-                            $("#auth-alert").hide();
-                            console.log('auth error');
-                            $("#error-alert").show();             
-                            if (!validateEmail('user-email-address')) {
-                                $("#error-alert").alert();
-                                $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
-                                    $("#error-alert").slideUp(500);
-                                });
-                                return false;
-                            }                    
-                          },
-                          403: function (response) {
-                            console.log('403 auth error');       
-                            if (!validateEmail('user-email-address')) {
-                                $("#error-alert").alert();
-                                $("#error-alert").fadeTo(2000, 500).slideUp(500, function() {
-                                    $("#error-alert").slideUp(500);
-                                });
-                                return false;
-                            } else {
-                                $("#auth-alert").alert();
-                                $("#auth-alert").fadeTo(5000, 500).slideUp(500, function() {
-                                    $("#auth-alert").slideUp(500);
-                                });
-                                console.log(response);
-                                return false;
-                            }                  
-                            
-                          }
+                            return true;
+                        } else { //auth unsuccessful
+
                         }
-                    });
-                } catch (ex) {
+                    }).catch(data => {
+                        console.log(data);
+                    })
 
-                }
             });
 
         }
 
-        function logout(e) {
+        async function logout(e) {
             e.preventDefault();
             // find current subdomain before logging out to use correct subdomain
-            loggedIn.forEach(function(login) {
-                $.ajax("https://"+login+".rewardseverywhere.co/api/v1/logout", {
-                    type: "GET",
-                    data: {},
-                    statusCode: {
-                      200: function (response) {
-                            $('#user-email-address').val("");
-                            clearPassword();
-                            localStorage.setItem('userEmailAddress', '');
-                            $("#logout").hide();
-                            $("#already-logged-in-alert").hide();
-                            setTimeout(function() {
-                                location.reload();
-                            }, 500);
-                      },
-                      404: function (response) {}
-                    }
-                });
+            var requests = 0
+            loggedIn.forEach(function (login) {
+                requests++
+                helpfulFunctions.Fetchs.getFetch("https://" + login + ".rewardseverywhere.co/api/v1/logout", { credentials: 'include' })
+                    .then(() => {
+                        requests--
+                    }).catch(() => {
+                        requests--
+                    })
             });
+            while (requests != 0) {
+                await sleep(1000)
+            }
+            localStorage.setItem("userEmailAddress", "")
+            loggedIn = []
+            document.querySelector("#user-email-address").removeAttribute("disabled")
+            document.querySelector("#user-email-address").value = ""
+            document.querySelector("#user-password").removeAttribute("disabled")
+            document.querySelector("#user-password").value = ""
+            localStorage.setItem('userEmailAddress', '');
+            document.querySelector("#startShopping").style.display = "none"
+            document.querySelector("#logout").style.display = "none"
+            document.querySelector("#save").style.display = "inline-block"
         }
 
-        function clearPassword() {
-            $('#user-password').val("");
-        }
-
-        function restore_options() {
-            console.log(loggedIn);
-            loggedIn.forEach(function(login) {
-                console.log(login);
-                var apiUrl = "https://"+login+".rewardseverywhere.co/api/v1/getUserDetail";
-                $.post(apiUrl, {})
-                .done(function(data) {
-                    if(data['status'] === 'unauthorized') {
-                        $("#auth-alert").show();
-                        $("#logout").hide();
-                    } else {
+        function getUserDetail(domain) {
+            return new Promise((resolve, reject) => {
+                var apiUrl = "https://" + domain + ".rewardseverywhere.co/api/v1/getUserDetail";
+                helpfulFunctions.Fetchs.postFetch(apiUrl, {}, { credentials: 'include' })
+                    .then(response => response.json())
+                    .then((data) => {
+                        resolve(data)
+                    }).catch(data => {
                         console.log(data);
-                        $("#already-logged-in-alert").append("to <strong>"+data.partnerName+"</strong>")
-                        $("#already-logged-in-alert").show();
-                        $("#auth-alert").hide();
-                        var emailAddress = localStorage.getItem('userEmailAddress');
-                        $('#user-email-address').val(emailAddress);
-                        if(emailAddress !== '' && emailAddress !== null && typeof emailAddress !== 'undefined')
-                          $('#user-password').attr('value','••••••••');
+                    })
+            })
+
+        }
+
+        var initSubdomain = function (domains) {
+            var promises = []
+            for (let i = 1; i < domains.length; i++) {
+                promises.push(getUserDetail(domains[i]))
+            }
+            Promise.all(promises)
+                .then(values => {
+                    authedValues = values.filter(e => e.status != "unauthorized");
+                    var latestLogin = Math.max.apply(Math, authedValues.map(function (u) {
+                        var ainxs = u.lastLogin.indexOf("(");
+                        var ainxe = u.lastLogin.indexOf(")");
+                        var suba = u.lastLogin.substring(ainxs + 1, ainxe - 1);
+                        suba = Number(suba);
+                        return suba;
+                    }));
+
+                    recentSubdomain = authedValues.find(function (u) {
+                        return u.lastLogin.includes(latestLogin);
+                    });
+                    if (recentSubdomain && recentSubdomain.partnerSubdomain != 'undefined') {
+                        handleSuccessAuth(recentSubdomain.partnerSubdomain, recentSubdomain.partnerName, recentSubdomain.email)
+                    } else {
+                        document.querySelector("#startShopping").style.display = "none";
+                        document.querySelector("#logout").style.display = "none";
+                        document.querySelector("#save").style.display = "inline-block";
+                        document.querySelector("#loadingPage").style.display = "none";
+                        document.querySelector("#loadedPage").style.display = "block";
                     }
                 })
-                .fail(function(data) { 
-                    $("#auth-alert").show();
-                    $("#logout").hide();
-                });   
-            })
-        }
-
-        function getUserDetail(domain, i) {
-            var apiUrl = "https://"+domain+".rewardseverywhere.co/api/v1/getUserDetail";
-            return $.post(apiUrl, {})
-                .done(function(data) {
-                    if(typeof data.status !== "unauthorized" && typeof data.partnerSubdomain !== "undefined" ) {
-                        console.log(data);
-                        loggedIn.push(data.partnerSubdomain);
-                        userDetail.push(data);
-                    } else {
-                        console.log(data);
-                        loggedIn.push(data.partnerSubdomain);
-                        userDetail.push(data);
-                    }
-                });
-        }
-
-        var initSubdomain = function(domains) {
-            var promiseChain = getUserDetail(domains[0], 0);
-            for(let i = 1; i<domains.length; i++) {
-                if(i == domains.length-1) { //on last call
-                    promiseChain = promiseChain.then(function() {
-                        return getUserDetail(domains[i], i);
-                    }).then(function() {
-                        try {
-                            userDetail = userDetail.filter(function(item) {
-                                return !(item.status === "unauthorized");
-                            });
-                            var latestLogin = Math.max.apply(Math,userDetail.map(function(u){
-                                var ainxs = u.lastLogin.indexOf("(");
-                                var ainxe = u.lastLogin.indexOf(")");
-                                var suba = u.lastLogin.substring(ainxs+1,ainxe-1);
-                                suba = Number(suba);            
-                                return suba;
-                            }));
-                            
-                            recentSubdomain = userDetail.find(function(u) {
-                               return u.lastLogin.includes(latestLogin); 
-                            });
-                            $("#success-alert").html("");
-                            if(recentSubdomain.partnerName != 'undefined') {
-                                $("#success-alert").append("Success! You are logged into the  <strong>"+recentSubdomain.partnerName+"</strong> Shopping Assistant")
-                                $("#success-alert").alert();
-                                $("#success-alert").fadeTo(2000, 500);
-                                $('.btn-default.save').html('Start Shopping');
-                                $('body').on('click','.btn-default.save', function(e) {
-                                    window.location.href = "https://"+recentSubdomain.partnerSubdomain+".rewardseverywhere.co";
-                                });                    
-                                $("#logout").show();
-                                $("#auth-alert").hide();
-                                $("#error-alert").hide();
-                                loggedIn.push(data.partnerSubdomain);                        
-                            }
-                        } catch(ex) {
-                            // console.log(ex);
-                        }
-                    });
-                } else {
-                    promiseChain = promiseChain.then(function() {
-                        return getUserDetail(domains[i], i);
-                    });    
-                }
-                
-            }
             return loggedIn;
         }
 
@@ -268,7 +169,45 @@ xhr.onreadystatechange = function() {
         initSubdomain(domains);
         document.getElementById('save').addEventListener('click', saveOptions);
         document.getElementById('logout').addEventListener('click', logout);
-        document.getElementById('user-password').addEventListener('focusin', clearPassword);
+
     }
 };
 xhr.send();
+
+function handleFailedAuth() {
+    showAlert("pass-error-alert")
+    document.querySelector("#startShopping").style.display = "none";
+    document.querySelector("#logout").style.display = "none";
+    document.querySelector("#save").style.display = "inline-block";
+    document.querySelector("#loadingPage").style.display = "none";
+    document.querySelector("#loadedPage").style.display = "block";
+}
+function showAlert(id, text = "") {
+    document.querySelector(`#${id}`).classList.add("active")
+    if (text != "") {
+        document.querySelector(`#${id} span:not(.close)`).innerHTML = text;
+    }
+    setTimeout(() => {
+        document.querySelector(`#${id}`).classList.remove("active")
+    }, 2000);
+}
+function hideAlert(id) {
+    document.querySelector(`#${id}`).classList.remove("active")
+}
+function handleSuccessAuth(partnerSubdomain, partnerName, email) {
+    document.querySelector("#user-email-address").value = email
+    document.querySelector("#user-email-address").setAttribute("disabled", "true")
+    document.querySelector("#user-password").value = "••••••••"
+    document.querySelector("#user-password").setAttribute("disabled", "true")
+    showAlert("success-alert", "You are logged into the  <strong>" + partnerName + "</strong> Shopping Assistant")
+    document.querySelector("#startShopping").onclick = function (e) {
+        e.preventDefault()
+        window.location.href = "https://" + partnerSubdomain + ".rewardseverywhere.co";
+    }
+    loggedIn.push(partnerSubdomain);
+    document.querySelector("#startShopping").style.display = "inline-block";
+    document.querySelector("#logout").style.display = "inline-block";
+    document.querySelector("#save").style.display = "none";
+    document.querySelector("#loadingPage").style.display = "none";
+    document.querySelector("#loadedPage").style.display = "block";
+}

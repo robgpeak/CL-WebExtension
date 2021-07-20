@@ -1,84 +1,294 @@
-<html data-wf-page="5ab40f74a6f28144b3ea3bee" data-wf-site="">
-	<head>
-		<meta charset="utf-8">
-		  <title>Complinks Popup</title>
-		    <script src="js/webfont.js" type="text/javascript"></script>
-	</head>
-	<body class="body">
-	  <div class="body-div">
-		<div class="navbar-co navbar-co-default">
-			<div class="container-fluid">
-				<div class="navbar-header-co w-clearfix">
-					<div class="div-block-3">
-						<img src="" class="image-2">
-					</div>
-					<span href="#" data-w-id="b824a8ef-009c-f5ba-76b1-cac536059f2a" class="navbar-brand-co"></span>
-          			<div class="avail-points"></div>
-				</div>
-			</div>
-			<div class="account-info">
-        		<div class="username-inscript">Welcome, Addison</div>
-      		</div>
-		</div>
-		<div id="name-panel" class="name-panel">
-			<div class="greeting-points"></div>
-		</div>
-		<div class="partner-header">
-			<div class="row w-row">
-				<div class="w-col w-col-3 w-col-small-3 img-col"><img class="image-3" src=""/></div>
-				<div class='delimiter'></div>
-				<div class="w-col w-col-9 w-col-small-9 offer-btn-container"></div>
-			</div>
-		</div>
-		<div class="container-fluid" >
-			<div data-w-id="5a62e912-6844-a667-08c3-d54b4f6b6091" class="tab-content fb-tab-actions fpanels">
-				<div class="alert alert-success" id="success-alert" hidden>
-					<button type="button" class="close" data-dismiss="alert">x</button>
-					<strong>Success! </strong>
-					Settings saved successfully!
-				</div>
-				<div class="alert alert-danger" id="error-alert" hidden>
-					<button type="button" class="close" data-dismiss="alert">x</button>
-					Please click the "Settings" button below to enter your email address and password. <br> You will only need to do this one time.
-				</div>
-				<div class="alert alert-danger" id="no-email-alert" hidden>
-					Please click the "Settings" button below to enter your email address and password. <br> You will only need to do this one time.
-				</div>
-				<div role="tabpanel" class="tab-pane active" id="account">
-					<div class="loading-icon">
-						<img src="img/loading.svg" alt="Please wait...">
-					</div>
-					<div class="show-offers">
-						<div class="deals-promotions-header"><hr class="left"/>Deals &amp; Promotions <hr class="right"/></div>
-						<div class="container w-container offers-container">
-							
-						</div>
-					</div>
-					<div class="timeline-events">
-					</div>
-				</div>
-			</div>
-			<div class="row fbuttons">
-				
-				<div class="col-xs-4">
-				</div>
-				<div class="col-xs-4">
-					<button class="btn btn-primary btn-sm btn-block" id="settings">Settings</button>
-				</div>
-				<div class="col-xs-4">
-					<button class="btn btn-danger btn-sm btn-block" id="cancel">Close</button>
-				</div>
-			</div>
-		</div>
-	  </div>
-	  <link href="normalize.css" rel="stylesheet" type="text/css">
-	  <link href="webflow.css" rel="stylesheet" type="text/css">
-	  <link href="complinks-popup.webflow.css" rel="stylesheet" type="text/css">
-	  <link rel="stylesheet" href="lib/bootstrap.min.css">
-	  <link rel="stylesheet" href="main.css">
-	  <script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
-	  <script src="/lib/bootstrap.min.js"></script>		
-	  <script src="/js/popup.js"></script>
-	  <script src="js/webflow.js" type="text/javascript"></script>
-	</body>
+<!DOCTYPE html>
+<html lang="en" style="width: 450px;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complinks Popup</title>
+    <link rel="stylesheet" href="./lib/bootstrap.min.css">
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Josefin+Sans:300,400");
+
+        .deals-promotions-header {
+            margin: 10px 0 !important;
+            font-family: Lato, sans-serif;
+            font-weight: 500;
+        }
+
+        hr.left {
+            width: 50px;
+        }
+
+        hr.right {
+            width: 200px;
+        }
+
+        hr {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            border-style: inset;
+            display: inline-grid;
+            vertical-align: middle;
+        }
+
+
+        #container {
+            padding: 0 15px;
+        }
+
+        .retailer-deal:nth-last-child(0) {
+            border-bottom: none;
+        }
+
+        .retailer-deal-link {
+            text-transform: uppercase;
+            font-size: medium !important;
+            width: 80%;
+        }
+
+        .retailer-deal {
+            min-height: 100px;
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            border-top: transparent;
+        }
+
+        .retailer-deal:nth-child(1) {
+            border-top: 1px solid #ddd;
+        }
+
+        .retailer-deal-text,
+        .retailer-deal-points,
+        .retailer-deal-exp {
+            font-family: Lato, sans-serif;
+            font-size: 13px;
+            padding-left: 10px;
+            color: #000;
+        }
+
+        .retailer-deal-text {
+            font-weight: 700;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .retailer-deal-points {
+            font-weight: 700;
+            font-size: 12px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .retailer-deal-exp {
+            margin-bottom: 15px;
+            width: 200px;
+        }
+
+        .activate-btn {
+            box-shadow: -1px 3px 1px -10px rgb(0 0 0 / 50%), -1px 3px 4px -1px rgb(0 0 0 / 50%);
+            font-size: 14px !important;
+        }
+
+        .activate-btn:focus {
+            box-shadow: 0 0 0 0.25rem #e2183070 !important;
+        }
+
+        #triangle-right {
+            vertical-align: top;
+            margin-left: 5px;
+            display: inline-block;
+            border-top: 8px solid #0000;
+            border-left: 14px solid #fff;
+            border-bottom: 8px solid #0000;
+            margin-top: 2px;
+        }
+
+        .ads-link-col {
+            margin-top: 7% !important;
+        }
+
+        .ads-deal-text {
+            font-weight: 700;
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            font-size: 16px !important;
+            width: 102% !important;
+        }
+
+        .ads-deal-points {
+            color: #828282 !important;
+            font-weight: 300 !important;
+            margin-top: 2.5px !important;
+        }
+
+        .image-4 {
+            height: 40px;
+            max-width: 100%;
+            margin: 0px 0px 0px 5px;
+            padding: 10px 0px 0px;
+        }
+
+        .offers-container {
+            box-shadow: -1px 3px 1px -10px rgb(0 0 0 / 50%), -1px 3px 4px -1px rgb(0 0 0 / 50%);
+            padding: 0px;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar {
+            width: 0px;
+        }
+    </style>
+</head>
+
+<body style=" margin: 0; ">
+    <div id="app">
+        <div id="loadingPage" style="min-height:500px;position: relative;width: 100%;height: 450px;display: block;">
+            <img src="img/loading.gif"
+                style="width: 200px;height: 200px;transform: translate(-50%,-50%);top: 50%;left: 50%;position: absolute;"
+                alt="Please wait...">
+        </div>
+        <div id="loadedPage" class="shopFeaturedStores"
+            style="min-height:500px;position: relative;width: 100%; display: none;">
+            <div class="navbar-co navbar-co-default" style="width: 100%;">
+                <div class="navbar-header-co"
+                    :style="`min-height: 55px;background: ${partnerSite.primaryColor};position: relative;`">
+                    <div class="div-block-3"
+                        style="display: inline-block;height: 55px;vertical-align: top;width: 70px;">
+                        <img :src="partnerSite.imgUrl" class="image-2"
+                            style="max-height: 45px;margin-top: 10px;margin-left: 5px;">
+                    </div>
+                    <span class="navbar-brand-co"
+                        style="color: #fff;font-family: Josefin Sans, sans-serif;width: calc(100% - 70px);font-size: 20px;display: inline-block;transform: translateY(-50%);font-weight: 100;top: 50%;left: 70px;position: absolute;">{{partnerSite.name}}
+                        Rewards Everywhere Shopping Assistant</span>
+                    <div class="avail-points"></div>
+                </div>
+                <div id="name-panel" v-if="isErrored == false" class="name-panel" style=" height: 25px; ">
+                    <div class="greeting-points"
+                        style="min-height: 25px;font-family: Josefin Sans, sans-serif;font-size: 16px;color: #fff;font-weight: 100;background-color: #313132;display: inline-block;width: 450px;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;">
+                        Hi
+                        {{user.name}}, you have {{user.pendingPoints}} pending points and {{user.availablePoints}}
+                        available points
+                    </div>
+                </div>
+            </div>
+            <div v-if="isErrored == false">
+                <div v-if="isInStore == true" class="partner-header"
+                    style="height: 60px; position: relative; padding: 0px;">
+                    <div style="height: fit-content;width: 100%;position: relative;">
+                        <div class="partnerSiteLogo"
+                            style="padding: 10px 10px;vertical-align: top;display: inline-block;">
+                            <img class="partnerSiteLogoImg" :src="currentStore.imgUrl">
+                        </div>
+                        <div class="offer-btn-container"
+                            style="display: inline-block;transform: translateY(-50%);position: absolute;top: 50%;">
+                            <buttons class="btn btn-primary activate-btn" @click="shopBtn(currentStore)"
+                                :style="`background-color:${currentStore.isActivated == false ?partnerSite.secondaryColor:'green'};${partnerSite.name == 'Foxwoods'?'color:#000;':''} border-color: ${currentStore.isActivated == false ?partnerSite.secondaryColor:'green'};`">
+                                {{(currentStore.isActivated == false ? "Earn " : "")}} {{currentStore.earnText}}
+                                {{(currentStore.isActivated ==
+                                true ? " Activated!":"")}}</buttons>
+                        </div>
+                    </div>
+                </div>
+                <div class="deals-promotions-header"
+                    style="font-size: 17px; font-weight: 700;height: 25px;padding-left: 15px;">
+                    <hr class="left"> {{(isInStore==true?"Deals & Promotions":"Shop Featured Stores")}}
+                    <hr class="right" :style="`${(isInStore==true?'':'width:191px')}`">
+                </div>
+                <div id="container" style="max-height: 575px;overflow-y: auto;overflow-x: hidden;">
+                    <div class="container offers-container">
+                        <div class="retailer-deal" v-for="(item, index) in deals" :key="index">
+                            <div class="row" v-if="isInStore == false" style=" margin: 0; ">
+                                <div class="col-8" style="min-height: 100px;">
+                                    <div>
+                                        <img class="image-4" style="transform: translateX(-50%);margin-left: 50%;"
+                                            :src="item.imgUrl">
+                                    </div>
+                                    <div class="retailer-deal-text ads-deal-text" style="text-align: center;">
+                                        {{item.earnText}}</div>
+                                    <div class="retailer-deal-points ads-deal-points" style="text-align: center;">Shop
+                                        all {{item.storeDomain}} deals</div>
+                                </div>
+                                <div class="col-4" style="position: relative;min-height: 100px;">
+                                    <a class="w-button retailer-deal-link" target="_blank"
+                                        style="transform: translate(-50%, -50%);top: 50%;left: 50%;position: absolute;width: 100%;">
+                                        <button class="btn btn-primary activate-btn" @click="shopBtn(item)"
+                                            :style="`width: 130px;background-color: ${partnerSite.secondaryColor};border-color:  ${partnerSite.secondaryColor};`">
+                                            Shop Now
+                                            <div id="triangle-right"> </div>
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row" v-if="isInStore == true" style=" margin: 0; ">
+                                <div class="col-8">
+                                    <div class="retailer-deal-text"
+                                        style="max-height: 37px;padding: 0px;text-align: center;">
+                                        {{item.description}}
+                                    </div>
+                                    <div class="retailer-deal-points" style=" text-align: center; ">Earn
+                                        {{item.earnText}}</div>
+                                    <div class="retailer-deal-exp"
+                                        style="margin: 0px 0px 0px 50%;padding: 0px;transform: translateX(-50%);text-align: center;">
+                                        <img src="../img/clock-icon.png" class="clock-icon" style=" width: 19px; ">
+                                        {{item.expDate}}
+                                    </div>
+                                </div>
+                                <div class="col-4" style="position: relative;min-height: 100px;">
+                                    <a class="w-button retailer-deal-link" target="_blank"
+                                        style="transform: translate(-50%, -50%);top: 50%;left: 50%;position: absolute;width: 100%;">
+                                        <button class="btn btn-primary activate-btn" @click="shopBtn(item)"
+                                            :style="`width: 130px;background-color: ${partnerSite.secondaryColor};border-color:  ${partnerSite.secondaryColor};`">
+                                            Shop Now
+                                            <div id="triangle-right"> </div>
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style=" margin: 10px 0px; ">
+                        <div class="col-4">
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-primary btn-sm btn-block" @click="settingsBtn" id="settings"
+                                :style=" `box-shadow: none; outline: none; width: 100px; transform: translateX(-50%); margin-left: 50%; background-color:${partnerSite.secondaryColor}; border-color: ${partnerSite.secondaryColor}; `">Settings</button>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-danger btn-sm btn-block" @click="closeBtn" id="cancel"
+                                :style=" `box-shadow: none; outline: none; width: 100px; transform: translateX(-50%); margin-left: 50%; `">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="isErrored == true" class="alert alert-danger" id="no-email-alert">
+                {{errorText}}
+            </div>
+            <div v-if="isErrored == true" class="row"
+                style="margin: 10px 0px;position: absolute;bottom: 0;right: 0;width: 100%;">
+                <div class="col-4">
+                </div>
+                <div class="col-4">
+                    <button class="btn btn-primary btn-sm btn-block" @click="settingsBtn" id="settings"
+                        :style=" `box-shadow: none; outline: none; width: 100px; transform: translateX(-50%); margin-left: 50%; background-color:${partnerSite.secondaryColor}; border-color: ${partnerSite.secondaryColor}; `">Settings</button>
+                </div>
+                <div class="col-4">
+                    <button class="btn btn-danger btn-sm btn-block" @click="closeBtn" id="cancel"
+                        :style=" `box-shadow: none; outline: none; width: 100px; transform: translateX(-50%); margin-left: 50%; `">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script src="./js/jquery-3.3.1.min.js"></script>
+    <script src="./js/HelpfulFunctions.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/popup.js"></script>
+
+</body>
+
 </html>

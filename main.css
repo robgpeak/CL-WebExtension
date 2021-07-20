@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300,400');
+@import url("https://fonts.googleapis.com/css?family=Josefin+Sans:300,400");
 /*.body-div {
 	position:relative;
 }
@@ -12,250 +12,253 @@
 }
 */
 .image-3 {
-	max-height: 40px;
-    margin-top: 18px;
+  max-height: 40px;
+  margin-top: 18px;
 }
 img {
-	opacity: 1 !important;
+  opacity: 1 !important;
 }
 .retailer-deal:nth-last-child(0) {
-	border-bottom: none;
+  border-bottom: none;
 }
 hr {
-	margin-top: 0px !important;
-	margin-bottom: 0px !important;
-	border-style: inset;
-    display: inline-grid;
-    vertical-align: middle;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  border-style: inset;
+  display: inline-grid;
+  vertical-align: middle;
 }
 hr.left {
-	width: 20px;
+  width: 20px;
 }
 hr.right {
-	width: 230px;
+  width: 230px;
 }
 .delimiter {
-	width: 1px;
-    margin: 15px 0;
-    height: 40px;
-    background-color: #a29f9f;
+  width: 1px;
+  margin: 15px 0;
+  height: 40px;
+  background-color: #a29f9f;
 }
 .ads-link-col {
-	margin-top: 7% !important;
+  margin-top: 7% !important;
 }
 .ads-deal-text {
-	font-weight: 700;
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
-    font-size: 16px !important;
-    width: 102% !important;
+  font-weight: 700;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  font-size: 16px !important;
+  width: 102% !important;
 }
 .ads-deal-points {
-	color: #828282 !important;
-	font-weight: 300 !important;
-	margin-top: 2.5px !important;
+  color: #828282 !important;
+  font-weight: 300 !important;
+  margin-top: 2.5px !important;
 }
 .image-4 {
-	height: 40px;
-    max-width: 100%;
-    margin: 0px 0px 0px 5px;
-    padding: 10px 0px 0px;
+  height: 40px;
+  max-width: 100%;
+  margin: 0px 0px 0px 5px;
+  padding: 10px 0px 0px;
 }
 .timeline-events {
-	margin: 20px 0px;
+  margin: 20px 0px;
 }
 .cl-link-container {
-	border-bottom: 1px solid #ddd;
-	border-right: 1px solid #ddd;
-	border-left: 1px solid #ddd;
-	border-top: transparent;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-top: transparent;
 }
 .cl-link {
-	color: red;
-	text-decoration: none;
+  color: red;
+  text-decoration: none;
 }
 .cl-link:hover {
-	color: black;
+  color: black;
 }
 .w-col {
-    padding-left: 20px;
+  padding-left: 20px;
 }
 .w-button {
-	padding: 11px 10px !important;
+  padding: 11px 10px !important;
 }
 .retailer-deal-link {
-	text-transform: uppercase;
-	font-size: medium !important;
-	width:80%;
+  text-transform: uppercase;
+  font-size: medium !important;
+  width: 80%;
 }
 #triangle-right {
-	vertical-align: top;
-	margin-left: 5px;
-	display: inline-block;
-	border-top: 8px solid transparent;
-    border-left: 14px solid white;
-    border-bottom: 8px solid transparent;
+  vertical-align: top;
+  margin-left: 5px;
+  display: inline-block;
+  border-top: 8px solid transparent;
+  border-left: 14px solid white;
+  border-bottom: 8px solid transparent;
 }
 .deal-link-col {
-	width: 100%;
+  width: 100%;
 }
 .offers-container {
-	box-shadow: -1px 3px 1px -10px rgba(0,0,0,0.5), -1px 3px 4px -1px rgba(0,0,0,0.5);
-	padding:0px;
+  box-shadow: -1px 3px 1px -10px rgba(0, 0, 0, 0.5),
+    -1px 3px 4px -1px rgba(0, 0, 0, 0.5);
+  padding: 0px;
 }
 .deals-promotions-header {
-	margin-bottom: 10px !important;
-	font-family: Lato, sans-serif;
-	font-weight: 500;
+  margin-bottom: 10px !important;
+  font-family: Lato, sans-serif;
+  font-weight: 500;
 }
 .retailer-deal {
-	min-height: 100px;
-	border-bottom: 1px solid #ddd;
-	border-right: 1px solid #ddd;
-	border-left: 1px solid #ddd;
-	border-top: transparent;
+  min-height: 100px;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-top: transparent;
 }
 .retailer-deal:nth-child(1) {
-	border-top: 1px solid #ddd;
+  border-top: 1px solid #ddd;
 }
-.retailer-deal-text, .retailer-deal-points, .retailer-deal-exp {
-	font-family: Lato, sans-serif;
-	font-size: 13px;
-	padding-left:10px;
-	color: #000;
+.retailer-deal-text,
+.retailer-deal-points,
+.retailer-deal-exp {
+  font-family: Lato, sans-serif;
+  font-size: 13px;
+  padding-left: 10px;
+  color: #000;
 }
 .retailer-deal-text {
-	font-weight: 700;
-	margin-top: 15px;
-	margin-bottom: 10px;
+  font-weight: 700;
+  margin-top: 15px;
+  margin-bottom: 10px;
 }
 .retailer-deal-points {
-	font-weight: 700;
-    font-size: 12px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+  font-weight: 700;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 .retailer-deal-exp {
-	margin-bottom: 15px;
-	width: 200px;
+  margin-bottom: 15px;
+  width: 200px;
 }
 .show-offers {
-	display: none;
+  display: none;
 }
 .navbar-co {
-	z-index: -1;
+  z-index: -1;
 }
 .timeline-events {
-	display: none;
+  display: none;
 }
 .row.fbuttons {
-	width: 450px !important;
+  width: 450px !important;
 }
 .navbar-co {
-	display: block !important;
+  display: block !important;
 }
 .img-col {
-	width: 40%;
-	margin-right: 12px;
+  width: 40%;
+  margin-right: 12px;
 }
 .clock-icon {
-	max-height: 20px;
-    max-width: 20px;
-    margin-bottom: 4px;
+  max-height: 20px;
+  max-width: 20px;
+  margin-bottom: 4px;
 }
 .partner-header {
-	display: none;
-	height: 60px;
-    display: block;
-    padding-top: 90px;
+  display: none;
+  height: 60px;
+  display: block;
+  padding-top: 90px;
 }
 
 .partner-header > div.row {
-	visibility: hidden;
+  visibility: hidden;
 }
 
 .image-2 {
-	/*padding: 15px 0px 0px 5px !important;*/
+  /*padding: 15px 0px 0px 5px !important;*/
 }
 .well.well-sm {
-	overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 #no-email-alert {
-	margin-top: 20px;
+  margin-top: 20px;
 }
 
-
 span.glyphicon.glyphicon-usd {
-    padding: 10px;
+  padding: 10px;
 }
 
 body {
-	width:450px; 
-	height:300px;
-	font-family: Roboto,"Helvetica Neue", Arial, sans-serif;
+  min-width: 450px;
+  min-height: 300px;
+  font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 .activate-btn {
-	border-radius: 0px !important;
-	box-shadow: -1px 3px 1px -10px rgba(0,0,0,0.5), -1px 3px 4px -1px rgba(0,0,0,0.5);
-	font-size: 14px !important;
+  border-radius: 0px !important;
+  box-shadow: -1px 3px 1px -10px rgba(0, 0, 0, 0.5),
+    -1px 3px 4px -1px rgba(0, 0, 0, 0.5);
+  font-size: 14px !important;
 }
 .btn-primary {
-	background-color: #2CC750;
-	border-color: #2CC750;
+  background-color: #2cc750;
+  border-color: #2cc750;
 }
 .btn-primary:hover {
-    background-color: #1A992F;
-    border-color: #1A992F;
+  background-color: #1a992f;
+  border-color: #1a992f;
 }
-.loading-icon{
-	text-align: center;
+.loading-icon {
+  text-align: center;
 }
 .fb-tab-actions {
-	margin-top: 15px;
-	min-height: 270px;
+  margin-top: 15px;
+  min-height: 270px;
 }
 .navbar-inverse .navbar-brand {
-	color: white;
+  color: white;
 }
 .navbar-inverse .navbar-header {
-	background: #4e5158
+  background: #4e5158;
 }
-.container{
-	margin-top: 20px;
-	margin-bottom: 0px;
+.container {
+  margin-top: 20px;
+  margin-bottom: 0px;
 }
-.fbuttons{
-	margin-bottom: 20px;
+.fbuttons {
+  margin-bottom: 20px;
 }
-.fpanels{
-	margin-top: 20px;
+.fpanels {
+  margin-top: 20px;
 }
 
 .show-offers {
-	margin-top: 10px;
-    margin-bottom: 20px;
-    text-align: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .bg-red {
-	background: #F2590B;
-	border-color: #F2590B;
+  background: #f2590b;
+  border-color: #f2590b;
 }
 
 .bg-red:hover {
-	background-color: #B34208;
-    border-color: #B34208;
+  background-color: #b34208;
+  border-color: #b34208;
 }
 
 .save {
-	background: #1BB1EE;
-	border-color: #1BB1EE;
+  background: #1bb1ee;
+  border-color: #1bb1ee;
 }
 
 .save:hover {
-	background-color: #00528E;
-    border-color: #00528E;
+  background-color: #00528e;
+  border-color: #00528e;
 }

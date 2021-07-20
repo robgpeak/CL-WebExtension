@@ -1,58 +1,114 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<link rel="stylesheet" href="lib/bootstrap.min.css">
-		<link rel="stylesheet" href="main.css">
-		<script src="/lib/jquery.js"></script>
-		<script src="/lib/bootstrap.min.js"></script>
-	</head>
-	<body>
-		<div class="container" >
-			<div class="row">
-				<div class="col-sm-8 col-xs-12 col-sm-offset-3">
-					<div class="panel panel-primary">
-						<div class="panel-heading">Settings</div>
-						<div class="panel-body">
-							<div class="alert alert-success" id="already-logged-in-alert" hidden>
-								<button type="button" class="close" data-dismiss="alert">x</button>
+<html style="width: 450px;height: 375px;">
+
+<head>
+	<link rel="stylesheet" href="lib/bootstrap.min.css">
+	<link rel="stylesheet" href="main.css">
+	<script src="/lib/bootstrap.min.js"></script>
+	<style>
+		.alert {
+			position: absolute;
+			top: 10px;
+			left: 5px;
+			width: calc(100% - 10px);
+			transition: opacity 1s ease-out;
+			display: none;
+			opacity: 0;
+		}
+
+		.alert.active {
+			display: block !important;
+			opacity: 1;
+		}
+
+		.close {
+			position: absolute;
+			transform: translateY(-50%);
+			top: 50%;
+			right: -5px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="loadingPage" style="position: relative;width: 100%;height: 375px;">
+		<img src="img/loading.gif"
+			style="width: 200px;height: 200px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);"
+			alt="Please wait...">
+	</div>
+	<div class="container" style="display: none;position: relative;height: 375px;padding-top: 20px;margin: 0;"
+		id="loadedPage">
+		<div class="row">
+			<div class="col-12">
+				<div class="panel panel-primary">
+					<div class="panel-heading" style=" font-size: 20px; text-align: center; "><strong>Settings</strong>
+					</div>
+					<div class="panel-body">
+						<div class="alert alert-success" id="already-logged-in-alert" style="display: none;">
+							<div style="position: relative;">
+								<span type="button" class="close">x</span>
 								<strong>Success! </strong>
-								Currently Logged In</div>							
-							<div class="alert alert-success" id="success-alert" hidden>
-								<button type="button" class="close" data-dismiss="alert">x</button>
+								<span>Currently Logged In.</span>
+
+							</div>
+						</div>
+						<div class="alert alert-success" id="success-alert" style="display: none;">
+							<div style="position: relative;">
+								<span type="button" class="close">x</span>
+								<strong>Success!</strong>
 								<span></span>
 							</div>
-							<div class="alert alert-danger" id="error-alert" hidden>
-								<button type="button" class="close" data-dismiss="alert">x</button>
-								<strong>Error! </strong>
-								Please enter valid email
-							</div>
-							<div class="alert alert-danger" id="auth-alert" hidden>
-								<button type="button" class="close" data-dismiss="alert">x</button>
-								<strong>Incorrect Password</strong>
-								Please check your password and try again.
-							</div>
-							<form class="form-horizontal">
-								<div class="form-group">
-									<label for="user-email-address" class="col-sm-3 control-label">Email Address</label>
-									<div class="col-sm-8">
-										<input type="text" class="form-control" id="user-email-address" placeholder="">
-										<p class="help-block">Please enter your email address</p>
-										<input type="password" class="form-control" id="user-password" placeholder="">
-										<p class="help-block">Please enter your password</p>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-sm-offset-2 col-sm-10 pull-right">
-										<button class="btn btn-default save" id="save">Save</button>
-										<button class="btn btn-default bg-red" id="logout">Logout</button>
-									</div>									
-								</div>
-							</form>
 						</div>
+						<div class="alert alert-danger" id="email-error-alert" style="display: none;">
+							<div style="position: relative;">
+								<span type="button" class="close">x</span>
+								<strong>Error! </strong>
+								<span>Please enter valid email.</span>
+							</div>
+
+						</div>
+						<div class="alert alert-danger" id="server-error-alert" style="display: none;">
+							<div style="position: relative;">
+								<span type="button" class="close">x</span>
+								<strong>Server error! </strong>
+								<span>Please try again later.</span>
+
+							</div>
+						</div>
+						<div class="alert alert-danger" id="pass-error-alert" style="display: none;">
+							<div style="position: relative;">
+								<span type="button" class="close">x</span>
+								<strong>Incorrect Password</strong>
+								<span>Please check your password and try again.</span>
+							</div>
+						</div>
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label for="user-email-address" class="col-sm-3 control-label">Email Address</label>
+								<div class="col-12">
+									<input type="text" class="form-control" id="user-email-address" placeholder="">
+									<p class="help-block">Please enter your email address</p>
+									<input type="password" class="form-control" id="user-password" placeholder="">
+									<p class="help-block">Please enter your password</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-12 pull-right">
+									<button class="btn btn-default save" id="save">Save</button>
+									<button class="btn btn-default save" style="display: none;" id="startShopping">Start
+										Shopping</button>
+									<button class="btn btn-default bg-red" style="display: none;"
+										id="logout">Logout</button>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
 		</div>
-		<script src="js/options.js"></script>
-	</body>
+	</div>
+	<script src="js/HelpfulFunctions.js"></script>
+	<script src="js/options.js"></script>
+</body>
+
 </html>
